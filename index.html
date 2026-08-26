@@ -8,7 +8,7 @@
   <!-- Font morbidi da Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -55,21 +55,21 @@
       </div>
       <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-stone-800" id="tripTitle">I Tuoi Prossimi Passi ✈️</h1>
       
-      <!-- Toolbar Azioni Condivisione / PDF -->
+      <!-- Toolbar Azioni Condivisione / PDF / Reset -->
       <div class="no-print flex flex-wrap items-center justify-center gap-2 pt-1">
-        <button onclick="shareTrip()" class="flex items-center gap-1.5 bg-white border border-pastelSage px-3.5 py-1.5 rounded-2xl text-xs font-medium hover:bg-pastelSage/40 transition shadow-xs">
-          🔗 <span>Copia Link Condivisibile</span>
+        <button onclick="shareTrip()" class="flex items-center gap-1.5 bg-white border border-pastelSage px-3.5 py-1.5 rounded-2xl text-xs font-semibold hover:bg-pastelSage/40 transition shadow-xs">
+          🔗 <span>Copia Link Condiviso</span>
         </button>
-        <button onclick="exportPDF()" class="flex items-center gap-1.5 bg-white border border-pastelPeach px-3.5 py-1.5 rounded-2xl text-xs font-medium hover:bg-pastelPeach/50 transition shadow-xs">
-          📄 <span>Scarica / Salva PDF</span>
+        <button onclick="exportPDF()" class="flex items-center gap-1.5 bg-white border border-pastelPeach px-3.5 py-1.5 rounded-2xl text-xs font-semibold hover:bg-pastelPeach/50 transition shadow-xs">
+          📄 <span>Scarica PDF</span>
         </button>
-        <span id="syncBadge" class="text-xs bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full font-medium">
-          🟢 Salvato in Locale
-        </span>
+        <button onclick="resetAllData()" class="flex items-center gap-1.5 bg-white border border-rose-200 text-rose-500 px-3.5 py-1.5 rounded-2xl text-xs font-semibold hover:bg-rose-50 transition shadow-xs">
+          🔄 <span>Reset Totale</span>
+        </button>
       </div>
     </header>
 
-    <!-- Modulo Configurazione AI (no-print) -->
+    <!-- Modulo Configurazione Viaggio (no-print) -->
     <section class="no-print bg-white/90 backdrop-blur-sm border border-pastelSage/60 p-5 rounded-3xl shadow-sm space-y-4">
       <div class="flex justify-between items-center">
         <h2 class="text-xs font-bold uppercase tracking-wider text-stone-500">Pianifica Nuovo Viaggio</h2>
@@ -81,7 +81,6 @@
         <label class="block text-xs font-medium text-stone-600 mb-1">Google Gemini API Key:</label>
         <input type="password" id="apiKeyInput" placeholder="Incolla la tua chiave API se vuoi chiamate AI live" 
                class="w-full bg-white border border-stone-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelLavender">
-        <p class="text-[11px] text-stone-400 mt-1">Se lasci vuoto, userà l'itinerario guidato intelligente.</p>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -99,34 +98,73 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-2 gap-3">
+      <!-- Date e Orari -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-pastelCream/60 p-3 rounded-2xl border border-pastelSage/40">
         <div>
-          <label class="block text-xs font-semibold text-stone-600 mb-1">Data Partenza</label>
-          <input type="date" id="startDate" class="w-full bg-pastelSage/20 border border-pastelSage rounded-2xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pastelPink">
+          <label class="block text-xs font-semibold text-stone-600 mb-1">Arrivo sul posto</label>
+          <div class="flex gap-2">
+            <input type="date" id="startDate" class="w-2/3 bg-white border border-pastelSage rounded-xl px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
+            <input type="time" id="startTime" value="10:00" class="w-1/3 bg-white border border-pastelSage rounded-xl px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
+          </div>
         </div>
         <div>
-          <label class="block text-xs font-semibold text-stone-600 mb-1">Data Ritorno</label>
-          <input type="date" id="endDate" class="w-full bg-pastelSage/20 border border-pastelSage rounded-2xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pastelPink">
+          <label class="block text-xs font-semibold text-stone-600 mb-1">Partenza / Rientro</label>
+          <div class="flex gap-2">
+            <input type="date" id="endDate" class="w-2/3 bg-white border border-pastelSage rounded-xl px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
+            <input type="time" id="endTime" value="18:00" class="w-1/3 bg-white border border-pastelSage rounded-xl px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
+          </div>
         </div>
       </div>
 
+      <!-- Attività già prenotate -->
+      <div>
+        <label class="block text-xs font-semibold text-stone-600 mb-1">Eventi o Attrazioni già prenotate (Orari vincolati)</label>
+        <textarea id="bookedEventsInput" rows="2" placeholder="Es. Giorno 1: Biglietto Museo alle 11:30 | Giorno 2: Cena a Soho alle 20:00..." 
+                  class="w-full bg-pastelSage/20 border border-pastelSage rounded-2xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink"></textarea>
+      </div>
+
+      <!-- Interessi -->
       <div>
         <label class="block text-xs font-semibold text-stone-600 mb-1">Interessi, Fandom & Preferenze</label>
-        <input type="text" id="interestsInput" placeholder="Es. Harry Potter, Sherlock, Mercatini, Dark Academia, Caffè storici..." 
+        <input type="text" id="interestsInput" placeholder="Es. Harry Potter, Sherlock, Mercatini vintage, Dark Academia, Pub storici..." 
                class="w-full bg-pastelSage/20 border border-pastelSage rounded-2xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pastelPink">
       </div>
 
-      <button id="generateBtn" onclick="generateItinerary()" class="w-full bg-pastelLavender hover:bg-pastelPink text-stone-800 font-semibold py-3 rounded-2xl shadow-xs transition duration-200">
-        ✨ Genera Itinerario per Me e Compagni
+      <button id="generateBtn" onclick="requestItineraryProposal()" class="w-full bg-pastelLavender hover:bg-pastelPink text-stone-800 font-semibold py-3 rounded-2xl shadow-xs transition duration-200">
+        ✨ Proponi Mete & Itinerario con AI
       </button>
     </section>
 
-    <!-- Scheda Itinerario Condiviso -->
+    <!-- Modal / Box di Revisione e Conferma Proposta AI (no-print) -->
+    <section id="reviewModal" class="hidden no-print bg-white border-2 border-pastelLavender p-5 rounded-3xl shadow-md space-y-4">
+      <div class="flex items-center gap-2">
+        <span class="text-xl">💬</span>
+        <div>
+          <h3 class="font-bold text-stone-800 text-sm">L'AI ti chiede: "Cosa ne pensi di queste mete?"</h3>
+          <p class="text-xs text-stone-500">Dai un'occhiata alle tappe pensate per i tuoi orari e preferenze prima di confermarle.</p>
+        </div>
+      </div>
+
+      <div id="proposalList" class="space-y-2 max-h-60 overflow-y-auto pr-1">
+        <!-- Lista anteprima proposta -->
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-2 pt-2 border-t border-stone-100">
+        <button onclick="confirmProposal()" class="flex-1 bg-pastelSage hover:bg-emerald-200 text-stone-800 font-semibold py-2.5 rounded-xl text-xs transition">
+          ✅ Perfetto, Conferma e Aggiungi all'Itinerario
+        </button>
+        <button onclick="cancelProposal()" class="bg-stone-100 hover:bg-stone-200 text-stone-600 font-semibold px-4 py-2.5 rounded-xl text-xs transition">
+          Annulla / Modifica Parametri
+        </button>
+      </div>
+    </section>
+
+    <!-- Scheda Itinerario Finale -->
     <section class="space-y-4">
       <div class="flex items-center justify-between px-2">
-        <h2 class="text-base sm:text-lg font-bold text-stone-800">Tappe & Programma</h2>
+        <h2 class="text-base sm:text-lg font-bold text-stone-800">Tappe & Programma Ufficiale</h2>
         <button onclick="addNewStopPrompt()" class="no-print text-xs bg-pastelPeach hover:bg-pastelPink text-stone-800 font-semibold px-3.5 py-1.5 rounded-2xl transition shadow-xs">
-          + Aggiungi Tappa
+          + Aggiungi Tappa Manuale
         </button>
       </div>
 
@@ -138,12 +176,20 @@
   </div>
 
   <script>
-    // Inizializzazione pulita
+    const STORAGE_KEY = 'pastel_travel_data_v3';
+
     let tripData = {
       title: "",
       destination: "",
+      startDate: "",
+      startTime: "10:00",
+      endDate: "",
+      endTime: "18:00",
+      bookedEvents: "",
       stops: []
     };
+
+    let pendingProposal = [];
 
     window.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
@@ -153,10 +199,10 @@
         try {
           tripData = JSON.parse(decodeURIComponent(escape(atob(sharedData))));
         } catch (e) {
-          console.error("Errore lettura dati da link:", e);
+          console.error("Errore lettura link:", e);
         }
       } else {
-        const saved = localStorage.getItem('user_trip_data_v2');
+        const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
           try { tripData = JSON.parse(saved); } catch(e){}
         }
@@ -178,14 +224,13 @@
       if (!tripData.stops || tripData.stops.length === 0) {
         container.innerHTML = `
           <div class="bg-white/80 p-8 rounded-3xl text-center space-y-2 border border-dashed border-pastelSage">
-            <p class="text-stone-600 font-medium text-sm">Nessuna tappa presente per ora 🌸</p>
-            <p class="text-xs text-stone-400">Compila i campi sopra e clicca su "Genera Itinerario", oppure aggiungi una tappa manualmente con il pulsante in alto a destra.</p>
+            <p class="text-stone-600 font-medium text-sm">Nessuna tappa inserita per ora 🌸</p>
+            <p class="text-xs text-stone-400">Inserisci orari, prenotazioni e preferenze sopra e clicca su "Proponi Mete & Itinerario con AI".</p>
           </div>
         `;
         return;
       }
 
-      // Raggruppa per Giorno
       const daysMap = {};
       tripData.stops.forEach(stop => {
         const d = stop.day || "Generale";
@@ -204,9 +249,14 @@
           const card = document.createElement('div');
           card.className = "print-card bg-white border border-stone-100 p-4 rounded-3xl shadow-xs space-y-1.5 transition";
           
+          const isBooked = stop.isBooked ? `<span class="bg-rose-100 text-rose-700 px-2.5 py-0.5 rounded-full font-bold text-[10px]">🎟️ Prenotato</span>` : '';
+
           card.innerHTML = `
             <div class="flex justify-between items-center text-xs">
-              <span class="font-semibold text-stone-400 uppercase tracking-wide">${stop.time}</span>
+              <div class="flex items-center gap-2">
+                <span class="font-semibold text-stone-400 uppercase tracking-wide">${stop.time}</span>
+                ${isBooked}
+              </div>
               <span class="bg-${stop.color || 'pastelSage'} px-3 py-0.5 rounded-full font-semibold text-stone-700 text-[11px]">${stop.tag || 'Tappa'}</span>
             </div>
             <h4 class="font-bold text-stone-800 text-base leading-snug">${stop.title}</h4>
@@ -224,7 +274,31 @@
     }
 
     function saveLocally() {
-      localStorage.setItem('user_trip_data_v2', JSON.stringify(tripData));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(tripData));
+    }
+
+    function resetAllData() {
+      if (confirm("Sei sicuro di voler resettare completamente l'itinerario? Tutti i dati e le tappe correnti verranno cancellati.")) {
+        localStorage.removeItem(STORAGE_KEY);
+        tripData = {
+          title: "",
+          destination: "",
+          startDate: "",
+          startTime: "10:00",
+          endDate: "",
+          endTime: "18:00",
+          bookedEvents: "",
+          stops: []
+        };
+        // Reset form
+        document.getElementById('destInput').value = '';
+        document.getElementById('startDate').value = '';
+        document.getElementById('endDate').value = '';
+        document.getElementById('bookedEventsInput').value = '';
+        document.getElementById('interestsInput').value = '';
+        cancelProposal();
+        renderItinerary();
+      }
     }
 
     function shareTrip() {
@@ -232,7 +306,7 @@
       const shareUrl = window.location.origin + window.location.pathname + '?trip=' + encoded;
       
       navigator.clipboard.writeText(shareUrl).then(() => {
-        alert("✨ Link copiato negli appunti!\n\nInvialo ai tuoi compagni di viaggio: aprendolo troveranno esattamente il tuo itinerario aggiornato.");
+        alert("✨ Link copiato negli appunti!\n\nInvialo ai tuoi compagni di viaggio per vedere e modificare insieme l'itinerario.");
       }).catch(() => {
         prompt("Copia questo link e invialo al tuo gruppo:", shareUrl);
       });
@@ -241,11 +315,11 @@
     function addNewStopPrompt() {
       const day = prompt("Giorno (es. Giorno 1, Giorno 2):", "Giorno 1");
       if (!day) return;
-      const time = prompt("Fascia oraria (es. Mattina • 10:00):", "Pomeriggio • 15:00");
-      const title = prompt("Nome della tappa / Luogo:");
+      const time = prompt("Fascia oraria / Orario preciso (es. Mattina • 10:30):", "Pomeriggio • 15:00");
+      const title = prompt("Nome del luogo / Tappa:");
       if (!title) return;
-      const desc = prompt("Dettagli / Note logistiche:");
-      const tag = prompt("Tag (es. Harry Potter, Cibo, Museo):", "Visita");
+      const desc = prompt("Dettagli o note logistiche:");
+      const tag = prompt("Tag (es. Harry Potter, Sherlock, Food):", "Visita");
 
       tripData.stops.push({
         id: "stop-" + Date.now(),
@@ -254,7 +328,8 @@
         title: title,
         desc: desc || "",
         tag: tag || "Tappa",
-        color: "pastelBlue"
+        color: "pastelBlue",
+        isBooked: false
       });
       renderItinerary();
     }
@@ -265,6 +340,8 @@
       if (newTitle !== null) stop.title = newTitle;
       const newDesc = prompt("Modifica descrizione / note:", stop.desc);
       if (newDesc !== null) stop.desc = newDesc;
+      const newTime = prompt("Modifica orario:", stop.time);
+      if (newTime !== null) stop.time = newTime;
       renderItinerary();
     }
 
@@ -284,32 +361,47 @@
       el.classList.toggle('hidden');
     }
 
-    async function generateItinerary() {
+    // Richiesta proposta (Anteprima AI)
+    async function requestItineraryProposal() {
       const dest = document.getElementById('destInput').value.trim();
       const expType = document.getElementById('typeInput').value;
+      const sDate = document.getElementById('startDate').value;
+      const sTime = document.getElementById('startTime').value || '10:00';
+      const eDate = document.getElementById('endDate').value;
+      const eTime = document.getElementById('endTime').value || '18:00';
+      const booked = document.getElementById('bookedEventsInput').value.trim();
       const interests = document.getElementById('interestsInput').value.trim();
       const apiKey = document.getElementById('apiKeyInput').value.trim();
       const btn = document.getElementById('generateBtn');
 
       if (!dest) {
-        alert("Inserisci una destinazione per iniziare a organizzare!");
+        alert("Inserisci una destinazione prima di continuare!");
         return;
       }
 
-      btn.innerText = "⏳ Creo la magia dell'itinerario...";
+      btn.innerText = "⏳ Elaborazione mete su misura...";
       btn.disabled = true;
 
       tripData.destination = dest;
       tripData.title = `Viaggio a ${dest}`;
+      tripData.startDate = sDate;
+      tripData.startTime = sTime;
+      tripData.endDate = eDate;
+      tripData.endTime = eTime;
+      tripData.bookedEvents = booked;
 
       if (apiKey) {
         try {
-          const promptText = `Crea un itinerario di viaggio a ${dest}.
-Tipo di viaggio: ${expType === 'first' ? 'Prima volta (must iconici)' : 'Ritorno (angoli pittoreschi e insoliti)'}.
-Interessi e fandom: ${interests || 'Generale'}.
+          const promptText = `Pianifica un itinerario per ${dest}.
+Esperienza: ${expType === 'first' ? 'Prima volta (must imperdibili)' : 'Ritorno (luoghi caratteristici, insoliti)'}.
+Arrivo sul posto: ${sDate ? sDate : 'Giorno 1'} alle ore ${sTime} (non pianificare prima di quest'ora!).
+Partenza/Rientro: ${eDate ? eDate : 'Ultimo giorno'} alle ore ${eTime} (concludi prima di quest'ora!).
+Attività già prenotate vincolanti: ${booked || 'Nessuna'}.
+Interessi tematici: ${interests || 'Generale'}.
+
 Rispondi ESCLUSIVAMENTE con un array JSON di oggetti con questa struttura esatta:
 [
-  { "id": "1", "day": "Giorno 1", "time": "Mattina • 09:30", "title": "Titolo Tappa", "desc": "Breve descrizione e consigli", "tag": "Tema", "color": "pastelLavender" }
+  { "id": "1", "day": "Giorno 1", "time": "Mattina • 10:30", "title": "Nome Luogo", "desc": "Descrizione logistica e metro", "tag": "Tema", "color": "pastelLavender", "isBooked": false }
 ]
 Colori ammessi: pastelLavender, pastelPeach, pastelSage, pastelBlue, pastelPink.`;
 
@@ -324,45 +416,93 @@ Colori ammessi: pastelLavender, pastelPeach, pastelSage, pastelBlue, pastelPink.
           const data = await response.json();
           const rawText = data.candidates[0].content.parts[0].text;
           const jsonStr = rawText.replace(/```json|```/g, '').trim();
-          tripData.stops = JSON.parse(jsonStr);
+          pendingProposal = JSON.parse(jsonStr);
         } catch (err) {
-          alert("Errore nella chiamata AI: " + err.message + ". Genero tappe consigliate su misura.");
-          buildSuggestedStops(dest, expType, interests);
+          console.warn("Chiamata AI fallita, utilizzo fallback intelligente:", err);
+          pendingProposal = generateSmartFallback(dest, sTime, eTime, booked, interests);
         }
       } else {
-        buildSuggestedStops(dest, expType, interests);
+        pendingProposal = generateSmartFallback(dest, sTime, eTime, booked, interests);
       }
 
-      btn.innerText = "✨ Genera Itinerario per Me e Compagni";
+      btn.innerText = "✨ Proponi Mete & Itinerario con AI";
       btn.disabled = false;
-      renderItinerary();
+      showProposalModal(pendingProposal);
     }
 
-    function buildSuggestedStops(dest, expType, interests) {
-      // Generatore intelligente locale per le destinazioni e interessi principali
+    function generateSmartFallback(dest, sTime, eTime, booked, interests) {
       const dLower = dest.toLowerCase();
       const iLower = (interests || '').toLowerCase();
+      const list = [];
+
+      // Aggiungi subito l'evento prenotato se presente
+      if (booked) {
+        list.push({
+          id: "bk-1",
+          day: "Giorno 1",
+          time: "Orario Prenotato",
+          title: booked.split('|')[0] || booked,
+          desc: "Attività con orario fissato dall'utente.",
+          tag: "Prenotato",
+          color: "pastelPink",
+          isBooked: true
+        });
+      }
 
       if (dLower.includes('londra') || dLower.includes('london')) {
         if (iLower.includes('harry potter') || iLower.includes('sherlock')) {
-          tripData.stops = [
-            { id: "1", day: "Giorno 1", time: "Mattina • 09:30", title: "Baker Street & Sherlock Holmes Museum", desc: "Visita al celebre 221B, negozio vittoriano e statue commemorative.", tag: "Sherlock", color: "pastelLavender" },
-            { id: "2", day: "Giorno 1", time: "Pomeriggio • 14:00", title: "King's Cross Station & Platform 9 ¾", desc: "Foto con il carrello magico e sosta al negozio Harry Potter.", tag: "Harry Potter", color: "pastelPeach" },
-            { id: "3", day: "Giorno 2", time: "Mattina • 10:00", title: "Warner Bros. Studio Tour London", desc: "The Making of Harry Potter: set autentici, Diagon Alley e Sala Grande.", tag: "Harry Potter", color: "pastelPeach" },
-            { id: "4", day: "Giorno 2", time: "Sera • 19:30", title: "Covent Garden & Seven Dials", desc: "Passeggiata nei vicoli illuminati e cena in un pub caratteristico.", tag: "Atmosfera & Food", color: "pastelSage" }
-          ];
+          list.push(
+            { id: "1", day: "Giorno 1", time: `Dalle ${sTime} (Arrivo)`, title: "Baker Street & Sherlock Holmes Museum", desc: "Visita al 221B, sosta alle vetrine vittoriane e libreria Daunt Books.", tag: "Sherlock", color: "pastelLavender", isBooked: false },
+            { id: "2", day: "Giorno 1", time: "Pomeriggio • 15:00", title: "King's Cross Station & Platform 9 ¾", desc: "Foto con la sciarpa al carrello incastrato e giro allo shop Potter.", tag: "Harry Potter", color: "pastelPeach", isBooked: false },
+            { id: "3", day: "Giorno 2", time: "Mattina • 10:00", title: "Warner Bros. Studio Tour London", desc: "Making of Harry Potter: Sala Grande, Diagon Alley e Binario dell'Espresso.", tag: "Harry Potter", color: "pastelPeach", isBooked: false },
+            { id: "4", day: "Giorno 2", time: `Pomeriggio (fino alle ${eTime})`, title: "Covent Garden, Cecil Court & Seven Dials", desc: "Passeggiata nel vicolo delle librerie antiche (ispirazione per Diagon Alley).", tag: "Atmosfera", color: "pastelSage", isBooked: false }
+          );
         } else {
-          tripData.stops = [
-            { id: "1", day: "Giorno 1", time: "Mattina • 10:00", title: "Westminster & Big Ben", desc: "Passeggiata verso il Parlamento e vista sul Tamigi.", tag: "Classico", color: "pastelLavender" },
-            { id: "2", day: "Giorno 1", time: "Pomeriggio • 14:30", title: "Covent Garden & Neal's Yard", desc: "Esplorazione del mercato coperto e del colorato vicolo nascosto.", tag: "Passeggiata", color: "pastelPeach" }
-          ];
+          list.push(
+            { id: "1", day: "Giorno 1", time: `Dalle ${sTime}`, title: "Westminster, Big Ben & Tamigi", desc: "Passeggiata iconica tra le rive del Tamigi e il Parlamento.", tag: "Classico", color: "pastelLavender", isBooked: false },
+            { id: "2", day: "Giorno 1", time: `Pomeriggio (entro le ${eTime})`, title: "Covent Garden & Neal's Yard", desc: "Passeggiata nell'iconico cortile colorato e negozietti artigianali.", tag: "Passeggiata", color: "pastelPeach", isBooked: false }
+          );
         }
       } else {
-        tripData.stops = [
-          { id: "1", day: "Giorno 1", time: "Mattina • 09:30", title: `Esplorazione del centro storico di ${dest}`, desc: "Passeggiata introduttiva tra i vicoli principali e scorci panoramici.", tag: "Scoperta", color: "pastelLavender" },
-          { id: "2", day: "Giorno 1", time: "Pomeriggio • 14:30", title: `Tappe d'interesse tematiche`, desc: `Visita ai luoghi dedicati a: ${interests || 'Cultura locale e relax'}.`, tag: "Esperienza", color: "pastelPeach" }
-        ];
+        list.push(
+          { id: "1", day: "Giorno 1", time: `Dalle ${sTime}`, title: `Esplorazione Centro Storico di ${dest}`, desc: "Passeggiata introduttiva tra i vicoli principali e scorci panoramici.", tag: "Scoperta", color: "pastelLavender", isBooked: false },
+          { id: "2", day: "Giorno 1", time: `Pomeriggio (entro le ${eTime})`, title: "Tappa tematica su misura", desc: `Esperienza dedicata a: ${interests || 'Atmosfera e cultura locale'}.`, tag: "Esperienza", color: "pastelPeach", isBooked: false }
+        );
       }
+      return list;
+    }
+
+    function showProposalModal(proposal) {
+      const modal = document.getElementById('reviewModal');
+      const listCont = document.getElementById('proposalList');
+      listCont.innerHTML = '';
+
+      proposal.forEach((item) => {
+        const row = document.createElement('div');
+        row.className = "p-3 rounded-2xl bg-stone-50 border border-stone-200 text-xs flex justify-between items-center gap-2";
+        row.innerHTML = `
+          <div>
+            <span class="font-bold text-stone-500 uppercase text-[10px]">${item.day} • ${item.time}</span>
+            <div class="font-bold text-stone-800">${item.title}</div>
+            <div class="text-stone-500 text-[11px]">${item.desc}</div>
+          </div>
+          <span class="bg-${item.color} px-2 py-0.5 rounded-md font-semibold text-stone-700 whitespace-nowrap text-[10px]">${item.tag}</span>
+        `;
+        listCont.appendChild(row);
+      });
+
+      modal.classList.remove('hidden');
+      modal.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function confirmProposal() {
+      tripData.stops = [...pendingProposal];
+      document.getElementById('reviewModal').classList.add('hidden');
+      renderItinerary();
+    }
+
+    function cancelProposal() {
+      document.getElementById('reviewModal').classList.add('hidden');
     }
   </script>
 </body>
