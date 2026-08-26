@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Travel Co-Planner • Multi-Trip Edition</title>
+  <title>Travel Co-Planner • Multi-Stop & Road Trip Edition</title>
   
   <!-- Font morbidi da Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -72,7 +72,7 @@
     <!-- Header Viaggio Attivo -->
     <header class="text-center space-y-3">
       <div class="inline-block bg-pastelPeach px-4 py-1.5 rounded-full text-xs font-semibold text-stone-700 shadow-xs">
-        ✨ Travel Organizer & Logistics Engine
+        🚗 Multi-Stop & Road Trip Organizer
       </div>
       <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-stone-800" id="tripTitle">I Tuoi Prossimi Passi ✈️</h1>
       
@@ -87,65 +87,75 @@
       </div>
     </header>
 
-    <!-- Modulo Configurazione Viaggio (no-print) -->
+    <!-- Modulo Configurazione Viaggio Completo (no-print) -->
     <section class="no-print bg-white/90 backdrop-blur-sm border border-pastelSage/60 p-5 rounded-3xl shadow-sm space-y-4">
-      <div class="flex justify-between items-center">
-        <h2 class="text-xs font-bold uppercase tracking-wider text-stone-500">1. Parametri di Base</h2>
-        <button onclick="toggleApiKeyInput()" class="text-xs text-stone-400 hover:text-stone-600 underline">Chiave Gemini (Opzionale)</button>
-      </div>
-
-      <!-- Chiave API -->
-      <div id="apiKeySection" class="hidden bg-stone-50 p-3.5 rounded-2xl border border-stone-200">
-        <label class="block text-xs font-medium text-stone-600 mb-1">Google Gemini API Key:</label>
-        <input type="password" id="apiKeyInput" placeholder="Incolla la tua chiave API per generazione live" 
-               class="w-full bg-white border border-stone-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelLavender">
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      
+      <!-- Selettore Tipologia (Singola Città vs Multi-Tappa / Road Trip) -->
+      <div class="flex justify-between items-center bg-stone-50 p-3 rounded-2xl border border-stone-200">
         <div>
-          <label class="block text-xs font-semibold text-stone-600 mb-1">Destinazione (Città)</label>
-          <input type="text" id="destInput" placeholder="Es. Londra, Parigi, Tokyo..." 
-                 class="w-full bg-pastelSage/20 border border-pastelSage rounded-2xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pastelPink">
+          <label class="block text-xs font-bold uppercase tracking-wider text-stone-600">Tipologia Viaggio</label>
+          <p class="text-[11px] text-stone-400">Scegli se è una sola città o un itinerario con più tappe/spostamenti</p>
         </div>
-        <div>
-          <label class="block text-xs font-semibold text-stone-600 mb-1">Livello di Esperienza</label>
-          <select id="typeInput" class="w-full bg-pastelSage/20 border border-pastelSage rounded-2xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pastelPink">
-            <option value="first">Prima volta (Classici & Must imperdibili)</option>
-            <option value="returning">Ritorno (Angoli pittoreschi & Meno turistici)</option>
-          </select>
+        <select id="modeSelect" onchange="toggleTripMode(this.value)" class="bg-white border border-pastelSage rounded-xl px-3 py-1.5 text-xs font-bold text-stone-700 focus:outline-none">
+          <option value="single">🏙️ Città Singola (es. Londra)</option>
+          <option value="multistop">🚗 Multi-Tappa / Road Trip (es. USA Coast-to-Coast)</option>
+        </select>
+      </div>
+
+      <!-- SEZIONE 1: Città Singola -->
+      <div id="singleCitySection" class="space-y-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-stone-600 mb-1">Destinazione</label>
+            <input type="text" id="destInput" placeholder="Es. Londra, Tokyo..." 
+                   class="w-full bg-pastelSage/20 border border-pastelSage rounded-2xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pastelPink">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-stone-600 mb-1">Alloggio / Hotel</label>
+            <input type="text" id="hotelInput" placeholder="Es. Hotel a Paddington..." 
+                   class="w-full bg-pastelSage/20 border border-pastelSage rounded-2xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pastelPink">
+          </div>
         </div>
       </div>
 
-      <!-- LOGISTICA: Voli, Aeroporti e Alloggio -->
-      <div class="bg-pastelCream/80 p-4 rounded-3xl border border-pastelSage/60 space-y-3">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-stone-600">2. Logistica Arrivi & Alloggio</h3>
+      <!-- SEZIONE 1 BIS: Percorso Multi-Tappa (Road Trip) -->
+      <div id="multiStopSection" class="hidden space-y-3 bg-pastelCream/80 p-4 rounded-3xl border border-pastelSage/60">
+        <div class="flex justify-between items-center">
+          <div>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-stone-700">Tappe del Percorso (Itinerario Itinerante)</h3>
+            <p class="text-[11px] text-stone-500">Aggiungi in ordine le città o parchi dove dormirai e come ti sposti.</p>
+          </div>
+          <button onclick="addStopRouteRow()" class="text-xs bg-white text-stone-700 px-3 py-1 rounded-xl font-semibold border border-pastelSage hover:bg-pastelSage transition">
+            + Aggiungi Città/Tappa
+          </button>
+        </div>
+
+        <div id="routeStopsList" class="space-y-2">
+          <!-- Righe dinamiche tappe itinerario -->
+        </div>
+      </div>
+
+      <!-- LOGISTICA VOLI DI ARRIVO E RIENTRO -->
+      <div class="bg-stone-50/80 p-4 rounded-3xl border border-stone-200 space-y-3">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-stone-600">Logistica Voli Principali</h3>
         
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-medium text-stone-500 mb-1">Aeroporto / Stazione di Arrivo</label>
-            <input type="text" id="airportInput" placeholder="Es. Stansted, Gatwick, Heathrow..." 
-                   class="w-full bg-white border border-pastelSage rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-stone-500 mb-1">Dove Alloggi? (Hotel / Zona)</label>
-            <input type="text" id="hotelInput" placeholder="Es. Hotel a Paddington, Airbnb a Camden..." 
-                   class="w-full bg-white border border-pastelSage rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-          <div>
-            <label class="block text-xs font-medium text-stone-500 mb-1">Atterraggio / Arrivo in loco</label>
+            <label class="block text-xs font-medium text-stone-500 mb-1">Volo di Andata (Arrivo)</label>
+            <input type="text" id="airportInput" placeholder="Aeroporto (es. JFK New York)" 
+                   class="w-full bg-white border border-stone-200 rounded-xl px-3 py-1.5 text-xs mb-1.5 focus:outline-none">
             <div class="flex gap-2">
-              <input type="date" id="startDate" class="w-2/3 bg-white border border-pastelSage rounded-xl px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
-              <input type="time" id="startTime" value="10:00" class="w-1/3 bg-white border border-pastelSage rounded-xl px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
+              <input type="date" id="startDate" class="w-2/3 bg-white border border-stone-200 rounded-xl px-2.5 py-1 text-xs">
+              <input type="time" id="startTime" value="10:00" class="w-1/3 bg-white border border-stone-200 rounded-xl px-2 py-1 text-xs">
             </div>
           </div>
           <div>
-            <label class="block text-xs font-medium text-stone-500 mb-1">Volo di Rientro / Partenza</label>
+            <label class="block text-xs font-medium text-stone-500 mb-1">Volo di Ritorno (Partenza)</label>
+            <input type="text" id="returnAirportInput" placeholder="Aeroporto (es. LAX Los Angeles o JFK)" 
+                   class="w-full bg-white border border-stone-200 rounded-xl px-3 py-1.5 text-xs mb-1.5 focus:outline-none">
             <div class="flex gap-2">
-              <input type="date" id="endDate" class="w-2/3 bg-white border border-pastelSage rounded-xl px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
-              <input type="time" id="endTime" value="18:30" class="w-1/3 bg-white border border-pastelSage rounded-xl px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
+              <input type="date" id="endDate" class="w-2/3 bg-white border border-stone-200 rounded-xl px-2.5 py-1 text-xs">
+              <input type="time" id="endTime" value="18:30" class="w-1/3 bg-white border border-stone-200 rounded-xl px-2 py-1 text-xs">
             </div>
           </div>
         </div>
@@ -154,13 +164,11 @@
       <!-- APPUNTAMENTI E PRENOTAZIONI PRECISE -->
       <div class="bg-pastelPeach/30 p-4 rounded-3xl border border-pastelPeach space-y-3">
         <div class="flex justify-between items-center">
-          <h3 class="text-xs font-bold uppercase tracking-wider text-stone-700">3. Appuntamenti & Biglietti Già Fissati</h3>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-stone-700">Appuntamenti & Biglietti Già Fissati</h3>
           <button onclick="addBookedEventInput()" class="text-xs bg-white text-stone-700 px-3 py-1 rounded-xl font-semibold border border-pastelPeach hover:bg-pastelPeach transition">
-            + Aggiungi Prenotazione
+            + Aggiungi Biglietto / Evento
           </button>
         </div>
-        <p class="text-[11px] text-stone-500">Aggiungi orari vincolanti (es. Warner Bros Studios, Musical, cene con tavolo prenotato).</p>
-        
         <div id="bookedEventsList" class="space-y-2">
           <!-- Righe eventi prenotati -->
         </div>
@@ -168,27 +176,27 @@
 
       <!-- Interessi e Fandom -->
       <div>
-        <label class="block text-xs font-semibold text-stone-600 mb-1">4. Temi, Interessi & Fandom</label>
-        <input type="text" id="interestsInput" placeholder="Es. Harry Potter, Sherlock Holmes, Mercati vintage, Pub d'epoca..." 
+        <label class="block text-xs font-semibold text-stone-600 mb-1">Temi, Interessi & Tappe da non perdere</label>
+        <input type="text" id="interestsInput" placeholder="Es. Grand Canyon, Route 66, Parchi naturali, Musei, Serie TV, Cibo locale..." 
                class="w-full bg-pastelSage/20 border border-pastelSage rounded-2xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pastelPink">
       </div>
 
       <button id="generateBtn" onclick="requestItineraryProposal()" class="w-full bg-pastelLavender hover:bg-pastelPink text-stone-800 font-semibold py-3 rounded-2xl shadow-xs transition duration-200">
-        ✨ Calcola Logistica & Proponi Itinerario
+        ✨ Calcola Percorso & Proponi Itinerario Completo
       </button>
     </section>
 
-    <!-- Modal di Revisione, Modifica & Scambio Mete AI (no-print) -->
+    <!-- Modal di Revisione & Scambio Tappe AI (no-print) -->
     <section id="reviewModal" class="hidden no-print bg-white border-2 border-pastelLavender p-5 rounded-3xl shadow-md space-y-4">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
         <div>
           <h3 class="font-bold text-stone-800 text-sm flex items-center gap-1.5">
-            <span>💬</span> <span>L'AI ti propone queste tappe: puoi modificarle o scambiarle!</span>
+            <span>💬</span> <span>L'AI ha calcolato tappe e trasferimenti!</span>
           </h3>
-          <p class="text-xs text-stone-500">Sposta le tappe tra i giorni, modificale o inverti i giorni prima di confermare.</p>
+          <p class="text-xs text-stone-500">Puoi modificare le tappe, spostarle o confermarle per generare l'itinerario finale.</p>
         </div>
         <button onclick="swapProposalDaysPrompt()" class="text-xs bg-pastelLavender/60 hover:bg-pastelLavender text-stone-700 font-semibold px-3 py-1.5 rounded-xl transition">
-          🔄 Inverti Interi Giorni
+          🔄 Inverti Giorni
         </button>
       </div>
 
@@ -223,21 +231,26 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'pastel_trips_library_v1';
+    const STORAGE_KEY = 'pastel_trips_library_v2';
 
-    // Libreria di viaggi
     let allTrips = {};
     let currentTripId = null;
     let pendingProposal = [];
 
-    // Struttura di un viaggio vuoto
     function createEmptyTrip(title = "Nuovo Viaggio") {
       return {
         id: "trip-" + Date.now(),
         title: title,
+        mode: "single", // "single" o "multistop"
         destination: "",
-        airport: "",
         hotel: "",
+        routeStops: [
+          { city: "New York", nights: "3 notti", stay: "Hotel a Manhattan", transport: "Volo di arrivo" },
+          { city: "Chicago", nights: "2 notti", stay: "Hotel Downtown", transport: "Treno / Volo interno" },
+          { city: "Los Angeles", nights: "3 notti", stay: "Airbnb a Santa Monica", transport: "Auto a noleggio" }
+        ],
+        airport: "",
+        returnAirport: "",
         startDate: "",
         startTime: "10:00",
         endDate: "",
@@ -249,7 +262,6 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      // 1. Controlla se c'è un viaggio aperto da link condiviso
       const urlParams = new URLSearchParams(window.location.search);
       const sharedData = urlParams.get('trip');
 
@@ -268,9 +280,8 @@
         }
       }
 
-      // Se non ci sono viaggi, creane uno di default
       if (Object.keys(allTrips).length === 0) {
-        const defaultTrip = createEmptyTrip("Viaggio 1");
+        const defaultTrip = createEmptyTrip("Viaggio USA On The Road");
         allTrips[defaultTrip.id] = defaultTrip;
         currentTripId = defaultTrip.id;
         saveAllTripsToStorage();
@@ -298,13 +309,28 @@
       return allTrips[currentTripId] || null;
     }
 
+    function toggleTripMode(mode) {
+      const singleSec = document.getElementById('singleCitySection');
+      const multiSec = document.getElementById('multiStopSection');
+      if (mode === 'multistop') {
+        singleSec.classList.add('hidden');
+        multiSec.classList.remove('hidden');
+      } else {
+        singleSec.classList.remove('hidden');
+        multiSec.classList.add('hidden');
+      }
+      const trip = getCurrentTrip();
+      if (trip) trip.mode = mode;
+    }
+
     function updateTripSelectorUI() {
       const selector = document.getElementById('tripSelector');
       selector.innerHTML = '';
       for (const [id, trip] of Object.entries(allTrips)) {
         const opt = document.createElement('option');
         opt.value = id;
-        opt.textContent = (trip.destination ? `📍 ${trip.destination}` : `✈️ ${trip.title}`);
+        const icon = trip.mode === 'multistop' ? '🚗' : '🏙️';
+        opt.textContent = `${icon} ${trip.destination || trip.title}`;
         if (id === currentTripId) opt.selected = true;
         selector.appendChild(opt);
       }
@@ -320,7 +346,7 @@
     }
 
     function createNewTrip() {
-      const name = prompt("Nome o etichetta del nuovo viaggio (es. Parigi con Vale, Tokyo estate):", "Nuovo Viaggio");
+      const name = prompt("Nome del nuovo viaggio (es. USA Coast to Coast, Giappone):", "Nuovo Viaggio");
       if (!name) return;
       const newTrip = createEmptyTrip(name);
       allTrips[newTrip.id] = newTrip;
@@ -349,7 +375,7 @@
     function deleteCurrentTrip() {
       const current = getCurrentTrip();
       if (!current) return;
-      if (confirm(`Sei sicuro di voler eliminare definitivamente "${current.destination || current.title}"?`)) {
+      if (confirm(`Eliminare definitivamente "${current.destination || current.title}"?`)) {
         delete allTrips[currentTripId];
         const remainingKeys = Object.keys(allTrips);
         if (remainingKeys.length === 0) {
@@ -370,22 +396,65 @@
     function syncFormWithCurrentTrip() {
       const trip = getCurrentTrip();
       if (!trip) return;
+
+      document.getElementById('modeSelect').value = trip.mode || 'single';
+      toggleTripMode(trip.mode || 'single');
+
       document.getElementById('destInput').value = trip.destination || '';
-      document.getElementById('airportInput').value = trip.airport || '';
       document.getElementById('hotelInput').value = trip.hotel || '';
+      document.getElementById('airportInput').value = trip.airport || '';
+      document.getElementById('returnAirportInput').value = trip.returnAirport || '';
       document.getElementById('startDate').value = trip.startDate || '';
       document.getElementById('startTime').value = trip.startTime || '10:00';
       document.getElementById('endDate').value = trip.endDate || '';
       document.getElementById('endTime').value = trip.endTime || '18:30';
       document.getElementById('interestsInput').value = trip.interests || '';
 
+      // Popola tappe percorso multi-stop
+      const routeCont = document.getElementById('routeStopsList');
+      routeCont.innerHTML = '';
+      if (trip.routeStops && trip.routeStops.length > 0) {
+        trip.routeStops.forEach(st => addStopRouteRow(st.city, st.nights, st.stay, st.transport));
+      } else {
+        addStopRouteRow("New York", "3 notti", "Hotel Manhattan", "Volo");
+        addStopRouteRow("Los Angeles", "3 notti", "Hotel LA", "Volo Interno / Auto");
+      }
+
+      // Popola eventi fissati
       const bookedCont = document.getElementById('bookedEventsList');
       bookedCont.innerHTML = '';
       if (trip.fixedEvents && trip.fixedEvents.length > 0) {
-        trip.fixedEvents.forEach(ev => {
-          addBookedEventInput(ev.day, ev.time, ev.title);
-        });
+        trip.fixedEvents.forEach(ev => addBookedEventInput(ev.day, ev.time, ev.title));
       }
+    }
+
+    function addStopRouteRow(city = '', nights = '2 notti', stay = '', transport = 'Auto a noleggio') {
+      const list = document.getElementById('routeStopsList');
+      const row = document.createElement('div');
+      row.className = "flex flex-col sm:flex-row gap-2 items-start sm:items-center bg-white p-3 rounded-2xl border border-pastelSage text-xs";
+      row.innerHTML = `
+        <div class="flex-1 w-full grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <input type="text" placeholder="Città / Parco (es. New York)" value="${city}" class="route-city bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-1.5 text-xs font-semibold">
+          <input type="text" placeholder="Permanenza (es. 3 notti)" value="${nights}" class="route-nights bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-1.5 text-xs">
+          <input type="text" placeholder="Alloggio (Hotel / Airbnb)" value="${stay}" class="route-stay bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-1.5 text-xs">
+          <input type="text" placeholder="Mezzo (Auto, Volo, Treno)" value="${transport}" class="route-transport bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-1.5 text-xs">
+        </div>
+        <button onclick="this.parentElement.remove()" class="self-end sm:self-center text-rose-400 hover:text-rose-600 font-bold px-2 py-1">✕</button>
+      `;
+      list.appendChild(row);
+    }
+
+    function collectRouteStops() {
+      const rows = document.querySelectorAll('#routeStopsList > div');
+      const list = [];
+      rows.forEach(r => {
+        const city = r.querySelector('.route-city').value.trim();
+        const nights = r.querySelector('.route-nights').value.trim();
+        const stay = r.querySelector('.route-stay').value.trim();
+        const transport = r.querySelector('.route-transport').value.trim();
+        if (city) list.push({ city, nights, stay, transport });
+      });
+      return list;
     }
 
     function addBookedEventInput(dateVal = '', timeVal = '', descVal = '') {
@@ -393,9 +462,9 @@
       const row = document.createElement('div');
       row.className = "flex gap-2 items-center bg-white p-2 rounded-xl border border-pastelPeach/80 text-xs";
       row.innerHTML = `
-        <input type="text" placeholder="Giorno (es. Giorno 1)" value="${dateVal}" class="event-day w-1/4 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1 text-xs">
+        <input type="text" placeholder="Giorno (es. Giorno 1 o NY Giorno 2)" value="${dateVal}" class="event-day w-1/3 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1 text-xs">
         <input type="time" value="${timeVal}" class="event-time w-1/4 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1 text-xs">
-        <input type="text" placeholder="Evento prenotato" value="${descVal}" class="event-desc flex-1 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1 text-xs">
+        <input type="text" placeholder="Evento / Biglietto" value="${descVal}" class="event-desc flex-1 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1 text-xs">
         <button onclick="this.parentElement.remove()" class="text-rose-400 hover:text-rose-600 font-bold px-1">✕</button>
       `;
       list.appendChild(row);
@@ -408,9 +477,7 @@
         const day = r.querySelector('.event-day').value.trim();
         const time = r.querySelector('.event-time').value;
         const desc = r.querySelector('.event-desc').value.trim();
-        if (desc) {
-          list.push({ day: day || 'Giorno 1', time: time || 'Orario fisso', title: desc, isBooked: true });
-        }
+        if (desc) list.push({ day: day || 'Giorno 1', time: time || 'Orario fisso', title: desc, isBooked: true });
       });
       return list;
     }
@@ -432,8 +499,8 @@
       if (!trip.stops || trip.stops.length === 0) {
         container.innerHTML = `
           <div class="bg-white/80 p-8 rounded-3xl text-center space-y-2 border border-dashed border-pastelSage">
-            <p class="text-stone-600 font-medium text-sm">Nessuna tappa inserita in questo viaggio 🌸</p>
-            <p class="text-xs text-stone-400">Compila i dati sopra e clicca su "Calcola Logistica & Proponi Itinerario".</p>
+            <p class="text-stone-600 font-medium text-sm">Nessuna tappa inserita in questo itinerario 🌸</p>
+            <p class="text-xs text-stone-400">Configura le tappe sopra e clicca su "Calcola Percorso & Proponi Itinerario Completo".</p>
           </div>
         `;
         return;
@@ -458,11 +525,8 @@
           card.className = "print-card bg-white border border-stone-100 p-4 rounded-3xl shadow-xs space-y-1.5 transition";
           
           let badge = `<span class="bg-${stop.color || 'pastelSage'} px-3 py-0.5 rounded-full font-semibold text-stone-700 text-[11px]">${stop.tag || 'Tappa'}</span>`;
-          if (stop.isBooked) {
-            badge = `<span class="bg-pastelPink text-stone-800 px-3 py-0.5 rounded-full font-bold text-[11px]">🎟️ Prenotato</span>`;
-          } else if (stop.isTransfer) {
-            badge = `<span class="bg-pastelBlue text-stone-800 px-3 py-0.5 rounded-full font-semibold text-[11px]">🚆 Transfer</span>`;
-          }
+          if (stop.isBooked) badge = `<span class="bg-pastelPink text-stone-800 px-3 py-0.5 rounded-full font-bold text-[11px]">🎟️ Prenotato</span>`;
+          if (stop.isTransfer) badge = `<span class="bg-pastelBlue text-stone-800 px-3 py-0.5 rounded-full font-semibold text-[11px]">🚆 Transfer / Guida</span>`;
 
           card.innerHTML = `
             <div class="flex justify-between items-center text-xs">
@@ -490,16 +554,16 @@
       const shareUrl = window.location.origin + window.location.pathname + '?trip=' + encoded;
       
       navigator.clipboard.writeText(shareUrl).then(() => {
-        alert(`✨ Link di "${current.destination || current.title}" copiato negli appunti!\n\nChi riceverà questo link aprirà esattamente questo itinerario.`);
+        alert(`✨ Link di "${current.destination || current.title}" copiato negli appunti!`);
       }).catch(() => {
-        prompt("Copia questo link di condivisione:", shareUrl);
+        prompt("Copia questo link:", shareUrl);
       });
     }
 
     function addNewStopPrompt() {
       const trip = getCurrentTrip();
       if (!trip) return;
-      const day = prompt("Giorno (es. Giorno 1):", "Giorno 1");
+      const day = prompt("Giorno (es. Giorno 1 - New York):", "Giorno 1");
       if (!day) return;
       const time = prompt("Orario / Fascia:", "Pomeriggio • 15:00");
       const title = prompt("Nome Luogo / Attività:");
@@ -526,7 +590,7 @@
       const stop = trip.stops[index];
       const newTitle = prompt("Modifica titolo:", stop.title);
       if (newTitle !== null) stop.title = newTitle;
-      const newDesc = prompt("Modifica descrizione / note:", stop.desc);
+      const newDesc = prompt("Modifica note:", stop.desc);
       if (newDesc !== null) stop.desc = newDesc;
       const newTime = prompt("Modifica orario:", stop.time);
       if (newTime !== null) stop.time = newTime;
@@ -546,110 +610,131 @@
       window.print();
     }
 
-    function toggleApiKeyInput() {
-      document.getElementById('apiKeySection').classList.toggle('hidden');
-    }
-
-    // Richiesta Proposta
+    // Richiesta Calcolo Proposta Itinerario
     async function requestItineraryProposal() {
       const trip = getCurrentTrip();
       if (!trip) return;
 
+      const mode = document.getElementById('modeSelect').value;
       const dest = document.getElementById('destInput').value.trim();
-      const expType = document.getElementById('typeInput').value;
-      const airport = document.getElementById('airportInput').value.trim() || 'Aeroporto';
-      const hotel = document.getElementById('hotelInput').value.trim() || 'Alloggio in centro';
+      const airport = document.getElementById('airportInput').value.trim() || 'Aeroporto di Partenza';
+      const returnAirport = document.getElementById('returnAirportInput').value.trim() || airport;
       const sDate = document.getElementById('startDate').value;
       const sTime = document.getElementById('startTime').value || '10:00';
       const eDate = document.getElementById('endDate').value;
       const eTime = document.getElementById('endTime').value || '18:30';
       const interests = document.getElementById('interestsInput').value.trim();
-      const apiKey = document.getElementById('apiKeyInput').value.trim();
       const fixedEvents = collectFixedEvents();
+      const routeStops = collectRouteStops();
       const btn = document.getElementById('generateBtn');
 
-      if (!dest) {
-        alert("Inserisci almeno la destinazione prima di procedere!");
-        return;
-      }
-
-      btn.innerText = "⏳ Calcolo tempi transfer e orari...";
-      btn.disabled = true;
-
-      trip.destination = dest;
-      trip.title = `Viaggio a ${dest}`;
-      trip.airport = airport;
-      trip.hotel = hotel;
+      trip.mode = mode;
       trip.startDate = sDate;
       trip.startTime = sTime;
       trip.endDate = eDate;
       trip.endTime = eTime;
+      trip.airport = airport;
+      trip.returnAirport = returnAirport;
       trip.interests = interests;
       trip.fixedEvents = fixedEvents;
+      trip.routeStops = routeStops;
 
-      updateTripSelectorUI();
-
-      if (apiKey) {
-        try {
-          const promptText = `Crea un itinerario a ${dest}.
-Aeroporto: ${airport}.
-Alloggio: ${hotel}.
-Arrivo: ore ${sTime}. Calcola transfer verso l'hotel + check-in prima di iniziare.
-Partenza rientro: ore ${eTime}. Calcola transfer verso l'aeroporto.
-Prenotazioni vincolanti fisse: ${JSON.stringify(fixedEvents)}.
-Livello esperienza: ${expType}.
-Interessi: ${interests}.
-
-Rispondi ESCLUSIVAMENTE con array JSON:
-[
-  { "id": "1", "day": "Giorno 1", "time": "10:00 - 11:30", "title": "Transfer Aeroporto -> Hotel", "desc": "Spostamento e deposito bagagli", "tag": "Logistica", "color": "pastelBlue", "isTransfer": true, "isBooked": false }
-]`;
-
-          const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
-          });
-
-          const data = await response.json();
-          const rawText = data.candidates[0].content.parts[0].text;
-          pendingProposal = JSON.parse(rawText.replace(/```json|```/g, '').trim());
-        } catch (err) {
-          console.warn("AI fallback:", err);
-          pendingProposal = buildSmartLogistics(dest, airport, hotel, sTime, eTime, fixedEvents, interests);
-        }
+      if (mode === 'multistop') {
+        trip.destination = routeStops.map(s => s.city).join(" ➔ ") || "Coast-to-Coast USA";
+        trip.title = `Road Trip: ${trip.destination}`;
       } else {
-        pendingProposal = buildSmartLogistics(dest, airport, hotel, sTime, eTime, fixedEvents, interests);
+        trip.destination = dest || "Nuova Meta";
+        trip.title = `Viaggio a ${trip.destination}`;
+        trip.hotel = document.getElementById('hotelInput').value.trim();
       }
 
-      btn.innerText = "✨ Calcola Logistica & Proponi Itinerario";
+      updateTripSelectorUI();
+      btn.innerText = "⏳ Calcolo tappe e trasferimenti...";
+      btn.disabled = true;
+
+      // Generazione percorso Multi-Tappa o Singola Città
+      if (mode === 'multistop') {
+        pendingProposal = buildMultiStopItinerary(routeStops, airport, returnAirport, sTime, eTime, fixedEvents, interests);
+      } else {
+        pendingProposal = buildSingleCityItinerary(dest, airport, trip.hotel, sTime, eTime, fixedEvents, interests);
+      }
+
+      btn.innerText = "✨ Calcola Percorso & Proponi Itinerario Completo";
       btn.disabled = false;
       renderProposalList();
       showProposalModal();
     }
 
-    function buildSmartLogistics(dest, airport, hotel, sTime, eTime, fixedEvents, interests) {
+    // Costruttore Road Trip Multi-Tappa
+    function buildMultiStopItinerary(routeStops, airport, returnAirport, sTime, eTime, fixedEvents, interests) {
       const list = [];
-      const [sh, sm] = sTime.split(':').map(Number);
-      const readyH = (sh + 2) % 24;
-      const readyTime = `${String(readyH).padStart(2, '0')}:${String(sm).padStart(2, '0')}`;
+      let dayCounter = 1;
+
+      // Arrivo iniziale
+      const firstCity = routeStops[0] ? routeStops[0].city : "Prima Tappa";
+      const firstStay = routeStops[0] ? routeStops[0].stay : "Alloggio";
 
       list.push({
-        id: "tr-arr",
-        day: "Giorno 1",
-        time: `${sTime} - ${readyTime}`,
-        title: `Arrivo a ${airport} ➔ Check-in a ${hotel}`,
-        desc: "Ritiro bagagli, spostamento in centro e deposito valigie.",
-        tag: "Transfer & Hotel",
+        id: "tr-start",
+        day: `Giorno ${dayCounter} - ${firstCity}`,
+        time: `${sTime} - Arrivo`,
+        title: `Atterraggio a ${airport} ➔ Check-in a ${firstStay}`,
+        desc: "Ritiro bagagli, eventuale ritiro auto a noleggio o transfer e sistemazione in hotel.",
+        tag: "Arrivo & Logistica",
         color: "pastelBlue",
-        isTransfer: true,
-        isBooked: false
+        isTransfer: true
       });
 
-      fixedEvents.filter(ev => ev.day === 'Giorno 1').forEach(ev => {
+      // Tappe cittadine per ogni destinazione del Road Trip
+      routeStops.forEach((stop, sIdx) => {
+        const isFirst = sIdx === 0;
+        const isLast = sIdx === routeStops.length - 1;
+
+        if (!isFirst) {
+          dayCounter++;
+          list.push({
+            id: `tr-move-${sIdx}`,
+            day: `Giorno ${dayCounter} - Verso ${stop.city}`,
+            time: "Mattina / Pomeriggio",
+            title: `Trasferimento verso ${stop.city} (${stop.transport || 'Auto/Guida'})`,
+            desc: `Spostamento panoramico con soste lungo il tragitto. Arrivo e check-in presso ${stop.stay || 'Alloggio'}.`,
+            tag: "On The Road",
+            color: "pastelBlue",
+            isTransfer: true
+          });
+        }
+
+        // Esplorazione della città/parco
+        dayCounter++;
         list.push({
-          id: "fix-" + Date.now() + Math.random(),
-          day: "Giorno 1",
+          id: `stop-exp-${sIdx}`,
+          day: `Giorno ${dayCounter} - ${stop.city}`,
+          time: "Intera Giornata",
+          title: `Esplorazione e Punti Chiave di ${stop.city}`,
+          desc: `Visita ai luoghi iconici e attrazioni legate a: ${interests || 'Natura, skyline e cucina locale'}.`,
+          tag: "Esplorazione",
+          color: "pastelPeach"
+        });
+      });
+
+      // Rientro finale
+      dayCounter++;
+      list.push({
+        id: "tr-end",
+        day: `Giorno ${dayCounter} - Rientro`,
+        time: `Prima delle ${eTime}`,
+        title: `Riconsegna Auto / Transfer ➔ ${returnAirport}`,
+        desc: `Arrivo in aeroporto con anticipo per controlli di sicurezza e imbarco sul volo di ritorno.`,
+        tag: "Rientro",
+        color: "pastelBlue",
+        isTransfer: true
+      });
+
+      // Inserisce gli eventi fissati
+      fixedEvents.forEach(ev => {
+        list.push({
+          id: "fix-" + Math.random(),
+          day: ev.day,
           time: ev.time,
           title: ev.title,
           desc: "Orario vincolante già prenotato.",
@@ -659,76 +744,61 @@ Rispondi ESCLUSIVAMENTE con array JSON:
         });
       });
 
-      const iLow = (interests || '').toLowerCase();
-      if (iLow.includes('sherlock') || iLow.includes('harry potter')) {
-        list.push({
-          id: "t-1",
-          day: "Giorno 1",
-          time: `Pomeriggio • 15:00`,
-          title: "Baker Street & Sherlock Holmes Museum",
-          desc: "Visita allo storico 221B e passeggiata nei dintorni di Marylebone.",
-          tag: "Sherlock",
-          color: "pastelLavender",
-          isBooked: false
-        });
-        list.push({
-          id: "t-2",
-          day: "Giorno 1",
-          time: `Tardo Pomeriggio • 17:30`,
-          title: "King's Cross & Binario 9 ¾",
-          desc: "Foto con il carrello magico e souvenir shop Potter.",
-          tag: "Harry Potter",
-          color: "pastelPeach",
-          isBooked: false
-        });
-      } else {
-        list.push({
-          id: "t-gen",
-          day: "Giorno 1",
-          time: `Pomeriggio • ${readyTime}`,
-          title: `Passeggiata nel Cuore di ${dest}`,
-          desc: "Primo contatto con la città partendo dalla zona dell'alloggio.",
-          tag: "Esplorazione",
-          color: "pastelSage",
-          isBooked: false
-        });
-      }
+      return list;
+    }
 
+    function buildSingleCityItinerary(dest, airport, hotel, sTime, eTime, fixedEvents, interests) {
+      const list = [];
       list.push({
-        id: "t-g2-1",
+        id: "tr-arr",
+        day: "Giorno 1",
+        time: `${sTime} - Arrivo`,
+        title: `Arrivo a ${airport} ➔ Check-in a ${hotel || 'Alloggio'}`,
+        desc: "Ritiro valigie, transfer verso il centro e deposito bagagli.",
+        tag: "Transfer & Hotel",
+        color: "pastelBlue",
+        isTransfer: true
+      });
+      list.push({
+        id: "t-1",
+        day: "Giorno 1",
+        time: "Pomeriggio • 15:00",
+        title: `Passeggiata nel Cuore di ${dest}`,
+        desc: `Primo contatto con i quartieri storici e punti panoramici.`,
+        tag: "Scoperta",
+        color: "pastelLavender"
+      });
+      list.push({
+        id: "t-2",
         day: "Giorno 2",
         time: "Mattina • 10:00",
-        title: iLow.includes('harry potter') ? "Warner Bros. Studio Tour London" : "Visita ai Musei & Monumenti",
-        desc: iLow.includes('harry potter') ? "The Making of Harry Potter: set originali e Sala Grande." : "Mattinata culturale e gallerie d'arte.",
-        tag: iLow.includes('harry potter') ? "Harry Potter" : "Cultura",
-        color: "pastelPeach",
-        isBooked: false
+        title: `Attrazione Principale & Fandom a ${dest}`,
+        desc: `Visita tematica dedicata a: ${interests || 'Must iconici e cultura locale'}.`,
+        tag: "Must See",
+        color: "pastelPeach"
       });
-      list.push({
-        id: "t-g2-2",
-        day: "Giorno 2",
-        time: "Pomeriggio • 15:30",
-        title: "Shopping & Mercati Caratteristici",
-        desc: "Passeggiata tra negozietti vintage e bancarelle locali.",
-        tag: "Shopping & Relax",
-        color: "pastelLavender",
-        isBooked: false
-      });
-
-      const [eh, em] = eTime.split(':').map(Number);
-      const leaveH = (eh - 3 + 24) % 24;
-      const leaveTime = `${String(leaveH).padStart(2, '0')}:${String(em).padStart(2, '0')}`;
-
       list.push({
         id: "tr-dep",
         day: "Giorno 3",
-        time: `Dalle ore ${leaveTime}`,
-        title: `Ritiro Bagagli ➔ Transfer verso ${airport}`,
-        desc: `Spostamento in tempo per il volo di rientro delle ${eTime}.`,
+        time: `Prima delle ${eTime}`,
+        title: `Check-out ➔ Transfer verso ${airport}`,
+        desc: `Partenza per l'aeroporto in tempo per il volo di rientro.`,
         tag: "Rientro",
         color: "pastelBlue",
-        isTransfer: true,
-        isBooked: false
+        isTransfer: true
+      });
+
+      fixedEvents.forEach(ev => {
+        list.push({
+          id: "fix-" + Math.random(),
+          day: ev.day,
+          time: ev.time,
+          title: ev.title,
+          desc: "Orario vincolante già prenotato.",
+          tag: "Prenotato",
+          color: "pastelPink",
+          isBooked: true
+        });
       });
 
       return list;
@@ -739,9 +809,6 @@ Rispondi ESCLUSIVAMENTE con array JSON:
       listCont.innerHTML = '';
 
       const uniqueDays = Array.from(new Set(pendingProposal.map(p => p.day)));
-      if (!uniqueDays.includes("Giorno 1")) uniqueDays.unshift("Giorno 1");
-      if (!uniqueDays.includes("Giorno 2")) uniqueDays.push("Giorno 2");
-      if (!uniqueDays.includes("Giorno 3")) uniqueDays.push("Giorno 3");
 
       pendingProposal.forEach((item, index) => {
         const row = document.createElement('div');
@@ -749,7 +816,7 @@ Rispondi ESCLUSIVAMENTE con array JSON:
         
         let label = `<span class="bg-${item.color || 'pastelSage'} px-2 py-0.5 rounded-md font-semibold text-stone-700 text-[10px]">${item.tag}</span>`;
         if (item.isBooked) label = `<span class="bg-pastelPink font-bold text-stone-800 px-2 py-0.5 rounded-md text-[10px]">🎟️ Prenotato</span>`;
-        if (item.isTransfer) label = `<span class="bg-pastelBlue font-semibold text-stone-800 px-2 py-0.5 rounded-md text-[10px]">🚆 Transfer</span>`;
+        if (item.isTransfer) label = `<span class="bg-pastelBlue font-semibold text-stone-800 px-2 py-0.5 rounded-md text-[10px]">🚆 Transfer / Spostamento</span>`;
 
         let dayOptions = uniqueDays.map(d => `<option value="${d}" ${item.day === d ? 'selected' : ''}>${d}</option>`).join('');
 
@@ -815,19 +882,19 @@ Rispondi ESCLUSIVAMENTE con array JSON:
     }
 
     function swapProposalDaysPrompt() {
-      const dayA = prompt("Quale giorno vuoi scambiare? (es. Giorno 1)", "Giorno 1");
+      const dayA = prompt("Quale giorno/tappa vuoi scambiare?", "Giorno 1");
       if (!dayA) return;
-      const dayB = prompt(`Con quale giorno vuoi scambiare ${dayA}? (es. Giorno 2)`, "Giorno 2");
+      const dayB = prompt(`Con quale altro giorno vuoi scambiare?`, "Giorno 2");
       if (!dayB) return;
 
       pendingProposal.forEach(item => {
-        if (item.day === dayA) item.day = "__TEMP__";
+        if (item.day.includes(dayA)) item.day = item.day.replace(dayA, "__TEMP__");
       });
       pendingProposal.forEach(item => {
-        if (item.day === dayB) item.day = dayA;
+        if (item.day.includes(dayB)) item.day = item.day.replace(dayB, dayA);
       });
       pendingProposal.forEach(item => {
-        if (item.day === "__TEMP__") item.day = dayB;
+        if (item.day.includes("__TEMP__")) item.day = item.day.replace("__TEMP__", dayB);
       });
 
       renderProposalList();
