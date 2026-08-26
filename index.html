@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Travel Co-Planner • Pastel Edition</title>
+  <title>Travel Co-Planner • Logistics & Itinerary</title>
   
   <!-- Font morbidi da Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,12 +32,8 @@
     }
   </script>
   <style>
-    body {
-      font-family: 'Quicksand', sans-serif;
-    }
-    h1, h2, h3, h4, .font-title {
-      font-family: 'Comfortaa', cursive, sans-serif;
-    }
+    body { font-family: 'Quicksand', sans-serif; }
+    h1, h2, h3, h4, .font-title { font-family: 'Comfortaa', cursive, sans-serif; }
     @media print {
       .no-print { display: none !important; }
       body { background: white !important; padding: 0 !important; }
@@ -51,7 +47,7 @@
     <!-- Header -->
     <header class="text-center space-y-3">
       <div class="inline-block bg-pastelLavender px-4 py-1.5 rounded-full text-xs font-semibold text-stone-700 shadow-xs">
-        ✨ Travel Organizer Intelligente
+        ✈️ Travel Planner & Logistic Engine
       </div>
       <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-stone-800" id="tripTitle">I Tuoi Prossimi Passi ✈️</h1>
       
@@ -69,97 +65,126 @@
       </div>
     </header>
 
-    <!-- Modulo Configurazione Viaggio (no-print) -->
+    <!-- Modulo Configurazione Viaggio Completo (no-print) -->
     <section class="no-print bg-white/90 backdrop-blur-sm border border-pastelSage/60 p-5 rounded-3xl shadow-sm space-y-4">
       <div class="flex justify-between items-center">
-        <h2 class="text-xs font-bold uppercase tracking-wider text-stone-500">Pianifica Nuovo Viaggio</h2>
+        <h2 class="text-xs font-bold uppercase tracking-wider text-stone-500">1. Parametri di Base</h2>
         <button onclick="toggleApiKeyInput()" class="text-xs text-stone-400 hover:text-stone-600 underline">Chiave Gemini (Opzionale)</button>
       </div>
 
-      <!-- Input Chiave API (nascosto di default) -->
+      <!-- Chiave API -->
       <div id="apiKeySection" class="hidden bg-stone-50 p-3.5 rounded-2xl border border-stone-200">
         <label class="block text-xs font-medium text-stone-600 mb-1">Google Gemini API Key:</label>
-        <input type="password" id="apiKeyInput" placeholder="Incolla la tua chiave API se vuoi chiamate AI live" 
+        <input type="password" id="apiKeyInput" placeholder="Incolla la tua chiave API per generazione live" 
                class="w-full bg-white border border-stone-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelLavender">
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
-          <label class="block text-xs font-semibold text-stone-600 mb-1">Destinazione</label>
-          <input type="text" id="destInput" placeholder="Es. Londra, Tokyo, Edimburgo..." 
+          <label class="block text-xs font-semibold text-stone-600 mb-1">Destinazione (Città)</label>
+          <input type="text" id="destInput" placeholder="Es. Londra, Edimburgo..." 
                  class="w-full bg-pastelSage/20 border border-pastelSage rounded-2xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pastelPink">
         </div>
         <div>
-          <label class="block text-xs font-semibold text-stone-600 mb-1">Esperienza sul posto</label>
+          <label class="block text-xs font-semibold text-stone-600 mb-1">Livello di Esperienza</label>
           <select id="typeInput" class="w-full bg-pastelSage/20 border border-pastelSage rounded-2xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pastelPink">
-            <option value="first">Prima volta (Luoghi iconici & Classici)</option>
+            <option value="first">Prima volta (Classici & Must imperdibili)</option>
             <option value="returning">Ritorno (Angoli pittoreschi & Meno turistici)</option>
           </select>
         </div>
       </div>
 
-      <!-- Date e Orari -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-pastelCream/60 p-3 rounded-2xl border border-pastelSage/40">
-        <div>
-          <label class="block text-xs font-semibold text-stone-600 mb-1">Arrivo sul posto</label>
-          <div class="flex gap-2">
-            <input type="date" id="startDate" class="w-2/3 bg-white border border-pastelSage rounded-xl px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
-            <input type="time" id="startTime" value="10:00" class="w-1/3 bg-white border border-pastelSage rounded-xl px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
+      <!-- LOGISTICA: Voli, Aeroporti e Alloggio -->
+      <div class="bg-pastelCream/80 p-4 rounded-3xl border border-pastelSage/60 space-y-3">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-stone-600">2. Logistica Arrivi & Alloggio</h3>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-stone-500 mb-1">Aeroporto / Stazione di Arrivo</label>
+            <input type="text" id="airportInput" placeholder="Es. Stansted, Gatwick, Heathrow..." 
+                   class="w-full bg-white border border-pastelSage rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-stone-500 mb-1">Dove Alloggi? (Hotel / Zona)</label>
+            <input type="text" id="hotelInput" placeholder="Es. Hotel a Paddington, Airbnb a Camden..." 
+                   class="w-full bg-white border border-pastelSage rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
           </div>
         </div>
-        <div>
-          <label class="block text-xs font-semibold text-stone-600 mb-1">Partenza / Rientro</label>
-          <div class="flex gap-2">
-            <input type="date" id="endDate" class="w-2/3 bg-white border border-pastelSage rounded-xl px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
-            <input type="time" id="endTime" value="18:00" class="w-1/3 bg-white border border-pastelSage rounded-xl px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+          <div>
+            <label class="block text-xs font-medium text-stone-500 mb-1">Atterraggio / Arrivo in loco</label>
+            <div class="flex gap-2">
+              <input type="date" id="startDate" class="w-2/3 bg-white border border-pastelSage rounded-xl px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
+              <input type="time" id="startTime" value="10:00" class="w-1/3 bg-white border border-pastelSage rounded-xl px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-stone-500 mb-1">Volo di Rientro / Partenza</label>
+            <div class="flex gap-2">
+              <input type="date" id="endDate" class="w-2/3 bg-white border border-pastelSage rounded-xl px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
+              <input type="time" id="endTime" value="18:30" class="w-1/3 bg-white border border-pastelSage rounded-xl px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Attività già prenotate -->
-      <div>
-        <label class="block text-xs font-semibold text-stone-600 mb-1">Eventi o Attrazioni già prenotate (Orari vincolati)</label>
-        <textarea id="bookedEventsInput" rows="2" placeholder="Es. Giorno 1: Biglietto Museo alle 11:30 | Giorno 2: Cena a Soho alle 20:00..." 
-                  class="w-full bg-pastelSage/20 border border-pastelSage rounded-2xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink"></textarea>
+      <!-- APPUNTAMENTI E PRENOTAZIONI PRECISE -->
+      <div class="bg-pastelPeach/30 p-4 rounded-3xl border border-pastelPeach space-y-3">
+        <div class="flex justify-between items-center">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-stone-700">3. Appuntamenti & Biglietti Già Fissati</h3>
+          <button onclick="addBookedEventInput()" class="text-xs bg-white text-stone-700 px-3 py-1 rounded-xl font-semibold border border-pastelPeach hover:bg-pastelPeach transition">
+            + Aggiungi Prenotazione
+          </button>
+        </div>
+        <p class="text-[11px] text-stone-500">Aggiungi orari vincolanti (es. Warner Bros Studios, Musical, cene con tavolo prenotato).</p>
+        
+        <div id="bookedEventsList" class="space-y-2">
+          <!-- Righe eventi prenotati -->
+        </div>
       </div>
 
-      <!-- Interessi -->
+      <!-- Interessi e Fandom -->
       <div>
-        <label class="block text-xs font-semibold text-stone-600 mb-1">Interessi, Fandom & Preferenze</label>
-        <input type="text" id="interestsInput" placeholder="Es. Harry Potter, Sherlock, Mercatini vintage, Dark Academia, Pub storici..." 
+        <label class="block text-xs font-semibold text-stone-600 mb-1">4. Temi, Interessi & Fandom</label>
+        <input type="text" id="interestsInput" placeholder="Es. Harry Potter, Sherlock Holmes, Mercati vintage, Pub d'epoca..." 
                class="w-full bg-pastelSage/20 border border-pastelSage rounded-2xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pastelPink">
       </div>
 
       <button id="generateBtn" onclick="requestItineraryProposal()" class="w-full bg-pastelLavender hover:bg-pastelPink text-stone-800 font-semibold py-3 rounded-2xl shadow-xs transition duration-200">
-        ✨ Proponi Mete & Itinerario con AI
+        ✨ Calcola Logistica & Proponi Itinerario
       </button>
     </section>
 
-    <!-- Modal / Box di Revisione e Conferma Proposta AI (no-print) -->
+    <!-- Modal di Revisione, Modifica & Scambio Mete AI (no-print) -->
     <section id="reviewModal" class="hidden no-print bg-white border-2 border-pastelLavender p-5 rounded-3xl shadow-md space-y-4">
-      <div class="flex items-center gap-2">
-        <span class="text-xl">💬</span>
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
         <div>
-          <h3 class="font-bold text-stone-800 text-sm">L'AI ti chiede: "Cosa ne pensi di queste mete?"</h3>
-          <p class="text-xs text-stone-500">Dai un'occhiata alle tappe pensate per i tuoi orari e preferenze prima di confermarle.</p>
+          <h3 class="font-bold text-stone-800 text-sm flex items-center gap-1.5">
+            <span>💬</span> <span>L'AI ti propone queste tappe: puoi modificarle o scambiarle!</span>
+          </h3>
+          <p class="text-xs text-stone-500">Sposta le tappe da un giorno all'altro, modificale o inverti i giorni prima di confermare.</p>
         </div>
+        <button onclick="swapProposalDaysPrompt()" class="text-xs bg-pastelLavender/60 hover:bg-pastelLavender text-stone-700 font-semibold px-3 py-1.5 rounded-xl transition">
+          🔄 Inverti Interi Giorni
+        </button>
       </div>
 
-      <div id="proposalList" class="space-y-2 max-h-60 overflow-y-auto pr-1">
-        <!-- Lista anteprima proposta -->
+      <div id="proposalList" class="space-y-2.5 max-h-80 overflow-y-auto pr-1">
+        <!-- Tappe proposte dinamiche con controlli di modifica/spostamento -->
       </div>
 
       <div class="flex flex-col sm:flex-row gap-2 pt-2 border-t border-stone-100">
         <button onclick="confirmProposal()" class="flex-1 bg-pastelSage hover:bg-emerald-200 text-stone-800 font-semibold py-2.5 rounded-xl text-xs transition">
-          ✅ Perfetto, Conferma e Aggiungi all'Itinerario
+          ✅ Perfetto, Conferma Tutto e Genera Itinerario Ufficiale
         </button>
         <button onclick="cancelProposal()" class="bg-stone-100 hover:bg-stone-200 text-stone-600 font-semibold px-4 py-2.5 rounded-xl text-xs transition">
-          Annulla / Modifica Parametri
+          Annulla Proposta
         </button>
       </div>
     </section>
 
-    <!-- Scheda Itinerario Finale -->
+    <!-- Scheda Programma Ufficiale Condiviso -->
     <section class="space-y-4">
       <div class="flex items-center justify-between px-2">
         <h2 class="text-base sm:text-lg font-bold text-stone-800">Tappe & Programma Ufficiale</h2>
@@ -176,16 +201,18 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'pastel_travel_data_v3';
+    const STORAGE_KEY = 'pastel_travel_data_v5';
 
     let tripData = {
       title: "",
       destination: "",
+      airport: "",
+      hotel: "",
       startDate: "",
       startTime: "10:00",
       endDate: "",
-      endTime: "18:00",
-      bookedEvents: "",
+      endTime: "18:30",
+      fixedEvents: [],
       stops: []
     };
 
@@ -210,6 +237,33 @@
       renderItinerary();
     });
 
+    function addBookedEventInput(dateVal = '', timeVal = '', descVal = '') {
+      const list = document.getElementById('bookedEventsList');
+      const row = document.createElement('div');
+      row.className = "flex gap-2 items-center bg-white p-2 rounded-xl border border-pastelPeach/80 text-xs";
+      row.innerHTML = `
+        <input type="text" placeholder="Giorno (es. Giorno 1)" value="${dateVal}" class="event-day w-1/4 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1 text-xs">
+        <input type="time" value="${timeVal}" class="event-time w-1/4 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1 text-xs">
+        <input type="text" placeholder="Evento (es. Warner Bros Studio, Cena...)" value="${descVal}" class="event-desc flex-1 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1 text-xs">
+        <button onclick="this.parentElement.remove()" class="text-rose-400 hover:text-rose-600 font-bold px-1">✕</button>
+      `;
+      list.appendChild(row);
+    }
+
+    function collectFixedEvents() {
+      const rows = document.querySelectorAll('#bookedEventsList > div');
+      const list = [];
+      rows.forEach(r => {
+        const day = r.querySelector('.event-day').value.trim();
+        const time = r.querySelector('.event-time').value;
+        const desc = r.querySelector('.event-desc').value.trim();
+        if (desc) {
+          list.push({ day: day || 'Giorno 1', time: time || 'Orario fisso', title: desc, isBooked: true });
+        }
+      });
+      return list;
+    }
+
     function renderItinerary() {
       const titleElem = document.getElementById('tripTitle');
       if (tripData.destination && tripData.destination.trim() !== "") {
@@ -225,7 +279,7 @@
         container.innerHTML = `
           <div class="bg-white/80 p-8 rounded-3xl text-center space-y-2 border border-dashed border-pastelSage">
             <p class="text-stone-600 font-medium text-sm">Nessuna tappa inserita per ora 🌸</p>
-            <p class="text-xs text-stone-400">Inserisci orari, prenotazioni e preferenze sopra e clicca su "Proponi Mete & Itinerario con AI".</p>
+            <p class="text-xs text-stone-400">Compila i dati logistici sopra, poi clicca su "Calcola Logistica & Proponi Itinerario".</p>
           </div>
         `;
         return;
@@ -249,15 +303,17 @@
           const card = document.createElement('div');
           card.className = "print-card bg-white border border-stone-100 p-4 rounded-3xl shadow-xs space-y-1.5 transition";
           
-          const isBooked = stop.isBooked ? `<span class="bg-rose-100 text-rose-700 px-2.5 py-0.5 rounded-full font-bold text-[10px]">🎟️ Prenotato</span>` : '';
+          let badge = `<span class="bg-${stop.color || 'pastelSage'} px-3 py-0.5 rounded-full font-semibold text-stone-700 text-[11px]">${stop.tag || 'Tappa'}</span>`;
+          if (stop.isBooked) {
+            badge = `<span class="bg-pastelPink text-stone-800 px-3 py-0.5 rounded-full font-bold text-[11px]">🎟️ Prenotato</span>`;
+          } else if (stop.isTransfer) {
+            badge = `<span class="bg-pastelBlue text-stone-800 px-3 py-0.5 rounded-full font-semibold text-[11px]">🚆 Transfer</span>`;
+          }
 
           card.innerHTML = `
             <div class="flex justify-between items-center text-xs">
-              <div class="flex items-center gap-2">
-                <span class="font-semibold text-stone-400 uppercase tracking-wide">${stop.time}</span>
-                ${isBooked}
-              </div>
-              <span class="bg-${stop.color || 'pastelSage'} px-3 py-0.5 rounded-full font-semibold text-stone-700 text-[11px]">${stop.tag || 'Tappa'}</span>
+              <span class="font-semibold text-stone-400 uppercase tracking-wide">${stop.time}</span>
+              ${badge}
             </div>
             <h4 class="font-bold text-stone-800 text-base leading-snug">${stop.title}</h4>
             <p class="text-xs text-stone-600 leading-relaxed">${stop.desc}</p>
@@ -278,24 +334,27 @@
     }
 
     function resetAllData() {
-      if (confirm("Sei sicuro di voler resettare completamente l'itinerario? Tutti i dati e le tappe correnti verranno cancellati.")) {
+      if (confirm("Vuoi cancellare tutto e ricominciare da zero?")) {
         localStorage.removeItem(STORAGE_KEY);
         tripData = {
           title: "",
           destination: "",
+          airport: "",
+          hotel: "",
           startDate: "",
           startTime: "10:00",
           endDate: "",
-          endTime: "18:00",
-          bookedEvents: "",
+          endTime: "18:30",
+          fixedEvents: [],
           stops: []
         };
-        // Reset form
         document.getElementById('destInput').value = '';
+        document.getElementById('airportInput').value = '';
+        document.getElementById('hotelInput').value = '';
         document.getElementById('startDate').value = '';
         document.getElementById('endDate').value = '';
-        document.getElementById('bookedEventsInput').value = '';
         document.getElementById('interestsInput').value = '';
+        document.getElementById('bookedEventsList').innerHTML = '';
         cancelProposal();
         renderItinerary();
       }
@@ -306,20 +365,20 @@
       const shareUrl = window.location.origin + window.location.pathname + '?trip=' + encoded;
       
       navigator.clipboard.writeText(shareUrl).then(() => {
-        alert("✨ Link copiato negli appunti!\n\nInvialo ai tuoi compagni di viaggio per vedere e modificare insieme l'itinerario.");
+        alert("✨ Link copiato negli appunti!\n\nInvialo ai tuoi compagni di viaggio per aprire e modificare insieme l'itinerario.");
       }).catch(() => {
-        prompt("Copia questo link e invialo al tuo gruppo:", shareUrl);
+        prompt("Copia questo link:", shareUrl);
       });
     }
 
     function addNewStopPrompt() {
-      const day = prompt("Giorno (es. Giorno 1, Giorno 2):", "Giorno 1");
+      const day = prompt("Giorno (es. Giorno 1):", "Giorno 1");
       if (!day) return;
-      const time = prompt("Fascia oraria / Orario preciso (es. Mattina • 10:30):", "Pomeriggio • 15:00");
-      const title = prompt("Nome del luogo / Tappa:");
+      const time = prompt("Orario / Fascia:", "Pomeriggio • 15:00");
+      const title = prompt("Nome Luogo / Attività:");
       if (!title) return;
-      const desc = prompt("Dettagli o note logistiche:");
-      const tag = prompt("Tag (es. Harry Potter, Sherlock, Food):", "Visita");
+      const desc = prompt("Descrizione / Note:");
+      const tag = prompt("Tag tematico:", "Visita");
 
       tripData.stops.push({
         id: "stop-" + Date.now(),
@@ -328,7 +387,7 @@
         title: title,
         desc: desc || "",
         tag: tag || "Tappa",
-        color: "pastelBlue",
+        color: "pastelSage",
         isBooked: false
       });
       renderItinerary();
@@ -336,7 +395,7 @@
 
     function editStop(index) {
       const stop = tripData.stops[index];
-      const newTitle = prompt("Modifica titolo tappa:", stop.title);
+      const newTitle = prompt("Modifica titolo:", stop.title);
       if (newTitle !== null) stop.title = newTitle;
       const newDesc = prompt("Modifica descrizione / note:", stop.desc);
       if (newDesc !== null) stop.desc = newDesc;
@@ -346,7 +405,7 @@
     }
 
     function deleteStop(index) {
-      if (confirm("Vuoi rimuovere questa tappa dall'itinerario?")) {
+      if (confirm("Rimuovere questa tappa?")) {
         tripData.stops.splice(index, 1);
         renderItinerary();
       }
@@ -357,142 +416,298 @@
     }
 
     function toggleApiKeyInput() {
-      const el = document.getElementById('apiKeySection');
-      el.classList.toggle('hidden');
+      document.getElementById('apiKeySection').classList.toggle('hidden');
     }
 
-    // Richiesta proposta (Anteprima AI)
+    // Richiesta Proposta con calcolo transfer
     async function requestItineraryProposal() {
       const dest = document.getElementById('destInput').value.trim();
       const expType = document.getElementById('typeInput').value;
+      const airport = document.getElementById('airportInput').value.trim() || 'Aeroporto Principale';
+      const hotel = document.getElementById('hotelInput').value.trim() || 'Alloggio in centro';
       const sDate = document.getElementById('startDate').value;
       const sTime = document.getElementById('startTime').value || '10:00';
       const eDate = document.getElementById('endDate').value;
-      const eTime = document.getElementById('endTime').value || '18:00';
-      const booked = document.getElementById('bookedEventsInput').value.trim();
+      const eTime = document.getElementById('endTime').value || '18:30';
       const interests = document.getElementById('interestsInput').value.trim();
       const apiKey = document.getElementById('apiKeyInput').value.trim();
+      const fixedEvents = collectFixedEvents();
       const btn = document.getElementById('generateBtn');
 
       if (!dest) {
-        alert("Inserisci una destinazione prima di continuare!");
+        alert("Inserisci almeno la destinazione prima di procedere!");
         return;
       }
 
-      btn.innerText = "⏳ Elaborazione mete su misura...";
+      btn.innerText = "⏳ Calcolo tempi transfer e orari...";
       btn.disabled = true;
 
       tripData.destination = dest;
       tripData.title = `Viaggio a ${dest}`;
+      tripData.airport = airport;
+      tripData.hotel = hotel;
       tripData.startDate = sDate;
       tripData.startTime = sTime;
       tripData.endDate = eDate;
       tripData.endTime = eTime;
-      tripData.bookedEvents = booked;
+      tripData.fixedEvents = fixedEvents;
 
       if (apiKey) {
         try {
-          const promptText = `Pianifica un itinerario per ${dest}.
-Esperienza: ${expType === 'first' ? 'Prima volta (must imperdibili)' : 'Ritorno (luoghi caratteristici, insoliti)'}.
-Arrivo sul posto: ${sDate ? sDate : 'Giorno 1'} alle ore ${sTime} (non pianificare prima di quest'ora!).
-Partenza/Rientro: ${eDate ? eDate : 'Ultimo giorno'} alle ore ${eTime} (concludi prima di quest'ora!).
-Attività già prenotate vincolanti: ${booked || 'Nessuna'}.
-Interessi tematici: ${interests || 'Generale'}.
+          const promptText = `Crea un itinerario a ${dest}.
+Aeroporto: ${airport}.
+Alloggio: ${hotel}.
+Arrivo volo: ore ${sTime}. Includi transfer verso l'hotel + check-in prima di iniziare.
+Rientro volo: ore ${eTime}. Concludi con transfer verso l'aeroporto.
+Prenotazioni fisse obbligatorie: ${JSON.stringify(fixedEvents)}.
+Livello esperienza: ${expType}.
+Interessi: ${interests}.
 
-Rispondi ESCLUSIVAMENTE con un array JSON di oggetti con questa struttura esatta:
+Rispondi ESCLUSIVAMENTE con un array JSON di oggetti strutturato così:
 [
-  { "id": "1", "day": "Giorno 1", "time": "Mattina • 10:30", "title": "Nome Luogo", "desc": "Descrizione logistica e metro", "tag": "Tema", "color": "pastelLavender", "isBooked": false }
-]
-Colori ammessi: pastelLavender, pastelPeach, pastelSage, pastelBlue, pastelPink.`;
+  { "id": "1", "day": "Giorno 1", "time": "10:00 - 11:30", "title": "Transfer Aeroporto -> Hotel", "desc": "Spostamento e deposito bagagli", "tag": "Logistica", "color": "pastelBlue", "isTransfer": true, "isBooked": false }
+]`;
 
           const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: promptText }] }]
-            })
+            body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
           });
 
           const data = await response.json();
           const rawText = data.candidates[0].content.parts[0].text;
-          const jsonStr = rawText.replace(/```json|```/g, '').trim();
-          pendingProposal = JSON.parse(jsonStr);
+          pendingProposal = JSON.parse(rawText.replace(/```json|```/g, '').trim());
         } catch (err) {
-          console.warn("Chiamata AI fallita, utilizzo fallback intelligente:", err);
-          pendingProposal = generateSmartFallback(dest, sTime, eTime, booked, interests);
+          console.warn("AI fallita, fallback:", err);
+          pendingProposal = buildSmartLogistics(dest, airport, hotel, sTime, eTime, fixedEvents, interests);
         }
       } else {
-        pendingProposal = generateSmartFallback(dest, sTime, eTime, booked, interests);
+        pendingProposal = buildSmartLogistics(dest, airport, hotel, sTime, eTime, fixedEvents, interests);
       }
 
-      btn.innerText = "✨ Proponi Mete & Itinerario con AI";
+      btn.innerText = "✨ Calcola Logistica & Proponi Itinerario";
       btn.disabled = false;
-      showProposalModal(pendingProposal);
+      renderProposalList();
+      showProposalModal();
     }
 
-    function generateSmartFallback(dest, sTime, eTime, booked, interests) {
-      const dLower = dest.toLowerCase();
-      const iLower = (interests || '').toLowerCase();
+    function buildSmartLogistics(dest, airport, hotel, sTime, eTime, fixedEvents, interests) {
       const list = [];
+      const [sh, sm] = sTime.split(':').map(Number);
+      const readyH = (sh + 2) % 24;
+      const readyTime = `${String(readyH).padStart(2, '0')}:${String(sm).padStart(2, '0')}`;
 
-      // Aggiungi subito l'evento prenotato se presente
-      if (booked) {
+      // Transfer Arrivo Giorno 1
+      list.push({
+        id: "tr-arr",
+        day: "Giorno 1",
+        time: `${sTime} - ${readyTime}`,
+        title: `Arrivo a ${airport} ➔ Check-in a ${hotel}`,
+        desc: "Ritiro bagagli, navetta/treno verso il centro e deposito valigie.",
+        tag: "Transfer & Hotel",
+        color: "pastelBlue",
+        isTransfer: true,
+        isBooked: false
+      });
+
+      // Eventi prenotati del Giorno 1
+      fixedEvents.filter(ev => ev.day === 'Giorno 1').forEach(ev => {
         list.push({
-          id: "bk-1",
+          id: "fix-" + Date.now() + Math.random(),
           day: "Giorno 1",
-          time: "Orario Prenotato",
-          title: booked.split('|')[0] || booked,
-          desc: "Attività con orario fissato dall'utente.",
+          time: ev.time,
+          title: ev.title,
+          desc: "Orario vincolante già prenotato.",
           tag: "Prenotato",
           color: "pastelPink",
           isBooked: true
         });
+      });
+
+      const iLow = (interests || '').toLowerCase();
+      if (iLow.includes('sherlock') || iLow.includes('harry potter')) {
+        list.push({
+          id: "t-1",
+          day: "Giorno 1",
+          time: `Pomeriggio • 15:00`,
+          title: "Baker Street & Sherlock Holmes Museum",
+          desc: "Visita allo storico 221B e passeggiata nei dintorni di Marylebone.",
+          tag: "Sherlock",
+          color: "pastelLavender",
+          isBooked: false
+        });
+        list.push({
+          id: "t-2",
+          day: "Giorno 1",
+          time: `Tardo Pomeriggio • 17:30`,
+          title: "King's Cross & Binario 9 ¾",
+          desc: "Foto con il carrello magico e souvenir shop Potter.",
+          tag: "Harry Potter",
+          color: "pastelPeach",
+          isBooked: false
+        });
+      } else {
+        list.push({
+          id: "t-gen",
+          day: "Giorno 1",
+          time: `Pomeriggio • ${readyTime}`,
+          title: `Passeggiata nel Cuore di ${dest}`,
+          desc: "Primo contatto con la città partendo dalla zona dell'alloggio.",
+          tag: "Esplorazione",
+          color: "pastelSage",
+          isBooked: false
+        });
       }
 
-      if (dLower.includes('londra') || dLower.includes('london')) {
-        if (iLower.includes('harry potter') || iLower.includes('sherlock')) {
-          list.push(
-            { id: "1", day: "Giorno 1", time: `Dalle ${sTime} (Arrivo)`, title: "Baker Street & Sherlock Holmes Museum", desc: "Visita al 221B, sosta alle vetrine vittoriane e libreria Daunt Books.", tag: "Sherlock", color: "pastelLavender", isBooked: false },
-            { id: "2", day: "Giorno 1", time: "Pomeriggio • 15:00", title: "King's Cross Station & Platform 9 ¾", desc: "Foto con la sciarpa al carrello incastrato e giro allo shop Potter.", tag: "Harry Potter", color: "pastelPeach", isBooked: false },
-            { id: "3", day: "Giorno 2", time: "Mattina • 10:00", title: "Warner Bros. Studio Tour London", desc: "Making of Harry Potter: Sala Grande, Diagon Alley e Binario dell'Espresso.", tag: "Harry Potter", color: "pastelPeach", isBooked: false },
-            { id: "4", day: "Giorno 2", time: `Pomeriggio (fino alle ${eTime})`, title: "Covent Garden, Cecil Court & Seven Dials", desc: "Passeggiata nel vicolo delle librerie antiche (ispirazione per Diagon Alley).", tag: "Atmosfera", color: "pastelSage", isBooked: false }
-          );
-        } else {
-          list.push(
-            { id: "1", day: "Giorno 1", time: `Dalle ${sTime}`, title: "Westminster, Big Ben & Tamigi", desc: "Passeggiata iconica tra le rive del Tamigi e il Parlamento.", tag: "Classico", color: "pastelLavender", isBooked: false },
-            { id: "2", day: "Giorno 1", time: `Pomeriggio (entro le ${eTime})`, title: "Covent Garden & Neal's Yard", desc: "Passeggiata nell'iconico cortile colorato e negozietti artigianali.", tag: "Passeggiata", color: "pastelPeach", isBooked: false }
-          );
-        }
-      } else {
-        list.push(
-          { id: "1", day: "Giorno 1", time: `Dalle ${sTime}`, title: `Esplorazione Centro Storico di ${dest}`, desc: "Passeggiata introduttiva tra i vicoli principali e scorci panoramici.", tag: "Scoperta", color: "pastelLavender", isBooked: false },
-          { id: "2", day: "Giorno 1", time: `Pomeriggio (entro le ${eTime})`, title: "Tappa tematica su misura", desc: `Esperienza dedicata a: ${interests || 'Atmosfera e cultura locale'}.`, tag: "Esperienza", color: "pastelPeach", isBooked: false }
-        );
-      }
+      // Giorno 2
+      list.push({
+        id: "t-g2-1",
+        day: "Giorno 2",
+        time: "Mattina • 10:00",
+        title: iLow.includes('harry potter') ? "Warner Bros. Studio Tour London" : "Visita ai Musei & Monumenti",
+        desc: iLow.includes('harry potter') ? "The Making of Harry Potter: set originali e Sala Grande." : "Mattinata culturale e gallerie d'arte.",
+        tag: iLow.includes('harry potter') ? "Harry Potter" : "Cultura",
+        color: "pastelPeach",
+        isBooked: false
+      });
+      list.push({
+        id: "t-g2-2",
+        day: "Giorno 2",
+        time: "Pomeriggio • 15:30",
+        title: "Shopping & Mercati Caratteristici",
+        desc: "Passeggiata tra negozietti vintage e bancarelle locali.",
+        tag: "Shopping & Relax",
+        color: "pastelLavender",
+        isBooked: false
+      });
+
+      // Transfer Rientro Ultimo Giorno
+      const [eh, em] = eTime.split(':').map(Number);
+      const leaveH = (eh - 3 + 24) % 24;
+      const leaveTime = `${String(leaveH).padStart(2, '0')}:${String(em).padStart(2, '0')}`;
+
+      list.push({
+        id: "tr-dep",
+        day: "Giorno 3",
+        time: `Dalle ore ${leaveTime}`,
+        title: `Ritiro Bagagli ➔ Transfer verso ${airport}`,
+        desc: `Spostamento in tempo per il volo di rientro delle ${eTime}.`,
+        tag: "Rientro",
+        color: "pastelBlue",
+        isTransfer: true,
+        isBooked: false
+      });
+
       return list;
     }
 
-    function showProposalModal(proposal) {
-      const modal = document.getElementById('reviewModal');
+    // Renderizza la lista modificabile e interscambiabile nell'anteprima
+    function renderProposalList() {
       const listCont = document.getElementById('proposalList');
       listCont.innerHTML = '';
 
-      proposal.forEach((item) => {
+      // Raccoglie i giorni unici presenti
+      const uniqueDays = Array.from(new Set(pendingProposal.map(p => p.day)));
+      if (!uniqueDays.includes("Giorno 1")) uniqueDays.unshift("Giorno 1");
+      if (!uniqueDays.includes("Giorno 2")) uniqueDays.push("Giorno 2");
+      if (!uniqueDays.includes("Giorno 3")) uniqueDays.push("Giorno 3");
+
+      pendingProposal.forEach((item, index) => {
         const row = document.createElement('div');
-        row.className = "p-3 rounded-2xl bg-stone-50 border border-stone-200 text-xs flex justify-between items-center gap-2";
+        row.className = "p-3 rounded-2xl bg-stone-50 border border-stone-200 text-xs flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2";
+        
+        let label = `<span class="bg-${item.color || 'pastelSage'} px-2 py-0.5 rounded-md font-semibold text-stone-700 text-[10px]">${item.tag}</span>`;
+        if (item.isBooked) label = `<span class="bg-pastelPink font-bold text-stone-800 px-2 py-0.5 rounded-md text-[10px]">🎟️ Prenotato</span>`;
+        if (item.isTransfer) label = `<span class="bg-pastelBlue font-semibold text-stone-800 px-2 py-0.5 rounded-md text-[10px]">🚆 Transfer</span>`;
+
+        // Genera opzioni select per il giorno
+        let dayOptions = uniqueDays.map(d => `<option value="${d}" ${item.day === d ? 'selected' : ''}>${d}</option>`).join('');
+
         row.innerHTML = `
-          <div>
-            <span class="font-bold text-stone-500 uppercase text-[10px]">${item.day} • ${item.time}</span>
-            <div class="font-bold text-stone-800">${item.title}</div>
+          <div class="flex-1 space-y-1">
+            <div class="flex items-center gap-2">
+              <select onchange="changeProposalDay(${index}, this.value)" class="bg-white border border-stone-300 rounded-lg px-2 py-0.5 text-[11px] font-bold text-stone-700">
+                ${dayOptions}
+              </select>
+              <span class="font-semibold text-stone-400 uppercase text-[10px]">${item.time}</span>
+              ${label}
+            </div>
+            <div class="font-bold text-stone-800 text-xs">${item.title}</div>
             <div class="text-stone-500 text-[11px]">${item.desc}</div>
           </div>
-          <span class="bg-${item.color} px-2 py-0.5 rounded-md font-semibold text-stone-700 whitespace-nowrap text-[10px]">${item.tag}</span>
+          
+          <!-- Controlli Modifica / Sposta / Elimina -->
+          <div class="flex items-center gap-1.5 self-end sm:self-center">
+            <button onclick="moveProposalItem(${index}, -1)" title="Sposta Su" class="bg-white border border-stone-200 p-1.5 rounded-lg hover:bg-stone-100 text-stone-600">⬆️</button>
+            <button onclick="moveProposalItem(${index}, 1)" title="Sposta Giù" class="bg-white border border-stone-200 p-1.5 rounded-lg hover:bg-stone-100 text-stone-600">⬇️</button>
+            <button onclick="editProposalItem(${index})" title="Modifica Testo" class="bg-white border border-stone-200 px-2 py-1 rounded-lg hover:bg-stone-100 text-stone-600 font-semibold text-[11px]">✏️</button>
+            <button onclick="removeProposalItem(${index})" title="Rimuovi Tappa" class="bg-white border border-rose-200 px-2 py-1 rounded-lg hover:bg-rose-50 text-rose-500 font-bold text-[11px]">✕</button>
+          </div>
         `;
         listCont.appendChild(row);
       });
+    }
 
+    function showProposalModal() {
+      const modal = document.getElementById('reviewModal');
       modal.classList.remove('hidden');
       modal.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function changeProposalDay(index, newDay) {
+      pendingProposal[index].day = newDay;
+      renderProposalList();
+    }
+
+    function moveProposalItem(index, direction) {
+      const targetIndex = index + direction;
+      if (targetIndex >= 0 && targetIndex < pendingProposal.length) {
+        const temp = pendingProposal[index];
+        pendingProposal[index] = pendingProposal[targetIndex];
+        pendingProposal[targetIndex] = temp;
+        renderProposalList();
+      }
+    }
+
+    function editProposalItem(index) {
+      const item = pendingProposal[index];
+      const newTitle = prompt("Modifica titolo tappa:", item.title);
+      if (newTitle !== null) item.title = newTitle;
+      const newTime = prompt("Modifica orario / fascia:", item.time);
+      if (newTime !== null) item.time = newTime;
+      const newDesc = prompt("Modifica descrizione / note:", item.desc);
+      if (newDesc !== null) item.desc = newDesc;
+      renderProposalList();
+    }
+
+    function removeProposalItem(index) {
+      pendingProposal.splice(index, 1);
+      renderProposalList();
+    }
+
+    function swapProposalDaysPrompt() {
+      const dayA = prompt("Quale giorno vuoi scambiare? (es. Giorno 1)", "Giorno 1");
+      if (!dayA) return;
+      const dayB = prompt(`Con quale giorno vuoi scambiare ${dayA}? (es. Giorno 2)`, "Giorno 2");
+      if (!dayB) return;
+
+      pendingProposal.forEach(item => {
+        if (item.day === dayA) {
+          item.day = "__TEMP__";
+        }
+      });
+      pendingProposal.forEach(item => {
+        if (item.day === dayB) {
+          item.day = dayA;
+        }
+      });
+      pendingProposal.forEach(item => {
+        if (item.day === "__TEMP__") {
+          item.day = dayB;
+        }
+      });
+
+      renderProposalList();
     }
 
     function confirmProposal() {
