@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Travel Co-Planner • Multi-Stop & Road Trip Edition</title>
+  <title>Travel Co-Planner • Pastel Dashboard</title>
   
   <!-- Font morbidi da Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,206 +32,213 @@
     }
   </script>
   <style>
-    body { font-family: 'Quicksand', sans-serif; }
+    body { font-family: 'Quicksand', sans-serif; background-color: #faf9f6; }
     h1, h2, h3, h4, .font-title { font-family: 'Comfortaa', cursive, sans-serif; }
+    
+    /* Scrollbar personalizzata pastello */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #faf9f6; }
+    ::-webkit-scrollbar-thumb { background: #dcd6f7; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #ffcad4; }
+
     @media print {
       .no-print { display: none !important; }
       body { background: white !important; padding: 0 !important; }
+      .print-area { width: 100% !important; overflow: visible !important; height: auto !important; }
       .print-card { break-inside: avoid; border: 1px solid #e5e7eb !important; box-shadow: none !important; }
     }
   </style>
 </head>
-<body class="bg-pastelCream text-stone-700 min-h-screen p-4 sm:p-8 font-sans antialiased">
-  <div class="max-w-2xl mx-auto space-y-6">
+<body class="text-stone-700 min-h-screen antialiased flex flex-col">
 
-    <!-- BARRA GESTIONE MULTI-VIAGGI (no-print) -->
-    <div class="no-print bg-white/90 backdrop-blur-sm border border-pastelLavender p-3 sm:p-4 rounded-3xl shadow-xs space-y-2">
-      <div class="flex items-center justify-between">
-        <span class="text-xs font-bold uppercase tracking-wider text-stone-500 flex items-center gap-1.5">
-          <span>🧳</span> <span>I Miei Viaggi Salvati</span>
-        </span>
-        <button onclick="createNewTrip()" class="bg-pastelLavender hover:bg-pastelPink text-stone-800 font-bold px-3 py-1 rounded-xl text-xs transition shadow-xs">
-          + Nuovo Viaggio
-        </button>
-      </div>
-      
-      <!-- Selettore Viaggio Attivo & Azioni Rapide -->
-      <div class="flex flex-wrap items-center gap-2">
-        <select id="tripSelector" onchange="switchTrip(this.value)" class="flex-1 bg-stone-50 border border-pastelSage rounded-2xl px-3 py-2 text-xs font-semibold text-stone-700 focus:outline-none focus:ring-2 focus:ring-pastelPink">
-          <!-- Popolato dinamicamente -->
-        </select>
-        <button onclick="duplicateCurrentTrip()" title="Duplica Viaggio" class="bg-white border border-stone-200 px-2.5 py-2 rounded-xl text-xs text-stone-600 hover:bg-stone-50 transition">
-          📑 Duplica
-        </button>
-        <button onclick="deleteCurrentTrip()" title="Elimina questo Viaggio" class="bg-white border border-rose-200 px-2.5 py-2 rounded-xl text-xs text-rose-500 hover:bg-rose-50 transition">
-          🗑️ Elimina
-        </button>
+  <!-- TOP HEADER MOBILE / LOGO -->
+  <header class="no-print bg-white/80 backdrop-blur-sm border-b border-pastelSage/40 px-4 py-3 sticky top-0 z-30 flex items-center justify-between shadow-2xs">
+    <div class="flex items-center gap-2.5">
+      <span class="text-xl">✈️</span>
+      <div>
+        <h1 class="font-title text-base sm:text-lg font-bold text-stone-800 leading-tight">Travel Co-Planner</h1>
+        <p class="text-[10px] text-stone-400 font-medium">Dashboard intelligente per viaggiatori</p>
       </div>
     </div>
+    
+    <div class="flex items-center gap-2">
+      <button onclick="shareTrip()" class="flex items-center gap-1.5 bg-pastelLavender hover:bg-pastelPink text-stone-800 px-3 py-1.5 rounded-xl text-xs font-semibold transition shadow-2xs">
+        🔗 <span class="hidden sm:inline">Condividi Link</span>
+      </button>
+      <button onclick="exportPDF()" class="flex items-center gap-1.5 bg-white border border-pastelPeach hover:bg-pastelPeach/50 text-stone-700 px-3 py-1.5 rounded-xl text-xs font-semibold transition shadow-2xs">
+        📄 <span class="hidden sm:inline">PDF</span>
+      </button>
+    </div>
+  </header>
 
-    <!-- Header Viaggio Attivo -->
-    <header class="text-center space-y-3">
-      <div class="inline-block bg-pastelPeach px-4 py-1.5 rounded-full text-xs font-semibold text-stone-700 shadow-xs">
-        🚗 Multi-Stop & Road Trip Organizer
-      </div>
-      <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-stone-800" id="tripTitle">I Tuoi Prossimi Passi ✈️</h1>
-      
-      <!-- Toolbar Azioni Condivisione / PDF -->
-      <div class="no-print flex flex-wrap items-center justify-center gap-2 pt-1">
-        <button onclick="shareTrip()" class="flex items-center gap-1.5 bg-white border border-pastelSage px-3.5 py-1.5 rounded-2xl text-xs font-semibold hover:bg-pastelSage/40 transition shadow-xs">
-          🔗 <span>Copia Link di Questo Viaggio</span>
-        </button>
-        <button onclick="exportPDF()" class="flex items-center gap-1.5 bg-white border border-pastelPeach px-3.5 py-1.5 rounded-2xl text-xs font-semibold hover:bg-pastelPeach/50 transition shadow-xs">
-          📄 <span>Scarica PDF</span>
-        </button>
-      </div>
-    </header>
+  <!-- CONTAINER DASHBOARD A 3 COLONNE (Desktop: 3 col, Mobile: Stack fluida) -->
+  <main class="flex-1 w-full max-w-[1600px] mx-auto p-3 sm:p-5 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
 
-    <!-- Modulo Configurazione Viaggio Completo (no-print) -->
-    <section class="no-print bg-white/90 backdrop-blur-sm border border-pastelSage/60 p-5 rounded-3xl shadow-sm space-y-4">
-      
-      <!-- Selettore Tipologia (Singola Città vs Multi-Tappa / Road Trip) -->
-      <div class="flex justify-between items-center bg-stone-50 p-3 rounded-2xl border border-stone-200">
-        <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-stone-600">Tipologia Viaggio</label>
-          <p class="text-[11px] text-stone-400">Scegli se è una sola città o un itinerario con più tappe/spostamenti</p>
-        </div>
-        <select id="modeSelect" onchange="toggleTripMode(this.value)" class="bg-white border border-pastelSage rounded-xl px-3 py-1.5 text-xs font-bold text-stone-700 focus:outline-none">
+    <!-- COLONNA 1 (SX): I MIEI VIAGGI SALVATI (lg:col-span-3) -->
+    <aside class="no-print lg:col-span-3 bg-white/90 backdrop-blur-sm border border-pastelLavender/80 p-4 rounded-3xl shadow-xs space-y-3 lg:sticky lg:top-20 lg:max-h-[calc(100vh-100px)] flex flex-col">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-bold uppercase tracking-wider text-stone-500 flex items-center gap-1.5">
+          <span>🧳</span> <span>I Miei Viaggi</span>
+        </span>
+        <button onclick="createNewTrip()" class="bg-pastelLavender hover:bg-pastelPink text-stone-800 font-bold px-2.5 py-1 rounded-xl text-xs transition shadow-2xs">
+          + Nuovo
+        </button>
+      </div>
+
+      <!-- Lista viaggi scrollabile a card -->
+      <div id="tripsListContainer" class="space-y-2 flex-1 overflow-y-auto pr-1">
+        <!-- Render dinamico card viaggi -->
+      </div>
+    </aside>
+
+
+    <!-- COLONNA 2 (CENTRO): GESTORE PARAMETRI & MODIFICHE LIVE (lg:col-span-4) -->
+    <section class="no-print lg:col-span-4 bg-white/90 backdrop-blur-sm border border-pastelSage/70 p-4 sm:p-5 rounded-3xl shadow-xs space-y-4 lg:sticky lg:top-20 lg:max-h-[calc(100vh-100px)] overflow-y-auto pr-2">
+      <div class="flex justify-between items-center border-b border-stone-100 pb-2">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-stone-600 flex items-center gap-1.5">
+          <span>⚙️</span> <span>Info di Base & Logistica</span>
+        </h2>
+        <span class="text-[10px] bg-pastelSage/40 text-stone-600 px-2 py-0.5 rounded-md font-semibold">Auto-save attivo</span>
+      </div>
+
+      <!-- Tipologia Viaggio -->
+      <div class="space-y-1">
+        <label class="block text-[11px] font-bold uppercase tracking-wider text-stone-500">Tipologia</label>
+        <select id="modeSelect" onchange="toggleTripMode(this.value)" class="w-full bg-stone-50 border border-pastelSage rounded-xl px-3 py-2 text-xs font-semibold text-stone-700 focus:outline-none focus:ring-2 focus:ring-pastelPink">
           <option value="single">🏙️ Città Singola (es. Londra)</option>
           <option value="multistop">🚗 Multi-Tappa / Road Trip (es. USA Coast-to-Coast)</option>
         </select>
       </div>
 
-      <!-- SEZIONE 1: Città Singola -->
-      <div id="singleCitySection" class="space-y-3">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-stone-600 mb-1">Destinazione</label>
-            <input type="text" id="destInput" placeholder="Es. Londra, Tokyo..." 
-                   class="w-full bg-pastelSage/20 border border-pastelSage rounded-2xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pastelPink">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-stone-600 mb-1">Alloggio / Hotel</label>
-            <input type="text" id="hotelInput" placeholder="Es. Hotel a Paddington..." 
-                   class="w-full bg-pastelSage/20 border border-pastelSage rounded-2xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pastelPink">
-          </div>
+      <!-- SEZIONE CITTÀ SINGOLA -->
+      <div id="singleCitySection" class="space-y-2.5">
+        <div>
+          <label class="block text-xs font-semibold text-stone-600 mb-1">Destinazione</label>
+          <input type="text" id="destInput" oninput="updateTripField('destination', this.value)" placeholder="Es. Londra, Edimburgo..." 
+                 class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-stone-600 mb-1">Alloggio / Hotel</label>
+          <input type="text" id="hotelInput" oninput="updateTripField('hotel', this.value)" placeholder="Es. Hotel a Paddington..." 
+                 class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
         </div>
       </div>
 
-      <!-- SEZIONE 1 BIS: Percorso Multi-Tappa (Road Trip) -->
-      <div id="multiStopSection" class="hidden space-y-3 bg-pastelCream/80 p-4 rounded-3xl border border-pastelSage/60">
+      <!-- SEZIONE MULTI-TAPPA / ROAD TRIP -->
+      <div id="multiStopSection" class="hidden space-y-2 bg-pastelCream/80 p-3 rounded-2xl border border-pastelSage/60">
         <div class="flex justify-between items-center">
-          <div>
-            <h3 class="text-xs font-bold uppercase tracking-wider text-stone-700">Tappe del Percorso (Itinerario Itinerante)</h3>
-            <p class="text-[11px] text-stone-500">Aggiungi in ordine le città o parchi dove dormirai e come ti sposti.</p>
-          </div>
-          <button onclick="addStopRouteRow()" class="text-xs bg-white text-stone-700 px-3 py-1 rounded-xl font-semibold border border-pastelSage hover:bg-pastelSage transition">
-            + Aggiungi Città/Tappa
+          <span class="text-xs font-bold uppercase tracking-wide text-stone-700">Tappe Percorso</span>
+          <button onclick="addStopRouteRow()" class="text-[11px] bg-white text-stone-700 px-2 py-0.5 rounded-lg font-semibold border border-pastelSage hover:bg-pastelSage transition">
+            + Tappa
           </button>
         </div>
-
-        <div id="routeStopsList" class="space-y-2">
+        <div id="routeStopsList" class="space-y-1.5 max-h-44 overflow-y-auto pr-1">
           <!-- Righe dinamiche tappe itinerario -->
         </div>
       </div>
 
-      <!-- LOGISTICA VOLI DI ARRIVO E RIENTRO -->
-      <div class="bg-stone-50/80 p-4 rounded-3xl border border-stone-200 space-y-3">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-stone-600">Logistica Voli Principali</h3>
-        
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <!-- LOGISTICA VOLI & ORARI (Sempre modificabile in caso di ritardi) -->
+      <div class="bg-pastelCream/60 p-3.5 rounded-2xl border border-pastelSage/50 space-y-3">
+        <span class="text-xs font-bold uppercase tracking-wide text-stone-700 flex items-center gap-1">
+          <span>✈️</span> <span>Voli & Orari Operativi</span>
+        </span>
+
+        <div class="space-y-2 text-xs">
           <div>
-            <label class="block text-xs font-medium text-stone-500 mb-1">Volo di Andata (Arrivo)</label>
-            <input type="text" id="airportInput" placeholder="Aeroporto (es. JFK New York)" 
-                   class="w-full bg-white border border-stone-200 rounded-xl px-3 py-1.5 text-xs mb-1.5 focus:outline-none">
-            <div class="flex gap-2">
-              <input type="date" id="startDate" class="w-2/3 bg-white border border-stone-200 rounded-xl px-2.5 py-1 text-xs">
-              <input type="time" id="startTime" value="10:00" class="w-1/3 bg-white border border-stone-200 rounded-xl px-2 py-1 text-xs">
+            <label class="block text-[11px] text-stone-500 font-medium mb-0.5">Arrivo / Andata</label>
+            <input type="text" id="airportInput" oninput="updateTripField('airport', this.value)" placeholder="Aeroporto (es. JFK o Stansted)" 
+                   class="w-full bg-white border border-stone-200 rounded-lg px-2.5 py-1 text-xs mb-1">
+            <div class="flex gap-1.5">
+              <input type="date" id="startDate" onchange="updateTripField('startDate', this.value)" class="w-2/3 bg-white border border-stone-200 rounded-lg px-2 py-1 text-xs">
+              <input type="time" id="startTime" onchange="updateTripField('startTime', this.value)" value="10:00" class="w-1/3 bg-white border border-stone-200 rounded-lg px-1.5 py-1 text-xs">
             </div>
           </div>
+
           <div>
-            <label class="block text-xs font-medium text-stone-500 mb-1">Volo di Ritorno (Partenza)</label>
-            <input type="text" id="returnAirportInput" placeholder="Aeroporto (es. LAX Los Angeles o JFK)" 
-                   class="w-full bg-white border border-stone-200 rounded-xl px-3 py-1.5 text-xs mb-1.5 focus:outline-none">
-            <div class="flex gap-2">
-              <input type="date" id="endDate" class="w-2/3 bg-white border border-stone-200 rounded-xl px-2.5 py-1 text-xs">
-              <input type="time" id="endTime" value="18:30" class="w-1/3 bg-white border border-stone-200 rounded-xl px-2 py-1 text-xs">
+            <label class="block text-[11px] text-stone-500 font-medium mb-0.5">Rientro / Partenza</label>
+            <input type="text" id="returnAirportInput" oninput="updateTripField('returnAirport', this.value)" placeholder="Aeroporto Ritorno (es. LAX)" 
+                   class="w-full bg-white border border-stone-200 rounded-lg px-2.5 py-1 text-xs mb-1">
+            <div class="flex gap-1.5">
+              <input type="date" id="endDate" onchange="updateTripField('endDate', this.value)" class="w-2/3 bg-white border border-stone-200 rounded-lg px-2 py-1 text-xs">
+              <input type="time" id="endTime" onchange="updateTripField('endTime', this.value)" value="18:30" class="w-1/3 bg-white border border-stone-200 rounded-lg px-1.5 py-1 text-xs">
             </div>
           </div>
         </div>
       </div>
 
-      <!-- APPUNTAMENTI E PRENOTAZIONI PRECISE -->
-      <div class="bg-pastelPeach/30 p-4 rounded-3xl border border-pastelPeach space-y-3">
+      <!-- BIGLIETTI E ORARI FISSI -->
+      <div class="bg-pastelPeach/30 p-3 rounded-2xl border border-pastelPeach space-y-2">
         <div class="flex justify-between items-center">
-          <h3 class="text-xs font-bold uppercase tracking-wider text-stone-700">Appuntamenti & Biglietti Già Fissati</h3>
-          <button onclick="addBookedEventInput()" class="text-xs bg-white text-stone-700 px-3 py-1 rounded-xl font-semibold border border-pastelPeach hover:bg-pastelPeach transition">
-            + Aggiungi Biglietto / Evento
+          <span class="text-xs font-bold uppercase tracking-wide text-stone-700">🎟️ Eventi & Biglietti Fissi</span>
+          <button onclick="addBookedEventInput()" class="text-[11px] bg-white text-stone-700 px-2 py-0.5 rounded-lg font-semibold border border-pastelPeach hover:bg-pastelPeach transition">
+            + Biglietto
           </button>
         </div>
-        <div id="bookedEventsList" class="space-y-2">
-          <!-- Righe eventi prenotati -->
+        <div id="bookedEventsList" class="space-y-1.5 max-h-36 overflow-y-auto pr-1">
+          <!-- Righe prenotazioni -->
         </div>
       </div>
 
-      <!-- Interessi e Fandom -->
+      <!-- INTERESSI -->
       <div>
-        <label class="block text-xs font-semibold text-stone-600 mb-1">Temi, Interessi & Tappe da non perdere</label>
-        <input type="text" id="interestsInput" placeholder="Es. Grand Canyon, Route 66, Parchi naturali, Musei, Serie TV, Cibo locale..." 
-               class="w-full bg-pastelSage/20 border border-pastelSage rounded-2xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pastelPink">
+        <label class="block text-xs font-semibold text-stone-600 mb-1">Interessi & Luoghi Chiave</label>
+        <input type="text" id="interestsInput" oninput="updateTripField('interests', this.value)" placeholder="Es. Harry Potter, Sherlock, Parchi, Cibo tipico..." 
+               class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
       </div>
 
-      <button id="generateBtn" onclick="requestItineraryProposal()" class="w-full bg-pastelLavender hover:bg-pastelPink text-stone-800 font-semibold py-3 rounded-2xl shadow-xs transition duration-200">
-        ✨ Calcola Percorso & Proponi Itinerario Completo
+      <!-- PULSANTE CALCOLO / RIGENERAZIONE ITINERARIO -->
+      <button id="generateBtn" onclick="requestItineraryProposal()" class="w-full bg-pastelLavender hover:bg-pastelPink text-stone-800 font-bold py-2.5 rounded-2xl shadow-xs transition duration-200 text-xs">
+        ✨ Ricalcola Itinerario & Tappe
       </button>
     </section>
 
-    <!-- Modal di Revisione & Scambio Tappe AI (no-print) -->
-    <section id="reviewModal" class="hidden no-print bg-white border-2 border-pastelLavender p-5 rounded-3xl shadow-md space-y-4">
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+
+    <!-- COLONNA 3 (DX): ITINERARIO UFFICIALE & ANTEPRIMA AI (lg:col-span-5) -->
+    <section class="lg:col-span-5 space-y-4 print-area">
+      
+      <!-- Titolo Viaggio & Controlli -->
+      <div class="bg-white/80 p-4 rounded-3xl border border-pastelSage/60 shadow-xs flex justify-between items-center">
         <div>
-          <h3 class="font-bold text-stone-800 text-sm flex items-center gap-1.5">
-            <span>💬</span> <span>L'AI ha calcolato tappe e trasferimenti!</span>
-          </h3>
-          <p class="text-xs text-stone-500">Puoi modificare le tappe, spostarle o confermarle per generare l'itinerario finale.</p>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-stone-400">Itinerario Attivo</span>
+          <h2 class="text-lg font-bold text-stone-800" id="tripTitle">I Tuoi Prossimi Passi ✈️</h2>
         </div>
-        <button onclick="swapProposalDaysPrompt()" class="text-xs bg-pastelLavender/60 hover:bg-pastelLavender text-stone-700 font-semibold px-3 py-1.5 rounded-xl transition">
-          🔄 Inverti Giorni
+        <button onclick="addNewStopPrompt()" class="no-print text-xs bg-pastelPeach hover:bg-pastelPink text-stone-800 font-semibold px-3 py-1.5 rounded-xl transition shadow-2xs">
+          + Aggiungi Tappa
         </button>
       </div>
 
-      <div id="proposalList" class="space-y-2.5 max-h-80 overflow-y-auto pr-1">
-        <!-- Tappe proposte dinamiche -->
+      <!-- MODAL DI REVISIONE & SCAMBIO GIORNI (Se attivo) -->
+      <div id="reviewModal" class="hidden no-print bg-white border-2 border-pastelLavender p-4 rounded-3xl shadow-sm space-y-3">
+        <div class="flex justify-between items-center">
+          <div class="flex items-center gap-1.5">
+            <span>💬</span>
+            <h3 class="font-bold text-stone-800 text-xs">Anteprima Mete: Sposta o Conferma!</h3>
+          </div>
+          <button onclick="swapProposalDaysPrompt()" class="text-[10px] bg-pastelLavender/60 text-stone-700 font-bold px-2 py-1 rounded-lg">
+            🔄 Inverti Giorni
+          </button>
+        </div>
+        <div id="proposalList" class="space-y-2 max-h-64 overflow-y-auto pr-1"></div>
+        <div class="flex gap-2 pt-1">
+          <button onclick="confirmProposal()" class="flex-1 bg-pastelSage hover:bg-emerald-200 text-stone-800 font-bold py-2 rounded-xl text-xs transition">
+            ✅ Conferma e Inserisci
+          </button>
+          <button onclick="cancelProposal()" class="bg-stone-100 hover:bg-stone-200 text-stone-600 px-3 py-2 rounded-xl text-xs font-semibold transition">
+            Annulla
+          </button>
+        </div>
       </div>
 
-      <div class="flex flex-col sm:flex-row gap-2 pt-2 border-t border-stone-100">
-        <button onclick="confirmProposal()" class="flex-1 bg-pastelSage hover:bg-emerald-200 text-stone-800 font-semibold py-2.5 rounded-xl text-xs transition">
-          ✅ Perfetto, Conferma Tutto e Genera Itinerario Ufficiale
-        </button>
-        <button onclick="cancelProposal()" class="bg-stone-100 hover:bg-stone-200 text-stone-600 font-semibold px-4 py-2.5 rounded-xl text-xs transition">
-          Annulla Proposta
-        </button>
-      </div>
-    </section>
-
-    <!-- Scheda Programma Ufficiale Condiviso -->
-    <section class="space-y-4">
-      <div class="flex items-center justify-between px-2">
-        <h2 class="text-base sm:text-lg font-bold text-stone-800">Tappe & Programma Ufficiale</h2>
-        <button onclick="addNewStopPrompt()" class="no-print text-xs bg-pastelPeach hover:bg-pastelPink text-stone-800 font-semibold px-3.5 py-1.5 rounded-2xl transition shadow-xs">
-          + Aggiungi Tappa Manuale
-        </button>
-      </div>
-
+      <!-- CONTENITORE ITINERARIO SCORREVOLE -->
       <div id="itineraryContainer" class="space-y-3">
         <!-- Render dinamico tappe -->
       </div>
     </section>
 
-  </div>
+  </main>
 
   <script>
-    const STORAGE_KEY = 'pastel_trips_library_v2';
+    const STORAGE_KEY = 'pastel_trips_library_v3';
 
     let allTrips = {};
     let currentTripId = null;
@@ -241,13 +248,12 @@
       return {
         id: "trip-" + Date.now(),
         title: title,
-        mode: "single", // "single" o "multistop"
+        mode: "single",
         destination: "",
         hotel: "",
         routeStops: [
-          { city: "New York", nights: "3 notti", stay: "Hotel a Manhattan", transport: "Volo di arrivo" },
-          { city: "Chicago", nights: "2 notti", stay: "Hotel Downtown", transport: "Treno / Volo interno" },
-          { city: "Los Angeles", nights: "3 notti", stay: "Airbnb a Santa Monica", transport: "Auto a noleggio" }
+          { city: "New York", nights: "3 notti", stay: "Hotel Manhattan", transport: "Volo" },
+          { city: "Los Angeles", nights: "3 notti", stay: "Hotel LA", transport: "Volo / Auto" }
         ],
         airport: "",
         returnAirport: "",
@@ -276,12 +282,15 @@
             saveAllTripsToStorage();
           }
         } catch (e) {
-          console.error("Errore lettura link condiviso:", e);
+          console.error("Errore lettura link:", e);
         }
       }
 
       if (Object.keys(allTrips).length === 0) {
-        const defaultTrip = createEmptyTrip("Viaggio USA On The Road");
+        const defaultTrip = createEmptyTrip("Londra con Vale");
+        defaultTrip.destination = "Londra";
+        defaultTrip.hotel = "Hotel a Paddington";
+        defaultTrip.airport = "Stansted";
         allTrips[defaultTrip.id] = defaultTrip;
         currentTripId = defaultTrip.id;
         saveAllTripsToStorage();
@@ -290,7 +299,7 @@
       }
 
       syncFormWithCurrentTrip();
-      updateTripSelectorUI();
+      renderTripsSidebar();
       renderItinerary();
     });
 
@@ -309,6 +318,109 @@
       return allTrips[currentTripId] || null;
     }
 
+    function updateTripField(field, value) {
+      const trip = getCurrentTrip();
+      if (!trip) return;
+      trip[field] = value;
+      if (field === 'destination') {
+        trip.title = value ? `Viaggio a ${value}` : 'Nuovo Viaggio';
+      }
+      saveAllTripsToStorage();
+      renderTripsSidebar();
+      document.getElementById('tripTitle').innerText = trip.title;
+    }
+
+    // Renderizza la Sidebar dei Viaggi (Colonna di Sinistra)
+    function renderTripsSidebar() {
+      const cont = document.getElementById('tripsListContainer');
+      cont.innerHTML = '';
+
+      for (const [id, trip] of Object.entries(allTrips)) {
+        const isActive = id === currentTripId;
+        const card = document.createElement('div');
+        card.className = `p-3 rounded-2xl transition border text-xs cursor-pointer flex justify-between items-center ${
+          isActive 
+            ? 'bg-pastelLavender/40 border-pastelLavender text-stone-800 shadow-2xs font-semibold' 
+            : 'bg-white hover:bg-stone-50 border-stone-100 text-stone-600'
+        }`;
+        
+        const badge = trip.mode === 'multistop' 
+          ? `<span class="text-[9px] bg-pastelBlue px-2 py-0.5 rounded-full font-bold">🚗 Road Trip</span>` 
+          : `<span class="text-[9px] bg-pastelSage px-2 py-0.5 rounded-full font-bold">🏙️ Singola</span>`;
+
+        card.onclick = () => switchTrip(id);
+        card.innerHTML = `
+          <div class="space-y-0.5 flex-1 pr-2">
+            <div class="flex items-center gap-1.5">
+              ${badge}
+            </div>
+            <div class="font-bold text-stone-800 truncate">${trip.destination || trip.title}</div>
+          </div>
+          <div class="flex items-center gap-1">
+            <button onclick="event.stopPropagation(); duplicateTrip('${id}')" title="Duplica" class="p-1 text-stone-400 hover:text-stone-700">📑</button>
+            <button onclick="event.stopPropagation(); deleteTrip('${id}')" title="Elimina" class="p-1 text-rose-300 hover:text-rose-600">🗑️</button>
+          </div>
+        `;
+        cont.appendChild(card);
+      }
+    }
+
+    function switchTrip(id) {
+      if (allTrips[id]) {
+        currentTripId = id;
+        syncFormWithCurrentTrip();
+        renderTripsSidebar();
+        renderItinerary();
+        cancelProposal();
+      }
+    }
+
+    function createNewTrip() {
+      const name = prompt("Nome del nuovo viaggio:", "Nuovo Viaggio");
+      if (!name) return;
+      const trip = createEmptyTrip(name);
+      allTrips[trip.id] = trip;
+      currentTripId = trip.id;
+      saveAllTripsToStorage();
+      syncFormWithCurrentTrip();
+      renderTripsSidebar();
+      renderItinerary();
+      cancelProposal();
+    }
+
+    function duplicateTrip(id) {
+      const src = allTrips[id];
+      if (!src) return;
+      const dup = JSON.parse(JSON.stringify(src));
+      dup.id = "trip-" + Date.now();
+      dup.title = src.title + " (Copia)";
+      allTrips[dup.id] = dup;
+      currentTripId = dup.id;
+      saveAllTripsToStorage();
+      syncFormWithCurrentTrip();
+      renderTripsSidebar();
+      renderItinerary();
+    }
+
+    function deleteTrip(id) {
+      if (confirm("Vuoi eliminare definitivamente questo viaggio?")) {
+        delete allTrips[id];
+        const keys = Object.keys(allTrips);
+        if (keys.length === 0) {
+          const fresh = createEmptyTrip("Nuovo Viaggio");
+          allTrips[fresh.id] = fresh;
+          currentTripId = fresh.id;
+        } else {
+          currentTripId = keys[0];
+        }
+        saveAllTripsToStorage();
+        syncFormWithCurrentTrip();
+        renderTripsSidebar();
+        renderItinerary();
+        cancelProposal();
+      }
+    }
+
     function toggleTripMode(mode) {
       const singleSec = document.getElementById('singleCitySection');
       const multiSec = document.getElementById('multiStopSection');
@@ -319,78 +431,7 @@
         singleSec.classList.remove('hidden');
         multiSec.classList.add('hidden');
       }
-      const trip = getCurrentTrip();
-      if (trip) trip.mode = mode;
-    }
-
-    function updateTripSelectorUI() {
-      const selector = document.getElementById('tripSelector');
-      selector.innerHTML = '';
-      for (const [id, trip] of Object.entries(allTrips)) {
-        const opt = document.createElement('option');
-        opt.value = id;
-        const icon = trip.mode === 'multistop' ? '🚗' : '🏙️';
-        opt.textContent = `${icon} ${trip.destination || trip.title}`;
-        if (id === currentTripId) opt.selected = true;
-        selector.appendChild(opt);
-      }
-    }
-
-    function switchTrip(selectedId) {
-      if (allTrips[selectedId]) {
-        currentTripId = selectedId;
-        syncFormWithCurrentTrip();
-        renderItinerary();
-        cancelProposal();
-      }
-    }
-
-    function createNewTrip() {
-      const name = prompt("Nome del nuovo viaggio (es. USA Coast to Coast, Giappone):", "Nuovo Viaggio");
-      if (!name) return;
-      const newTrip = createEmptyTrip(name);
-      allTrips[newTrip.id] = newTrip;
-      currentTripId = newTrip.id;
-      saveAllTripsToStorage();
-      updateTripSelectorUI();
-      syncFormWithCurrentTrip();
-      renderItinerary();
-      cancelProposal();
-    }
-
-    function duplicateCurrentTrip() {
-      const current = getCurrentTrip();
-      if (!current) return;
-      const dup = JSON.parse(JSON.stringify(current));
-      dup.id = "trip-" + Date.now();
-      dup.title = current.title + " (Copia)";
-      allTrips[dup.id] = dup;
-      currentTripId = dup.id;
-      saveAllTripsToStorage();
-      updateTripSelectorUI();
-      syncFormWithCurrentTrip();
-      renderItinerary();
-    }
-
-    function deleteCurrentTrip() {
-      const current = getCurrentTrip();
-      if (!current) return;
-      if (confirm(`Eliminare definitivamente "${current.destination || current.title}"?`)) {
-        delete allTrips[currentTripId];
-        const remainingKeys = Object.keys(allTrips);
-        if (remainingKeys.length === 0) {
-          const fresh = createEmptyTrip("Nuovo Viaggio");
-          allTrips[fresh.id] = fresh;
-          currentTripId = fresh.id;
-        } else {
-          currentTripId = remainingKeys[0];
-        }
-        saveAllTripsToStorage();
-        updateTripSelectorUI();
-        syncFormWithCurrentTrip();
-        renderItinerary();
-        cancelProposal();
-      }
+      updateTripField('mode', mode);
     }
 
     function syncFormWithCurrentTrip() {
@@ -410,36 +451,35 @@
       document.getElementById('endTime').value = trip.endTime || '18:30';
       document.getElementById('interestsInput').value = trip.interests || '';
 
-      // Popola tappe percorso multi-stop
       const routeCont = document.getElementById('routeStopsList');
       routeCont.innerHTML = '';
       if (trip.routeStops && trip.routeStops.length > 0) {
         trip.routeStops.forEach(st => addStopRouteRow(st.city, st.nights, st.stay, st.transport));
-      } else {
-        addStopRouteRow("New York", "3 notti", "Hotel Manhattan", "Volo");
-        addStopRouteRow("Los Angeles", "3 notti", "Hotel LA", "Volo Interno / Auto");
       }
 
-      // Popola eventi fissati
       const bookedCont = document.getElementById('bookedEventsList');
       bookedCont.innerHTML = '';
       if (trip.fixedEvents && trip.fixedEvents.length > 0) {
         trip.fixedEvents.forEach(ev => addBookedEventInput(ev.day, ev.time, ev.title));
       }
+
+      document.getElementById('tripTitle').innerText = trip.destination ? `Viaggio a ${trip.destination}` : trip.title;
     }
 
-    function addStopRouteRow(city = '', nights = '2 notti', stay = '', transport = 'Auto a noleggio') {
+    function addStopRouteRow(city = '', nights = '2 notti', stay = '', transport = 'Auto') {
       const list = document.getElementById('routeStopsList');
       const row = document.createElement('div');
-      row.className = "flex flex-col sm:flex-row gap-2 items-start sm:items-center bg-white p-3 rounded-2xl border border-pastelSage text-xs";
+      row.className = "flex flex-col gap-1.5 bg-white p-2.5 rounded-xl border border-pastelSage text-xs";
       row.innerHTML = `
-        <div class="flex-1 w-full grid grid-cols-2 sm:grid-cols-4 gap-2">
-          <input type="text" placeholder="Città / Parco (es. New York)" value="${city}" class="route-city bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-1.5 text-xs font-semibold">
-          <input type="text" placeholder="Permanenza (es. 3 notti)" value="${nights}" class="route-nights bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-1.5 text-xs">
-          <input type="text" placeholder="Alloggio (Hotel / Airbnb)" value="${stay}" class="route-stay bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-1.5 text-xs">
-          <input type="text" placeholder="Mezzo (Auto, Volo, Treno)" value="${transport}" class="route-transport bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-1.5 text-xs">
+        <div class="grid grid-cols-2 gap-1.5">
+          <input type="text" placeholder="Città / Parco" value="${city}" class="route-city bg-stone-50 border border-stone-200 rounded-lg px-2 py-1 text-[11px] font-semibold">
+          <input type="text" placeholder="Permanenza" value="${nights}" class="route-nights bg-stone-50 border border-stone-200 rounded-lg px-2 py-1 text-[11px]">
         </div>
-        <button onclick="this.parentElement.remove()" class="self-end sm:self-center text-rose-400 hover:text-rose-600 font-bold px-2 py-1">✕</button>
+        <div class="flex gap-1.5 items-center">
+          <input type="text" placeholder="Alloggio" value="${stay}" class="route-stay flex-1 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1 text-[11px]">
+          <input type="text" placeholder="Mezzo" value="${transport}" class="route-transport w-1/3 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1 text-[11px]">
+          <button onclick="this.parentElement.parentElement.remove()" class="text-rose-400 hover:text-rose-600 font-bold px-1">✕</button>
+        </div>
       `;
       list.appendChild(row);
     }
@@ -460,11 +500,11 @@
     function addBookedEventInput(dateVal = '', timeVal = '', descVal = '') {
       const list = document.getElementById('bookedEventsList');
       const row = document.createElement('div');
-      row.className = "flex gap-2 items-center bg-white p-2 rounded-xl border border-pastelPeach/80 text-xs";
+      row.className = "flex gap-1.5 items-center bg-white p-1.5 rounded-xl border border-pastelPeach/80 text-xs";
       row.innerHTML = `
-        <input type="text" placeholder="Giorno (es. Giorno 1 o NY Giorno 2)" value="${dateVal}" class="event-day w-1/3 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1 text-xs">
-        <input type="time" value="${timeVal}" class="event-time w-1/4 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1 text-xs">
-        <input type="text" placeholder="Evento / Biglietto" value="${descVal}" class="event-desc flex-1 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1 text-xs">
+        <input type="text" placeholder="Giorno" value="${dateVal}" class="event-day w-1/4 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1 text-[11px]">
+        <input type="time" value="${timeVal}" class="event-time w-1/4 bg-stone-50 border border-stone-200 rounded-lg px-1.5 py-1 text-[11px]">
+        <input type="text" placeholder="Biglietto / Evento" value="${descVal}" class="event-desc flex-1 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1 text-[11px]">
         <button onclick="this.parentElement.remove()" class="text-rose-400 hover:text-rose-600 font-bold px-1">✕</button>
       `;
       list.appendChild(row);
@@ -486,21 +526,14 @@
       const trip = getCurrentTrip();
       if (!trip) return;
 
-      const titleElem = document.getElementById('tripTitle');
-      if (trip.destination && trip.destination.trim() !== "") {
-        titleElem.innerText = trip.title || `Viaggio a ${trip.destination}`;
-      } else {
-        titleElem.innerText = "I Tuoi Prossimi Passi ✈️";
-      }
-
       const container = document.getElementById('itineraryContainer');
       container.innerHTML = '';
 
       if (!trip.stops || trip.stops.length === 0) {
         container.innerHTML = `
           <div class="bg-white/80 p-8 rounded-3xl text-center space-y-2 border border-dashed border-pastelSage">
-            <p class="text-stone-600 font-medium text-sm">Nessuna tappa inserita in questo itinerario 🌸</p>
-            <p class="text-xs text-stone-400">Configura le tappe sopra e clicca su "Calcola Percorso & Proponi Itinerario Completo".</p>
+            <p class="text-stone-600 font-semibold text-sm">Nessuna tappa inserita in questo viaggio 🌸</p>
+            <p class="text-xs text-stone-400">Clicca su "Ricalcola Itinerario" o usa "+ Aggiungi Tappa".</p>
           </div>
         `;
         return;
@@ -516,26 +549,26 @@
       for (const [dayName, stops] of Object.entries(daysMap)) {
         const dayHeader = document.createElement('div');
         dayHeader.className = "pt-3 pb-1 flex items-center gap-2";
-        dayHeader.innerHTML = `<span class="h-2.5 w-2.5 rounded-full bg-pastelPink"></span><h3 class="text-sm font-bold uppercase tracking-wider text-stone-600">${dayName}</h3>`;
+        dayHeader.innerHTML = `<span class="h-2 w-2 rounded-full bg-pastelPink"></span><h3 class="text-xs font-bold uppercase tracking-wider text-stone-600">${dayName}</h3>`;
         container.appendChild(dayHeader);
 
         stops.forEach((stop) => {
           const originalIndex = trip.stops.findIndex(s => s.id === stop.id);
           const card = document.createElement('div');
-          card.className = "print-card bg-white border border-stone-100 p-4 rounded-3xl shadow-xs space-y-1.5 transition";
+          card.className = "print-card bg-white border border-stone-100 p-3.5 rounded-2xl shadow-2xs space-y-1 transition";
           
-          let badge = `<span class="bg-${stop.color || 'pastelSage'} px-3 py-0.5 rounded-full font-semibold text-stone-700 text-[11px]">${stop.tag || 'Tappa'}</span>`;
-          if (stop.isBooked) badge = `<span class="bg-pastelPink text-stone-800 px-3 py-0.5 rounded-full font-bold text-[11px]">🎟️ Prenotato</span>`;
-          if (stop.isTransfer) badge = `<span class="bg-pastelBlue text-stone-800 px-3 py-0.5 rounded-full font-semibold text-[11px]">🚆 Transfer / Guida</span>`;
+          let badge = `<span class="bg-${stop.color || 'pastelSage'} px-2.5 py-0.5 rounded-full font-semibold text-stone-700 text-[10px]">${stop.tag || 'Tappa'}</span>`;
+          if (stop.isBooked) badge = `<span class="bg-pastelPink text-stone-800 px-2.5 py-0.5 rounded-full font-bold text-[10px]">🎟️ Prenotato</span>`;
+          if (stop.isTransfer) badge = `<span class="bg-pastelBlue text-stone-800 px-2.5 py-0.5 rounded-full font-semibold text-[10px]">🚆 Transfer / Spostamento</span>`;
 
           card.innerHTML = `
             <div class="flex justify-between items-center text-xs">
-              <span class="font-semibold text-stone-400 uppercase tracking-wide">${stop.time}</span>
+              <span class="font-semibold text-stone-400 uppercase tracking-wide text-[10px]">${stop.time}</span>
               ${badge}
             </div>
-            <h4 class="font-bold text-stone-800 text-base leading-snug">${stop.title}</h4>
+            <h4 class="font-bold text-stone-800 text-sm leading-snug">${stop.title}</h4>
             <p class="text-xs text-stone-600 leading-relaxed">${stop.desc}</p>
-            <div class="no-print flex justify-end gap-3 pt-2 border-t border-stone-50 text-xs">
+            <div class="no-print flex justify-end gap-2.5 pt-1.5 border-t border-stone-50 text-[11px]">
               <button onclick="editStop(${originalIndex})" class="text-stone-500 hover:text-stone-800 font-semibold">✏️ Modifica</button>
               <button onclick="deleteStop(${originalIndex})" class="text-rose-400 hover:text-rose-600 font-semibold">🗑️ Elimina</button>
             </div>
@@ -543,8 +576,6 @@
           container.appendChild(card);
         });
       }
-
-      saveAllTripsToStorage();
     }
 
     function shareTrip() {
@@ -563,7 +594,7 @@
     function addNewStopPrompt() {
       const trip = getCurrentTrip();
       if (!trip) return;
-      const day = prompt("Giorno (es. Giorno 1 - New York):", "Giorno 1");
+      const day = prompt("Giorno (es. Giorno 1):", "Giorno 1");
       if (!day) return;
       const time = prompt("Orario / Fascia:", "Pomeriggio • 15:00");
       const title = prompt("Nome Luogo / Attività:");
@@ -581,6 +612,7 @@
         color: "pastelSage",
         isBooked: false
       });
+      saveAllTripsToStorage();
       renderItinerary();
     }
 
@@ -594,6 +626,7 @@
       if (newDesc !== null) stop.desc = newDesc;
       const newTime = prompt("Modifica orario:", stop.time);
       if (newTime !== null) stop.time = newTime;
+      saveAllTripsToStorage();
       renderItinerary();
     }
 
@@ -602,6 +635,7 @@
       if (!trip) return;
       if (confirm("Rimuovere questa tappa?")) {
         trip.stops.splice(index, 1);
+        saveAllTripsToStorage();
         renderItinerary();
       }
     }
@@ -610,67 +644,37 @@
       window.print();
     }
 
-    // Richiesta Calcolo Proposta Itinerario
+    // Calcolo Proposte Itinerario
     async function requestItineraryProposal() {
       const trip = getCurrentTrip();
       if (!trip) return;
 
       const mode = document.getElementById('modeSelect').value;
       const dest = document.getElementById('destInput').value.trim();
-      const airport = document.getElementById('airportInput').value.trim() || 'Aeroporto di Partenza';
+      const airport = document.getElementById('airportInput').value.trim() || 'Aeroporto Partenza';
       const returnAirport = document.getElementById('returnAirportInput').value.trim() || airport;
-      const sDate = document.getElementById('startDate').value;
       const sTime = document.getElementById('startTime').value || '10:00';
-      const eDate = document.getElementById('endDate').value;
       const eTime = document.getElementById('endTime').value || '18:30';
       const interests = document.getElementById('interestsInput').value.trim();
       const fixedEvents = collectFixedEvents();
       const routeStops = collectRouteStops();
-      const btn = document.getElementById('generateBtn');
 
-      trip.mode = mode;
-      trip.startDate = sDate;
-      trip.startTime = sTime;
-      trip.endDate = eDate;
-      trip.endTime = eTime;
-      trip.airport = airport;
-      trip.returnAirport = returnAirport;
-      trip.interests = interests;
-      trip.fixedEvents = fixedEvents;
       trip.routeStops = routeStops;
+      trip.fixedEvents = fixedEvents;
 
-      if (mode === 'multistop') {
-        trip.destination = routeStops.map(s => s.city).join(" ➔ ") || "Coast-to-Coast USA";
-        trip.title = `Road Trip: ${trip.destination}`;
-      } else {
-        trip.destination = dest || "Nuova Meta";
-        trip.title = `Viaggio a ${trip.destination}`;
-        trip.hotel = document.getElementById('hotelInput').value.trim();
-      }
-
-      updateTripSelectorUI();
-      btn.innerText = "⏳ Calcolo tappe e trasferimenti...";
-      btn.disabled = true;
-
-      // Generazione percorso Multi-Tappa o Singola Città
       if (mode === 'multistop') {
         pendingProposal = buildMultiStopItinerary(routeStops, airport, returnAirport, sTime, eTime, fixedEvents, interests);
       } else {
         pendingProposal = buildSingleCityItinerary(dest, airport, trip.hotel, sTime, eTime, fixedEvents, interests);
       }
 
-      btn.innerText = "✨ Calcola Percorso & Proponi Itinerario Completo";
-      btn.disabled = false;
       renderProposalList();
       showProposalModal();
     }
 
-    // Costruttore Road Trip Multi-Tappa
     function buildMultiStopItinerary(routeStops, airport, returnAirport, sTime, eTime, fixedEvents, interests) {
       const list = [];
       let dayCounter = 1;
-
-      // Arrivo iniziale
       const firstCity = routeStops[0] ? routeStops[0].city : "Prima Tappa";
       const firstStay = routeStops[0] ? routeStops[0].stay : "Alloggio";
 
@@ -679,65 +683,57 @@
         day: `Giorno ${dayCounter} - ${firstCity}`,
         time: `${sTime} - Arrivo`,
         title: `Atterraggio a ${airport} ➔ Check-in a ${firstStay}`,
-        desc: "Ritiro bagagli, eventuale ritiro auto a noleggio o transfer e sistemazione in hotel.",
-        tag: "Arrivo & Logistica",
+        desc: "Ritiro bagagli, eventuale ritiro auto a noleggio e arrivo in alloggio.",
+        tag: "Arrivo",
         color: "pastelBlue",
         isTransfer: true
       });
 
-      // Tappe cittadine per ogni destinazione del Road Trip
       routeStops.forEach((stop, sIdx) => {
-        const isFirst = sIdx === 0;
-        const isLast = sIdx === routeStops.length - 1;
-
-        if (!isFirst) {
+        if (sIdx > 0) {
           dayCounter++;
           list.push({
             id: `tr-move-${sIdx}`,
             day: `Giorno ${dayCounter} - Verso ${stop.city}`,
-            time: "Mattina / Pomeriggio",
-            title: `Trasferimento verso ${stop.city} (${stop.transport || 'Auto/Guida'})`,
-            desc: `Spostamento panoramico con soste lungo il tragitto. Arrivo e check-in presso ${stop.stay || 'Alloggio'}.`,
+            time: "Trasferimento",
+            title: `Spostamento verso ${stop.city} (${stop.transport || 'Auto'})`,
+            desc: `Viaggio panoramico e check-in presso ${stop.stay || 'Alloggio'}.`,
             tag: "On The Road",
             color: "pastelBlue",
             isTransfer: true
           });
         }
-
-        // Esplorazione della città/parco
         dayCounter++;
         list.push({
           id: `stop-exp-${sIdx}`,
           day: `Giorno ${dayCounter} - ${stop.city}`,
           time: "Intera Giornata",
-          title: `Esplorazione e Punti Chiave di ${stop.city}`,
-          desc: `Visita ai luoghi iconici e attrazioni legate a: ${interests || 'Natura, skyline e cucina locale'}.`,
-          tag: "Esplorazione",
+          title: `Attrazioni & Punti Iconici di ${stop.city}`,
+          desc: `Esplorazione dedicata a: ${interests || 'Panorami, cultura e cibo tipico'}.`,
+          tag: "Visita",
           color: "pastelPeach"
         });
       });
 
-      // Rientro finale
       dayCounter++;
       list.push({
         id: "tr-end",
         day: `Giorno ${dayCounter} - Rientro`,
         time: `Prima delle ${eTime}`,
-        title: `Riconsegna Auto / Transfer ➔ ${returnAirport}`,
-        desc: `Arrivo in aeroporto con anticipo per controlli di sicurezza e imbarco sul volo di ritorno.`,
+        title: `Riconsegna Mezzo ➔ Transfer verso ${returnAirport}`,
+        desc: `Arrivo in aeroporto in tempo per il volo di rientro.`,
         tag: "Rientro",
         color: "pastelBlue",
         isTransfer: true
       });
 
-      // Inserisce gli eventi fissati
       fixedEvents.forEach(ev => {
         list.push({
           id: "fix-" + Math.random(),
           day: ev.day,
           time: ev.time,
           title: ev.title,
-          desc: "Orario vincolante già prenotato.",
+          desc: "Orario fisso prenotato.",
           tag: "Prenotato",
           color: "pastelPink",
           isBooked: true
@@ -754,8 +750,8 @@
         day: "Giorno 1",
         time: `${sTime} - Arrivo`,
         title: `Arrivo a ${airport} ➔ Check-in a ${hotel || 'Alloggio'}`,
-        desc: "Ritiro valigie, transfer verso il centro e deposito bagagli.",
-        tag: "Transfer & Hotel",
+        desc: "Ritiro bagagli, transfer verso il centro e deposito valigie.",
+        tag: "Transfer",
         color: "pastelBlue",
         isTransfer: true
       });
@@ -763,7 +759,7 @@
         id: "t-1",
         day: "Giorno 1",
         time: "Pomeriggio • 15:00",
-        title: `Passeggiata nel Cuore di ${dest}`,
+        title: `Passeggiata nel Cuore di ${dest || 'Centro'}`,
         desc: `Primo contatto con i quartieri storici e punti panoramici.`,
         tag: "Scoperta",
         color: "pastelLavender"
@@ -772,8 +768,8 @@
         id: "t-2",
         day: "Giorno 2",
         time: "Mattina • 10:00",
-        title: `Attrazione Principale & Fandom a ${dest}`,
-        desc: `Visita tematica dedicata a: ${interests || 'Must iconici e cultura locale'}.`,
+        title: `Attrazione Principale & Fandom a ${dest || 'Città'}`,
+        desc: `Tappe dedicate a: ${interests || 'Must iconici e cultura'}.`,
         tag: "Must See",
         color: "pastelPeach"
       });
@@ -782,7 +778,7 @@
         day: "Giorno 3",
         time: `Prima delle ${eTime}`,
         title: `Check-out ➔ Transfer verso ${airport}`,
-        desc: `Partenza per l'aeroporto in tempo per il volo di rientro.`,
+        desc: `Partenza per l'aeroporto in tempo per il volo di rientro delle ${eTime}.`,
         tag: "Rientro",
         color: "pastelBlue",
         isTransfer: true
@@ -794,7 +790,7 @@
           day: ev.day,
           time: ev.time,
           title: ev.title,
-          desc: "Orario vincolante già prenotato.",
+          desc: "Orario fisso prenotato.",
           tag: "Prenotato",
           color: "pastelPink",
           isBooked: true
@@ -807,37 +803,27 @@
     function renderProposalList() {
       const listCont = document.getElementById('proposalList');
       listCont.innerHTML = '';
-
       const uniqueDays = Array.from(new Set(pendingProposal.map(p => p.day)));
 
       pendingProposal.forEach((item, index) => {
         const row = document.createElement('div');
-        row.className = "p-3 rounded-2xl bg-stone-50 border border-stone-200 text-xs flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2";
-        
-        let label = `<span class="bg-${item.color || 'pastelSage'} px-2 py-0.5 rounded-md font-semibold text-stone-700 text-[10px]">${item.tag}</span>`;
-        if (item.isBooked) label = `<span class="bg-pastelPink font-bold text-stone-800 px-2 py-0.5 rounded-md text-[10px]">🎟️ Prenotato</span>`;
-        if (item.isTransfer) label = `<span class="bg-pastelBlue font-semibold text-stone-800 px-2 py-0.5 rounded-md text-[10px]">🚆 Transfer / Spostamento</span>`;
-
+        row.className = "p-2.5 rounded-xl bg-stone-50 border border-stone-200 text-xs flex justify-between items-center gap-2";
         let dayOptions = uniqueDays.map(d => `<option value="${d}" ${item.day === d ? 'selected' : ''}>${d}</option>`).join('');
 
         row.innerHTML = `
-          <div class="flex-1 space-y-1">
-            <div class="flex items-center gap-2">
-              <select onchange="changeProposalDay(${index}, this.value)" class="bg-white border border-stone-300 rounded-lg px-2 py-0.5 text-[11px] font-bold text-stone-700">
+          <div class="flex-1 space-y-0.5">
+            <div class="flex items-center gap-1.5">
+              <select onchange="changeProposalDay(${index}, this.value)" class="bg-white border border-stone-300 rounded-md px-1.5 py-0.5 text-[10px] font-bold">
                 ${dayOptions}
               </select>
-              <span class="font-semibold text-stone-400 uppercase text-[10px]">${item.time}</span>
-              ${label}
+              <span class="font-semibold text-stone-400 text-[10px]">${item.time}</span>
             </div>
             <div class="font-bold text-stone-800 text-xs">${item.title}</div>
-            <div class="text-stone-500 text-[11px]">${item.desc}</div>
           </div>
-          
-          <div class="flex items-center gap-1.5 self-end sm:self-center">
-            <button onclick="moveProposalItem(${index}, -1)" title="Sposta Su" class="bg-white border border-stone-200 p-1.5 rounded-lg hover:bg-stone-100 text-stone-600">⬆️</button>
-            <button onclick="moveProposalItem(${index}, 1)" title="Sposta Giù" class="bg-white border border-stone-200 p-1.5 rounded-lg hover:bg-stone-100 text-stone-600">⬇️</button>
-            <button onclick="editProposalItem(${index})" title="Modifica Testo" class="bg-white border border-stone-200 px-2 py-1 rounded-lg hover:bg-stone-100 text-stone-600 font-semibold text-[11px]">✏️</button>
-            <button onclick="removeProposalItem(${index})" title="Rimuovi Tappa" class="bg-white border border-rose-200 px-2 py-1 rounded-lg hover:bg-rose-50 text-rose-500 font-bold text-[11px]">✕</button>
+          <div class="flex items-center gap-1">
+            <button onclick="moveProposalItem(${index}, -1)" class="bg-white border p-1 rounded-md text-[10px]">⬆️</button>
+            <button onclick="moveProposalItem(${index}, 1)" class="bg-white border p-1 rounded-md text-[10px]">⬇️</button>
+            <button onclick="removeProposalItem(${index})" class="bg-white border text-rose-500 font-bold px-1.5 py-0.5 rounded-md text-[10px]">✕</button>
           </div>
         `;
         listCont.appendChild(row);
@@ -845,9 +831,7 @@
     }
 
     function showProposalModal() {
-      const modal = document.getElementById('reviewModal');
-      modal.classList.remove('hidden');
-      modal.scrollIntoView({ behavior: 'smooth' });
+      document.getElementById('reviewModal').classList.remove('hidden');
     }
 
     function changeProposalDay(index, newDay) {
@@ -865,24 +849,13 @@
       }
     }
 
-    function editProposalItem(index) {
-      const item = pendingProposal[index];
-      const newTitle = prompt("Modifica titolo tappa:", item.title);
-      if (newTitle !== null) item.title = newTitle;
-      const newTime = prompt("Modifica orario / fascia:", item.time);
-      if (newTime !== null) item.time = newTime;
-      const newDesc = prompt("Modifica descrizione / note:", item.desc);
-      if (newDesc !== null) item.desc = newDesc;
-      renderProposalList();
-    }
-
     function removeProposalItem(index) {
       pendingProposal.splice(index, 1);
       renderProposalList();
     }
 
     function swapProposalDaysPrompt() {
-      const dayA = prompt("Quale giorno/tappa vuoi scambiare?", "Giorno 1");
+      const dayA = prompt("Quale giorno vuoi scambiare?", "Giorno 1");
       if (!dayA) return;
       const dayB = prompt(`Con quale altro giorno vuoi scambiare?`, "Giorno 2");
       if (!dayB) return;
