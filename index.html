@@ -4,11 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Travel Co-Planner • Pastel Edition</title>
+  
+  <!-- Font morbidi da Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
+          fontFamily: {
+            title: ['Comfortaa', 'sans-serif'],
+            sans: ['Quicksand', 'sans-serif']
+          },
           colors: {
             pastelSage: '#d8e2dc',
             pastelPeach: '#ffe5d9',
@@ -22,6 +32,12 @@
     }
   </script>
   <style>
+    body {
+      font-family: 'Quicksand', sans-serif;
+    }
+    h1, h2, h3, h4, .font-title {
+      font-family: 'Comfortaa', cursive, sans-serif;
+    }
     @media print {
       .no-print { display: none !important; }
       body { background: white !important; padding: 0 !important; }
@@ -29,7 +45,7 @@
     }
   </style>
 </head>
-<body class="bg-pastelCream text-stone-700 min-h-screen p-4 sm:p-8 font-sans">
+<body class="bg-pastelCream text-stone-700 min-h-screen p-4 sm:p-8 font-sans antialiased">
   <div class="max-w-2xl mx-auto space-y-6">
 
     <!-- Header -->
@@ -37,17 +53,17 @@
       <div class="inline-block bg-pastelLavender px-4 py-1.5 rounded-full text-xs font-semibold text-stone-700 shadow-xs">
         ✨ Travel Organizer Intelligente
       </div>
-      <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-stone-800" id="tripTitle">Il Tuo Itinerario</h1>
+      <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-stone-800" id="tripTitle">I Tuoi Prossimi Passi ✈️</h1>
       
       <!-- Toolbar Azioni Condivisione / PDF -->
       <div class="no-print flex flex-wrap items-center justify-center gap-2 pt-1">
-        <button onclick="shareTrip()" class="flex items-center gap-1.5 bg-white border border-pastelSage px-3 py-1.5 rounded-xl text-xs font-medium hover:bg-pastelSage/40 transition shadow-xs">
+        <button onclick="shareTrip()" class="flex items-center gap-1.5 bg-white border border-pastelSage px-3.5 py-1.5 rounded-2xl text-xs font-medium hover:bg-pastelSage/40 transition shadow-xs">
           🔗 <span>Copia Link Condivisibile</span>
         </button>
-        <button onclick="exportPDF()" class="flex items-center gap-1.5 bg-white border border-pastelPeach px-3 py-1.5 rounded-xl text-xs font-medium hover:bg-pastelPeach/50 transition shadow-xs">
+        <button onclick="exportPDF()" class="flex items-center gap-1.5 bg-white border border-pastelPeach px-3.5 py-1.5 rounded-2xl text-xs font-medium hover:bg-pastelPeach/50 transition shadow-xs">
           📄 <span>Scarica / Salva PDF</span>
         </button>
-        <span id="syncBadge" class="text-xs bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full font-medium">
+        <span id="syncBadge" class="text-xs bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full font-medium">
           🟢 Salvato in Locale
         </span>
       </div>
@@ -61,17 +77,17 @@
       </div>
 
       <!-- Input Chiave API (nascosto di default) -->
-      <div id="apiKeySection" class="hidden bg-stone-50 p-3 rounded-2xl border border-stone-200">
+      <div id="apiKeySection" class="hidden bg-stone-50 p-3.5 rounded-2xl border border-stone-200">
         <label class="block text-xs font-medium text-stone-600 mb-1">Google Gemini API Key:</label>
         <input type="password" id="apiKeyInput" placeholder="Incolla la tua chiave API se vuoi chiamate AI live" 
                class="w-full bg-white border border-stone-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelLavender">
-        <p class="text-[10px] text-stone-400 mt-1">Se lasci vuoto, userà l'itinerario guidato predefinito.</p>
+        <p class="text-[11px] text-stone-400 mt-1">Se lasci vuoto, userà l'itinerario guidato intelligente.</p>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label class="block text-xs font-semibold text-stone-600 mb-1">Destinazione</label>
-          <input type="text" id="destInput" placeholder="Es. Londra, Edimburgo, Parigi..." 
+          <input type="text" id="destInput" placeholder="Es. Londra, Tokyo, Edimburgo..." 
                  class="w-full bg-pastelSage/20 border border-pastelSage rounded-2xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pastelPink">
         </div>
         <div>
@@ -108,8 +124,8 @@
     <!-- Scheda Itinerario Condiviso -->
     <section class="space-y-4">
       <div class="flex items-center justify-between px-2">
-        <h2 class="text-lg font-bold text-stone-800">Tappe & Programma</h2>
-        <button onclick="addNewStopPrompt()" class="no-print text-xs bg-pastelPeach hover:bg-pastelPink text-stone-800 font-semibold px-3 py-1.5 rounded-xl transition shadow-xs">
+        <h2 class="text-base sm:text-lg font-bold text-stone-800">Tappe & Programma</h2>
+        <button onclick="addNewStopPrompt()" class="no-print text-xs bg-pastelPeach hover:bg-pastelPink text-stone-800 font-semibold px-3.5 py-1.5 rounded-2xl transition shadow-xs">
           + Aggiungi Tappa
         </button>
       </div>
@@ -122,38 +138,11 @@
   </div>
 
   <script>
+    // Inizializzazione pulita
     let tripData = {
-      title: "Viaggio a Londra",
-      destination: "Londra",
-      stops: [
-        {
-          id: "s1",
-          day: "Giorno 1",
-          time: "Mattina • 09:30",
-          title: "Sherlock Holmes Museum & Baker Street",
-          desc: "Visita al 221B di Baker Street, negozio tematico e passeggiata nei dintorni di Marylebone.",
-          tag: "Sherlock",
-          color: "pastelLavender"
-        },
-        {
-          id: "s2",
-          day: "Giorno 1",
-          time: "Pomeriggio • 14:30",
-          title: "King's Cross & Binario 9 ¾",
-          desc: "Foto al carrello nel muro, visita al negozio ufficiale e passeggiata verso St Pancras.",
-          tag: "Harry Potter",
-          color: "pastelPeach"
-        },
-        {
-          id: "s3",
-          day: "Giorno 1",
-          time: "Sera • 19:30",
-          title: "Cena & Atmosfera a Covent Garden",
-          desc: "Passeggiata tra gli artisti di strada, mercato coperto e cena in un locale caratteristico.",
-          tag: "Relax & Food",
-          color: "pastelSage"
-        }
-      ]
+      title: "",
+      destination: "",
+      stops: []
     };
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -167,7 +156,7 @@
           console.error("Errore lettura dati da link:", e);
         }
       } else {
-        const saved = localStorage.getItem('user_trip_data');
+        const saved = localStorage.getItem('user_trip_data_v2');
         if (saved) {
           try { tripData = JSON.parse(saved); } catch(e){}
         }
@@ -176,12 +165,23 @@
     });
 
     function renderItinerary() {
-      document.getElementById('tripTitle').innerText = tripData.title || "Il Tuo Viaggio";
+      const titleElem = document.getElementById('tripTitle');
+      if (tripData.destination && tripData.destination.trim() !== "") {
+        titleElem.innerText = tripData.title || `Viaggio a ${tripData.destination}`;
+      } else {
+        titleElem.innerText = "I Tuoi Prossimi Passi ✈️";
+      }
+
       const container = document.getElementById('itineraryContainer');
       container.innerHTML = '';
 
       if (!tripData.stops || tripData.stops.length === 0) {
-        container.innerHTML = '<div class="bg-white p-8 rounded-3xl text-center text-sm text-stone-400 border border-dashed border-stone-200">Nessuna tappa inserita. Clicca su "Genera" o aggiungi una tappa manualmente!</div>';
+        container.innerHTML = `
+          <div class="bg-white/80 p-8 rounded-3xl text-center space-y-2 border border-dashed border-pastelSage">
+            <p class="text-stone-600 font-medium text-sm">Nessuna tappa presente per ora 🌸</p>
+            <p class="text-xs text-stone-400">Compila i campi sopra e clicca su "Genera Itinerario", oppure aggiungi una tappa manualmente con il pulsante in alto a destra.</p>
+          </div>
+        `;
         return;
       }
 
@@ -196,24 +196,24 @@
       for (const [dayName, stops] of Object.entries(daysMap)) {
         const dayHeader = document.createElement('div');
         dayHeader.className = "pt-3 pb-1 flex items-center gap-2";
-        dayHeader.innerHTML = `<span class="h-2 w-2 rounded-full bg-pastelPink"></span><h3 class="text-sm font-bold uppercase tracking-wider text-stone-600">${dayName}</h3>`;
+        dayHeader.innerHTML = `<span class="h-2.5 w-2.5 rounded-full bg-pastelPink"></span><h3 class="text-sm font-bold uppercase tracking-wider text-stone-600">${dayName}</h3>`;
         container.appendChild(dayHeader);
 
         stops.forEach((stop) => {
           const originalIndex = tripData.stops.findIndex(s => s.id === stop.id);
           const card = document.createElement('div');
-          card.className = "print-card bg-white border border-stone-100 p-4 rounded-2xl shadow-xs space-y-1.5 transition";
+          card.className = "print-card bg-white border border-stone-100 p-4 rounded-3xl shadow-xs space-y-1.5 transition";
           
           card.innerHTML = `
             <div class="flex justify-between items-center text-xs">
               <span class="font-semibold text-stone-400 uppercase tracking-wide">${stop.time}</span>
-              <span class="bg-${stop.color || 'pastelSage'} px-2.5 py-0.5 rounded-full font-medium text-stone-700 text-[11px]">${stop.tag || 'Tappa'}</span>
+              <span class="bg-${stop.color || 'pastelSage'} px-3 py-0.5 rounded-full font-semibold text-stone-700 text-[11px]">${stop.tag || 'Tappa'}</span>
             </div>
             <h4 class="font-bold text-stone-800 text-base leading-snug">${stop.title}</h4>
             <p class="text-xs text-stone-600 leading-relaxed">${stop.desc}</p>
             <div class="no-print flex justify-end gap-3 pt-2 border-t border-stone-50 text-xs">
-              <button onclick="editStop(${originalIndex})" class="text-stone-500 hover:text-stone-800 font-medium">✏️ Modifica</button>
-              <button onclick="deleteStop(${originalIndex})" class="text-rose-400 hover:text-rose-600 font-medium">🗑️ Elimina</button>
+              <button onclick="editStop(${originalIndex})" class="text-stone-500 hover:text-stone-800 font-semibold">✏️ Modifica</button>
+              <button onclick="deleteStop(${originalIndex})" class="text-rose-400 hover:text-rose-600 font-semibold">🗑️ Elimina</button>
             </div>
           `;
           container.appendChild(card);
@@ -224,7 +224,7 @@
     }
 
     function saveLocally() {
-      localStorage.setItem('user_trip_data', JSON.stringify(tripData));
+      localStorage.setItem('user_trip_data_v2', JSON.stringify(tripData));
     }
 
     function shareTrip() {
@@ -232,7 +232,7 @@
       const shareUrl = window.location.origin + window.location.pathname + '?trip=' + encoded;
       
       navigator.clipboard.writeText(shareUrl).then(() => {
-        alert("✨ Link copiato negli appunti!\n\nInvialo ai tuoi compagni di viaggio: aprendolo vedranno lo stesso itinerario con tutte le tappe!");
+        alert("✨ Link copiato negli appunti!\n\nInvialo ai tuoi compagni di viaggio: aprendolo troveranno esattamente il tuo itinerario aggiornato.");
       }).catch(() => {
         prompt("Copia questo link e invialo al tuo gruppo:", shareUrl);
       });
@@ -285,27 +285,31 @@
     }
 
     async function generateItinerary() {
-      const dest = document.getElementById('destInput').value.trim() || "Londra";
+      const dest = document.getElementById('destInput').value.trim();
       const expType = document.getElementById('typeInput').value;
       const interests = document.getElementById('interestsInput').value.trim();
       const apiKey = document.getElementById('apiKeyInput').value.trim();
       const btn = document.getElementById('generateBtn');
 
-      btn.innerText = "⏳ Generazione in corso...";
+      if (!dest) {
+        alert("Inserisci una destinazione per iniziare a organizzare!");
+        return;
+      }
+
+      btn.innerText = "⏳ Creo la magia dell'itinerario...";
       btn.disabled = true;
 
-      tripData.title = `Viaggio a ${dest}`;
       tripData.destination = dest;
+      tripData.title = `Viaggio a ${dest}`;
 
       if (apiKey) {
-        // Chiamata reale API Gemini
         try {
-          const promptText = `Crea un itinerario di viaggio dettagliato a ${dest}.
-Tipo di viaggio: ${expType === 'first' ? 'Prima volta (include must classici)' : 'Ritorno (luoghi pittoreschi e meno turistici)'}.
+          const promptText = `Crea un itinerario di viaggio a ${dest}.
+Tipo di viaggio: ${expType === 'first' ? 'Prima volta (must iconici)' : 'Ritorno (angoli pittoreschi e insoliti)'}.
 Interessi e fandom: ${interests || 'Generale'}.
 Rispondi ESCLUSIVAMENTE con un array JSON di oggetti con questa struttura esatta:
 [
-  { "id": "1", "day": "Giorno 1", "time": "Mattina • 09:30", "title": "Titolo Tappa", "desc": "Breve descrizione e metro", "tag": "Tema", "color": "pastelLavender" }
+  { "id": "1", "day": "Giorno 1", "time": "Mattina • 09:30", "title": "Titolo Tappa", "desc": "Breve descrizione e consigli", "tag": "Tema", "color": "pastelLavender" }
 ]
 Colori ammessi: pastelLavender, pastelPeach, pastelSage, pastelBlue, pastelPink.`;
 
@@ -322,12 +326,11 @@ Colori ammessi: pastelLavender, pastelPeach, pastelSage, pastelBlue, pastelPink.
           const jsonStr = rawText.replace(/```json|```/g, '').trim();
           tripData.stops = JSON.parse(jsonStr);
         } catch (err) {
-          alert("Errore nella chiamata AI: " + err.message + ". Carico itinerario di esempio.");
-          setDefaultStops(dest, interests);
+          alert("Errore nella chiamata AI: " + err.message + ". Genero tappe consigliate su misura.");
+          buildSuggestedStops(dest, expType, interests);
         }
       } else {
-        // Generazione guidata offline / mock
-        setDefaultStops(dest, interests);
+        buildSuggestedStops(dest, expType, interests);
       }
 
       btn.innerText = "✨ Genera Itinerario per Me e Compagni";
@@ -335,13 +338,31 @@ Colori ammessi: pastelLavender, pastelPeach, pastelSage, pastelBlue, pastelPink.
       renderItinerary();
     }
 
-    function setDefaultStops(dest, interests) {
-      tripData.stops = [
-        { id: "1", day: "Giorno 1", time: "Mattina • 09:30", title: "Baker Street & Sherlock Holmes Museum", desc: "Visita al 221B e negozio vittoriano a tema.", tag: "Sherlock", color: "pastelLavender" },
-        { id: "2", day: "Giorno 1", time: "Pomeriggio • 14:00", title: "King's Cross & Binario 9 ¾", desc: "Foto al carrello e souvenir shop a tema Potter.", tag: "Harry Potter", color: "pastelPeach" },
-        { id: "3", day: "Giorno 2", time: "Mattina • 10:00", title: "Warner Bros. Studio Tour London", desc: "Making of Harry Potter, set originali e Burrobirra.", tag: "Harry Potter", color: "pastelPeach" },
-        { id: "4", day: "Giorno 2", time: "Sera • 19:30", title: "Covent Garden & Seven Dials", desc: "Passeggiata nei vicoli pittoreschi e cena in pub tipico.", tag: "Food & Relax", color: "pastelSage" }
-      ];
+    function buildSuggestedStops(dest, expType, interests) {
+      // Generatore intelligente locale per le destinazioni e interessi principali
+      const dLower = dest.toLowerCase();
+      const iLower = (interests || '').toLowerCase();
+
+      if (dLower.includes('londra') || dLower.includes('london')) {
+        if (iLower.includes('harry potter') || iLower.includes('sherlock')) {
+          tripData.stops = [
+            { id: "1", day: "Giorno 1", time: "Mattina • 09:30", title: "Baker Street & Sherlock Holmes Museum", desc: "Visita al celebre 221B, negozio vittoriano e statue commemorative.", tag: "Sherlock", color: "pastelLavender" },
+            { id: "2", day: "Giorno 1", time: "Pomeriggio • 14:00", title: "King's Cross Station & Platform 9 ¾", desc: "Foto con il carrello magico e sosta al negozio Harry Potter.", tag: "Harry Potter", color: "pastelPeach" },
+            { id: "3", day: "Giorno 2", time: "Mattina • 10:00", title: "Warner Bros. Studio Tour London", desc: "The Making of Harry Potter: set autentici, Diagon Alley e Sala Grande.", tag: "Harry Potter", color: "pastelPeach" },
+            { id: "4", day: "Giorno 2", time: "Sera • 19:30", title: "Covent Garden & Seven Dials", desc: "Passeggiata nei vicoli illuminati e cena in un pub caratteristico.", tag: "Atmosfera & Food", color: "pastelSage" }
+          ];
+        } else {
+          tripData.stops = [
+            { id: "1", day: "Giorno 1", time: "Mattina • 10:00", title: "Westminster & Big Ben", desc: "Passeggiata verso il Parlamento e vista sul Tamigi.", tag: "Classico", color: "pastelLavender" },
+            { id: "2", day: "Giorno 1", time: "Pomeriggio • 14:30", title: "Covent Garden & Neal's Yard", desc: "Esplorazione del mercato coperto e del colorato vicolo nascosto.", tag: "Passeggiata", color: "pastelPeach" }
+          ];
+        }
+      } else {
+        tripData.stops = [
+          { id: "1", day: "Giorno 1", time: "Mattina • 09:30", title: `Esplorazione del centro storico di ${dest}`, desc: "Passeggiata introduttiva tra i vicoli principali e scorci panoramici.", tag: "Scoperta", color: "pastelLavender" },
+          { id: "2", day: "Giorno 1", time: "Pomeriggio • 14:30", title: `Tappe d'interesse tematiche`, desc: `Visita ai luoghi dedicati a: ${interests || 'Cultura locale e relax'}.`, tag: "Esperienza", color: "pastelPeach" }
+        ];
+      }
     }
   </script>
 </body>
