@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Travel Co-Planner • Pastel Edition</title>
+  <title>Travel Co-Planner • Auto-Rebalance Edition</title>
   
   <!-- Font morbidi da Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -67,7 +67,7 @@
       <span class="text-xl">✈️</span>
       <div>
         <h1 class="font-title text-base sm:text-lg font-bold text-stone-800 leading-tight">Travel Co-Planner</h1>
-        <p class="text-[10px] text-stone-400 font-medium">Dashboard intelligente & itinerari collaborativi</p>
+        <p class="text-[10px] text-stone-400 font-medium">Smart Logistics & Conflict-Free Schedules</p>
       </div>
     </div>
     
@@ -237,16 +237,19 @@
         <div class="flex justify-between items-center">
           <div class="flex items-center gap-1.5">
             <span>💬</span>
-            <h3 class="font-bold text-stone-800 text-xs">Anteprima Mete: Sposta o Conferma!</h3>
+            <h3 class="font-bold text-stone-800 text-xs">Anteprima Mete: Sposta o Inverti!</h3>
           </div>
-          <button onclick="swapProposalDaysPrompt()" class="text-[10px] bg-pastelLavender/60 hover:bg-pastelLavender text-stone-700 font-bold px-2 py-1 rounded-lg transition">
+          <button onclick="swapProposalDaysPrompt()" class="text-[10px] bg-pastelLavender/60 hover:bg-pastelLavender text-stone-700 font-bold px-2.5 py-1 rounded-lg transition">
             🔄 Inverti Mete Giorni
           </button>
         </div>
-        <div id="proposalList" class="space-y-2 max-h-72 overflow-y-auto pr-1"></div>
+        <p class="text-[10px] text-stone-400 leading-tight">
+          ⚡ Gli orari delle tappe si ricalcolano automaticamente per evitare sovrapposizioni e darti il tempo di spostarti!
+        </p>
+        <div id="proposalList" class="space-y-2 max-h-80 overflow-y-auto pr-1"></div>
         <div class="flex gap-2 pt-1">
           <button onclick="confirmProposal()" class="flex-1 bg-pastelSage hover:bg-emerald-200 text-stone-800 font-bold py-2 rounded-xl text-xs transition">
-            ✅ Conferma e Inserisci
+            ✅ Conferma Orari e Inserisci
           </button>
           <button onclick="cancelProposal()" class="bg-stone-100 hover:bg-stone-200 text-stone-600 px-3 py-2 rounded-xl text-xs font-semibold transition">
             Annulla
@@ -280,7 +283,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'pastel_trips_library_v7';
+    const STORAGE_KEY = 'pastel_trips_library_v8';
 
     let allTrips = {};
     let currentTripId = null;
@@ -635,9 +638,59 @@
       `;
     }
 
+    // MOTORE DI RIBILANCIAMENTO ORARI AUTOMATICO SENZA CONFLITTI
+    function rebalanceDayTimeSlots(stopsArray) {
+      // Raggruppa per giorno
+      const dayMap = {};
+      stopsArray.forEach(st => {
+        if (!dayMap[st.day]) dayMap[st.day] = [];
+        dayMap[st.day].push(st);
+      });
+
+      // Definisce slot standard scalati per giorno normale
+      const standardSlots = [
+        "Mattina • 09:30 - 12:00",
+        "Pomeriggio • 14:00 - 16:30",
+        "Tardo Pomeriggio • 17:00 - 19:00",
+        "Sera • 19:30 - 22:00",
+        "Notte • 22:00 in poi"
+      ];
+
+      // Rielabora ogni singolo giorno
+      Object.keys(dayMap).forEach(dayKey => {
+        const dayStops = dayMap[dayKey];
+        const isFirstDay = dayKey.includes('Giorno 1');
+        const isLastDay = dayStops.some(s => s.id && s.id.includes('-tr'));
+
+        let slotIdx = 0;
+
+        dayStops.forEach(st => {
+          // Se la tappa ha un orario fisso rigido (Volo/Transfer di arrivo/partenza o Biglietto prenotato) non cambiamo la sua ora
+          if (st.isLocked) {
+            return;
+          }
+
+          // Se siamo nel giorno 1 e c'è già il transfer fino alle 14:30
+          if (isFirstDay && slotIdx === 0) {
+            st.time = "Pomeriggio • 15:00 - 17:30";
+            slotIdx = 2; // passa al tardo pom/sera
+          } else if (isFirstDay && slotIdx === 2) {
+            st.time = "Sera • 19:00 - 21:30";
+            slotIdx++;
+          } else {
+            // Assegna lo slot sequenziale disponibile
+            st.time = standardSlots[slotIdx] || `Ore ${10 + slotIdx * 2}:30 (Tappa extra)`;
+            slotIdx++;
+          }
+        });
+      });
+
+      return stopsArray;
+    }
+
     function buildAccurateItinerary(dest, expType, transportPref, airport, hotel, sDate, sTime, eDate, eTime, fixedEvents, interests) {
       const days = generateDaysArray(sDate, eDate);
-      const list = [];
+      let list = [];
       const iLow = (interests || '').toLowerCase();
       const isReturning = expType === 'returning';
       const [sh, sm] = sTime.split(':').map(Number);
@@ -650,7 +703,6 @@
         const isFirst = index === 0;
         const isLast = index === days.length - 1;
 
-        // GIORNO 1: Arrivo
         if (isFirst) {
           list.push({
             id: `stop-${dayObj.num}-arr`,
@@ -661,15 +713,15 @@
             tag: "Transfer & Hotel",
             color: "pastelBlue",
             isTransfer: true,
-            isLocked: true, // 🔒 BLOCCATO AL GIORNO 1
-            travelTime: "Percorrenza stimata: 50-70 min"
+            isLocked: true,
+            travelTime: "Percorrenza: 50-70 min"
           });
 
           if (isReturning) {
             list.push({
               id: `stop-${dayObj.num}-pm`,
               day: dayObj.label,
-              time: `Pomeriggio • 15:30`,
+              time: "Pomeriggio • 15:00 - 17:30",
               title: "Little Venice & Passeggiata lungo Regent's Canal",
               desc: "Angolo pittoresco e rilassante tra houseboat colorate e caffè galleggianti verso Camden.",
               tag: "Scorci Nascosti",
@@ -679,18 +731,18 @@
             list.push({
               id: `stop-${dayObj.num}-eve`,
               day: dayObj.label,
-              time: `Sera • 19:30`,
+              time: "Sera • 19:30 - 22:00",
               title: "Neal's Yard & Seven Dials in Serata",
               desc: "Cortile colorato nascosto a Covent Garden e cena in taverna storica.",
               tag: "Atmosfera & Food",
               color: "pastelPink",
-              travelTime: "🚇 18 min in Metro (Central Line)"
+              travelTime: "🚇 18 min in Metro"
             });
           } else {
             list.push({
               id: `stop-${dayObj.num}-pm`,
               day: dayObj.label,
-              time: `Pomeriggio • 15:30`,
+              time: "Pomeriggio • 15:00 - 17:30",
               title: "Hyde Park, Kensington Gardens & Notting Hill",
               desc: "Partendo dall'hotel: Italian Gardens, Round Pond e le casette pastello di Portobello Road.",
               tag: "Must See",
@@ -700,36 +752,34 @@
             list.push({
               id: `stop-${dayObj.num}-eve`,
               day: dayObj.label,
-              time: `Sera • 19:30`,
+              time: "Sera • 19:30 - 22:00",
               title: "Covent Garden & Luminarie Natalizie",
               desc: "Spettacoli di artisti di strada, mercato coperto illuminato e pub tradizionale vittoriano.",
               tag: "Luci & Relax",
               color: "pastelPink",
-              travelTime: "🚇 15 min in Metro (Central Line)"
+              travelTime: "🚇 15 min in Metro"
             });
           }
         }
-
-        // GIORNO 2
         else if (index === 1) {
           if (iLow.includes('sherlock')) {
             list.push({
               id: `stop-${dayObj.num}-1`,
               day: dayObj.label,
-              time: "Mattina • 09:30",
+              time: "Mattina • 09:30 - 12:00",
               title: "Baker Street 221B & Sherlock Holmes Museum",
               desc: "Visita alla dimora del celebre detective, statua in bronzo e Daunt Books a Marylebone.",
               tag: "Sherlock",
               color: "pastelLavender",
-              travelTime: "🚇 14 min in Metro (Bakerloo / Circle Line)"
+              travelTime: "🚇 14 min in Metro"
             });
           } else {
             list.push({
               id: `stop-${dayObj.num}-1`,
               day: dayObj.label,
-              time: "Mattina • 10:00",
+              time: "Mattina • 09:30 - 12:00",
               title: isReturning ? "Sir John Soane's Museum & Lincoln's Inn" : "British Museum",
-              desc: isReturning ? "Casa-museo eclettica e labirintica ricca di antichità e curiosità segrete." : "I grandi tesori della storia mondiale e la magnifica Great Court.",
+              desc: isReturning ? "Casa-museo eclettica e labirintica ricca di curiosità segrete." : "I grandi tesori della storia mondiale e la Great Court.",
               tag: "Cultura",
               color: "pastelBlue",
               travelTime: "🚇 20 min in Metro"
@@ -739,32 +789,30 @@
           list.push({
             id: `stop-${dayObj.num}-2`,
             day: dayObj.label,
-            time: "Pomeriggio • 14:30",
+            time: "Pomeriggio • 14:00 - 16:30",
             title: isReturning ? "Leadenhall Market & St Dunstan in the East" : "Westminster Abbey & Big Ben",
-            desc: isReturning ? "Giardino medievale incastonato tra le rovine di una chiesa distrutta e mercato coperto." : "La classica cartolina londinese lungo il Tamigi con vista sul Parlamento.",
+            desc: isReturning ? "Giardino medievale tra le rovine di una chiesa distrutta e mercato coperto." : "La classica cartolina londinese lungo il Tamigi con vista sul Parlamento.",
             tag: isReturning ? "Chicche Nascoste" : "Icone di Londra",
             color: "pastelPeach",
-            travelTime: "🚇 18 min in Metro (o 25 min bus panoramico)"
+            travelTime: "🚇 18 min in Metro"
           });
         }
-
-        // GIORNO 3
         else if (index === 2) {
           if (iLow.includes('harry potter')) {
             list.push({
               id: `stop-${dayObj.num}-1`,
               day: dayObj.label,
-              time: "Mattina • 09:00",
+              time: "Mattina • 09:00 - 11:00",
               title: "King's Cross Station & Platform 9 ¾",
               desc: "Foto con la sciarpa al carrello nel muro e acquisti al Potter Shop ufficiale.",
               tag: "Harry Potter",
               color: "pastelPeach",
-              travelTime: "🚇 22 min in Metro da Hyde Park"
+              travelTime: "🚇 22 min Metro"
             });
             list.push({
               id: `stop-${dayObj.num}-2`,
               day: dayObj.label,
-              time: "Pomeriggio • 16:30",
+              time: "Pomeriggio • 16:30 - 18:30",
               title: isReturning ? "Cecil Court & Godwin's Court" : "Millennium Bridge & Borough Market",
               desc: isReturning ? "Stretti vicoli edoardiani a lume di gas ispirazione autentica per Diagon Alley." : "Ponte pedonale sul Tamigi e street food locale.",
               tag: "Harry Potter & Chicche",
@@ -775,32 +823,30 @@
             list.push({
               id: `stop-${dayObj.num}-1`,
               day: dayObj.label,
-              time: "Intera Giornata",
+              time: "Mattina • 09:30 - 13:00",
               title: isReturning ? "Greenwich & Mercatino Vintage" : "Tower of London & Tower Bridge",
               desc: isReturning ? "Osservatorio, meridiano zero e mercato coperto vintage sul fiume." : "I gioielli della corona e la fortezza medievale.",
               tag: "Scoperta",
               color: "pastelSage",
-              travelTime: "🚇 30 min in DLR / Metro"
+              travelTime: "🚇 30 min in DLR"
             });
           }
         }
-
-        // GIORNO 4
         else if (index === 3) {
           list.push({
             id: `stop-${dayObj.num}-1`,
             day: dayObj.label,
-            time: "Mattina • 10:00",
+            time: "Mattina • 09:30 - 12:00",
             title: isReturning ? "Hampstead Village & Pergola" : "Buckingham Palace & St James's Park",
             desc: isReturning ? "Atmosfera da borgo di campagna inglese, stradine acciottolate e vista panoramica." : "Cambio della guardia e passeggiata rilassata nel parco reale.",
             tag: isReturning ? "Pittoresco" : "Reale",
             color: "pastelSage",
-            travelTime: isReturning ? "🚇 25 min Northern Line" : "🚶 20 min a piedi attraverso i giardini"
+            travelTime: isReturning ? "🚇 25 min Metro" : "🚶 20 min giardini"
           });
           list.push({
             id: `stop-${dayObj.num}-2`,
             day: dayObj.label,
-            time: "Pomeriggio • 15:00",
+            time: "Pomeriggio • 14:00 - 16:30",
             title: isReturning ? "Camden Passage (Islington) & Negozi Vintage" : "Regent Street, Carnaby & Oxford Street",
             desc: isReturning ? "Vicolo pedonale appartato celebre per antiquariato, boutique e tè pomeridiano." : "Shopping londinese e grandi vetrine illuminate per l'inverno.",
             tag: "Shopping & Luci",
@@ -808,13 +854,11 @@
             travelTime: "🚇 15 min Metro"
           });
         }
-
-        // ULTIMO GIORNO
         else if (isLast) {
           list.push({
             id: `stop-${dayObj.num}-am`,
             day: dayObj.label,
-            time: "Mattina • 10:00",
+            time: "Mattina • 09:30 - 12:00",
             title: isReturning ? "Borough Yards & Southwark Cathedral" : "Tower Bridge & Southbank",
             desc: isReturning ? "Nuovi scorci recuperati sotto le arcate della ferrovia e street food locale." : "Ultime foto panoramiche sul Tamigi prima del rientro.",
             tag: "Gourmet & Vista",
@@ -831,12 +875,12 @@
             day: dayObj.label,
             time: `Dalle ore ${leaveTime}`,
             title: `Ritiro Bagagli ➔ Transfer verso ${airport}`,
-            desc: `Rientro in hotel per il ritiro valigie e spostamento in aeroporto con anticipo per il volo delle ${eTime}.<br>• <em>Tempo di percorrenza consigliato verso Gatwick: 60-75 min.</em>`,
+            desc: `Rientro in hotel per il ritiro valigie e spostamento in aeroporto con anticipo per il volo delle ${eTime}.<br>• <em>Tempo di percorrenza consigliato: 60-75 min.</em>`,
             tag: "Rientro",
             color: "pastelBlue",
             isTransfer: true,
-            isLocked: true, // 🔒 BLOCCATO ALL'ULTIMO GIORNO
-            travelTime: "Tempo transfer: ~60 min"
+            isLocked: true,
+            travelTime: "Transfer: ~60 min"
           });
         }
       });
@@ -854,16 +898,16 @@
           day: assignedDayLabel,
           time: `Ore ${ev.time} (Fissato)`,
           title: ev.title,
-          desc: "🎟️ Biglietto / Evento confermato con orario vincolante.<br>• <em>Consiglio: calcola 45-60 min di treno da Euston verso Watford Junction per gli Studios.</em>",
+          desc: "🎟️ Biglietto / Evento confermato con orario vincolante.<br>• <em>Consiglio: calcola 45-60 min di treno da Euston verso Watford Junction.</em>",
           tag: "Prenotato",
           color: "pastelPink",
           isBooked: true,
-          isLocked: true, // 🔒 BLOCCATO ALLA DATA DEL BIGLIETTO
-          travelTime: "🚆 50 min da London Euston"
+          isLocked: true,
+          travelTime: "🚆 50 min da Euston"
         });
       });
 
-      return list;
+      return rebalanceDayTimeSlots(list);
     }
 
     async function requestItineraryProposal() {
@@ -918,7 +962,6 @@
 
         let travelBadge = item.travelTime ? `<div class="text-[10px] text-indigo-600 font-semibold mt-0.5">⏱️ ${item.travelTime}</div>` : '';
 
-        // Se l'elemento è un Volo/Transfer ancorato o un Biglietto Fissato, non si sposta
         let controlSection = '';
         if (item.isLocked) {
           controlSection = `
@@ -960,9 +1003,13 @@
       document.getElementById('reviewModal').classList.remove('hidden');
     }
 
+    // Quando sposti una tappa, RIBILANCIA IMMEDIATAMENTE GLI ORARI DEL GIORNO DI PARTENZA E DI ARRIVO
     function changeProposalDay(index, newDay) {
       if (pendingProposal[index].isLocked) return;
       pendingProposal[index].day = newDay;
+      
+      // Auto-rebalance istantaneo degli orari per non creare buchi o ubiquità
+      pendingProposal = rebalanceDayTimeSlots(pendingProposal);
       renderProposalList();
     }
 
@@ -970,11 +1017,12 @@
       if (pendingProposal[index].isLocked) return;
       const targetIndex = index + direction;
       if (targetIndex >= 0 && targetIndex < pendingProposal.length) {
-        // Se il target è fisso, non lo scavalca
         if (pendingProposal[targetIndex].isLocked) return;
         const temp = pendingProposal[index];
         pendingProposal[index] = pendingProposal[targetIndex];
         pendingProposal[targetIndex] = temp;
+        
+        pendingProposal = rebalanceDayTimeSlots(pendingProposal);
         renderProposalList();
       }
     }
@@ -982,10 +1030,10 @@
     function removeProposalItem(index) {
       if (pendingProposal[index].isLocked) return;
       pendingProposal.splice(index, 1);
+      pendingProposal = rebalanceDayTimeSlots(pendingProposal);
       renderProposalList();
     }
 
-    // SCAMBIO INTELLIGENTE: inverte SOLO le mete turistiche/visite dei due giorni, MA NON I VOLI NÉ I TRAGITTI AEREO!
     function swapProposalDaysPrompt() {
       const dayA = prompt("Quale giorno vuoi scambiare per le visite? (es. Giorno 1)", "Giorno 1");
       if (!dayA) return;
@@ -993,9 +1041,7 @@
       if (!dayB) return;
 
       pendingProposal.forEach(item => {
-        // Se è un elemento bloccato (Volo di andata/rientro o biglietto data fissa), NON SI TOCCA!
         if (item.isLocked) return;
-
         if (item.day.includes(dayA)) {
           item.day = item.day.replace(dayA, "__TEMP__");
         }
@@ -1003,7 +1049,6 @@
 
       pendingProposal.forEach(item => {
         if (item.isLocked) return;
-
         if (item.day.includes(dayB)) {
           item.day = item.day.replace(dayB, dayA);
         }
@@ -1011,12 +1056,13 @@
 
       pendingProposal.forEach(item => {
         if (item.isLocked) return;
-
         if (item.day.includes("__TEMP__")) {
           item.day = item.day.replace("__TEMP__", dayB);
         }
       });
 
+      // Ribilanciamento automatico post-scambio
+      pendingProposal = rebalanceDayTimeSlots(pendingProposal);
       renderProposalList();
     }
 
@@ -1119,11 +1165,11 @@
       if (!trip) return;
       const day = prompt("Giorno (es. Giorno 1):", "Giorno 1");
       if (!day) return;
-      const time = prompt("Orario / Fascia:", "Pomeriggio • 15:00");
+      const time = prompt("Orario / Fascia:", "Pomeriggio • 15:00 - 17:00");
       const title = prompt("Nome Luogo / Attività:");
       if (!title) return;
       const desc = prompt("Descrizione / Note:");
-      const travel = prompt("Tempo di percorrenza stimato (es. 15 min a piedi, 20 min metro):", "15 min");
+      const travel = prompt("Tempo di percorrenza stimato:", "15 min");
       const tag = prompt("Tag tematico:", "Visita");
 
       trip.stops.push({
@@ -1138,6 +1184,7 @@
         isBooked: false,
         isLocked: false
       });
+      trip.stops = rebalanceDayTimeSlots(trip.stops);
       saveAllTripsToStorage();
       renderItinerary();
     }
@@ -1164,6 +1211,7 @@
       if (!trip) return;
       if (confirm("Rimuovere questa tappa?")) {
         trip.stops.splice(index, 1);
+        trip.stops = rebalanceDayTimeSlots(trip.stops);
         saveAllTripsToStorage();
         renderItinerary();
       }
