@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Travel Co-Planner • Auto-Rebalance Edition</title>
+  <title>Travel Co-Planner • Smart Rebalance</title>
   
   <!-- Font morbidi da Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -67,7 +67,7 @@
       <span class="text-xl">✈️</span>
       <div>
         <h1 class="font-title text-base sm:text-lg font-bold text-stone-800 leading-tight">Travel Co-Planner</h1>
-        <p class="text-[10px] text-stone-400 font-medium">Smart Logistics & Conflict-Free Schedules</p>
+        <p class="text-[10px] text-stone-400 font-medium">Dashboard intelligente & itinerari collaborativi</p>
       </div>
     </div>
     
@@ -244,9 +244,9 @@
           </button>
         </div>
         <p class="text-[10px] text-stone-400 leading-tight">
-          ⚡ Gli orari delle tappe si ricalcolano automaticamente per evitare sovrapposizioni e darti il tempo di spostarti!
+          ⚡ Spostando una tappa al Giorno 5, la vedrai scendere subito al Giorno 5 con gli orari ricalcolati!
         </p>
-        <div id="proposalList" class="space-y-2 max-h-80 overflow-y-auto pr-1"></div>
+        <div id="proposalList" class="space-y-3 max-h-80 overflow-y-auto pr-1"></div>
         <div class="flex gap-2 pt-1">
           <button onclick="confirmProposal()" class="flex-1 bg-pastelSage hover:bg-emerald-200 text-stone-800 font-bold py-2 rounded-xl text-xs transition">
             ✅ Conferma Orari e Inserisci
@@ -283,7 +283,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'pastel_trips_library_v8';
+    const STORAGE_KEY = 'pastel_trips_library_v9';
 
     let allTrips = {};
     let currentTripId = null;
@@ -638,16 +638,21 @@
       `;
     }
 
-    // MOTORE DI RIBILANCIAMENTO ORARI AUTOMATICO SENZA CONFLITTI
+    // MOTORE DI ORDINAMENTO E RIBILANCIAMENTO ORARI AUTOMATICO SENZA CONFLITTI
     function rebalanceDayTimeSlots(stopsArray) {
-      // Raggruppa per giorno
+      // 1. Ordina l'array primario in base al numero del giorno (Giorno 1 prima di Giorno 2, ecc.)
+      function getDayNumber(dayStr) {
+        const match = dayStr.match(/Giorno\s*(\d+)/i);
+        return match ? parseInt(match[1], 10) : 999;
+      }
+
+      // Raggruppa per giorno preservando l'ordine
       const dayMap = {};
       stopsArray.forEach(st => {
         if (!dayMap[st.day]) dayMap[st.day] = [];
         dayMap[st.day].push(st);
       });
 
-      // Definisce slot standard scalati per giorno normale
       const standardSlots = [
         "Mattina • 09:30 - 12:00",
         "Pomeriggio • 14:00 - 16:30",
@@ -656,36 +661,46 @@
         "Notte • 22:00 in poi"
       ];
 
-      // Rielabora ogni singolo giorno
-      Object.keys(dayMap).forEach(dayKey => {
+      const sortedStops = [];
+
+      // Ordina i giorni in sequenza
+      const sortedDayKeys = Object.keys(dayMap).sort((a, b) => getDayNumber(a) - getDayNumber(b));
+
+      sortedDayKeys.forEach(dayKey => {
         const dayStops = dayMap[dayKey];
         const isFirstDay = dayKey.includes('Giorno 1');
-        const isLastDay = dayStops.some(s => s.id && s.id.includes('-tr'));
+        
+        // Mette in testa eventuali elementi Locked (come transfer arrivo) e in coda transfer partenza
+        dayStops.sort((a, b) => {
+          if (a.isTransfer && a.id && a.id.includes('-arr')) return -1;
+          if (b.isTransfer && b.id && b.id.includes('-arr')) return 1;
+          if (a.isTransfer && a.id && a.id.includes('-tr')) return 1;
+          if (b.isTransfer && b.id && b.id.includes('-tr')) return -1;
+          return 0;
+        });
 
         let slotIdx = 0;
-
         dayStops.forEach(st => {
-          // Se la tappa ha un orario fisso rigido (Volo/Transfer di arrivo/partenza o Biglietto prenotato) non cambiamo la sua ora
           if (st.isLocked) {
+            sortedStops.push(st);
             return;
           }
 
-          // Se siamo nel giorno 1 e c'è già il transfer fino alle 14:30
           if (isFirstDay && slotIdx === 0) {
             st.time = "Pomeriggio • 15:00 - 17:30";
-            slotIdx = 2; // passa al tardo pom/sera
+            slotIdx = 2;
           } else if (isFirstDay && slotIdx === 2) {
             st.time = "Sera • 19:00 - 21:30";
             slotIdx++;
           } else {
-            // Assegna lo slot sequenziale disponibile
-            st.time = standardSlots[slotIdx] || `Ore ${10 + slotIdx * 2}:30 (Tappa extra)`;
+            st.time = standardSlots[slotIdx] || `Fascia Extra • ${10 + slotIdx * 2}:00`;
             slotIdx++;
           }
+          sortedStops.push(st);
         });
       });
 
-      return stopsArray;
+      return sortedStops;
     }
 
     function buildAccurateItinerary(dest, expType, transportPref, airport, hotel, sDate, sTime, eDate, eTime, fixedEvents, interests) {
@@ -945,57 +960,94 @@
       showProposalModal();
     }
 
+    // Renderizza l'anteprima RAGGRUPPATA PER GIORNO in modo ordinato e cronologico
     function renderProposalList() {
       const listCont = document.getElementById('proposalList');
       listCont.innerHTML = '';
-      const uniqueDays = Array.from(new Set(pendingProposal.map(p => p.day)));
+      
+      // Calcola l'elenco ordinato di tutti i giorni disponibili
+      const days = generateDaysArray(getCurrentTrip().startDate, getCurrentTrip().endDate);
+      const uniqueDays = days.map(d => d.label);
 
-      pendingProposal.forEach((item, index) => {
-        const row = document.createElement('div');
-        row.className = "p-2.5 rounded-xl bg-stone-50 border border-stone-200 text-xs flex justify-between items-center gap-2";
+      // Raggruppa le tappe per giorno
+      const grouped = {};
+      uniqueDays.forEach(d => { grouped[d] = []; });
+      pendingProposal.forEach(item => {
+        if (!grouped[item.day]) grouped[item.day] = [];
+        grouped[item.day].push(item);
+      });
+
+      // Renderizza gruppo per gruppo in ordine di giorno
+      uniqueDays.forEach(dayName => {
+        const dayStops = grouped[dayName] || [];
+        if (dayStops.length === 0) return;
+
+        const dayBlock = document.createElement('div');
+        dayBlock.className = "bg-stone-100/70 p-2.5 rounded-2xl border border-stone-200/80 space-y-1.5";
         
-        let dayOptions = uniqueDays.map(d => `<option value="${d}" ${item.day === d ? 'selected' : ''}>${d}</option>`).join('');
-
-        let badge = `<span class="bg-${item.color || 'pastelSage'} px-2 py-0.5 rounded-md font-semibold text-stone-700 text-[10px]">${item.tag}</span>`;
-        if (item.isBooked) badge = `<span class="bg-pastelPink font-bold text-stone-800 px-2 py-0.5 rounded-md text-[10px]">🎟️ Prenotato</span>`;
-        if (item.isTransfer) badge = `<span class="bg-pastelBlue font-semibold text-stone-800 px-2 py-0.5 rounded-md text-[10px]">🚆 Transfer</span>`;
-
-        let travelBadge = item.travelTime ? `<div class="text-[10px] text-indigo-600 font-semibold mt-0.5">⏱️ ${item.travelTime}</div>` : '';
-
-        let controlSection = '';
-        if (item.isLocked) {
-          controlSection = `
-            <div class="flex items-center gap-1">
-              <span class="bg-stone-200/80 text-stone-600 font-bold px-2 py-1 rounded-lg text-[10px]" title="Punto fisso logistico, non spostabile">🔒 Fisso</span>
-            </div>
-          `;
-        } else {
-          controlSection = `
-            <div class="flex items-center gap-1">
-              <button onclick="moveProposalItem(${index}, -1)" class="bg-white border p-1 rounded-md text-[10px]" title="Sposta Su">⬆️</button>
-              <button onclick="moveProposalItem(${index}, 1)" class="bg-white border p-1 rounded-md text-[10px]" title="Sposta Giù">⬇️</button>
-              <button onclick="removeProposalItem(${index})" class="bg-white border text-rose-500 font-bold px-1.5 py-0.5 rounded-md text-[10px]" title="Rimuovi">✕</button>
-            </div>
-          `;
-        }
-
-        let daySelectorOrLabel = item.isLocked 
-          ? `<span class="font-bold text-stone-600 text-[11px] bg-white px-2 py-0.5 rounded-md border border-stone-200">${item.day.split(' ')[0]}</span>`
-          : `<select onchange="changeProposalDay(${index}, this.value)" class="bg-white border border-stone-300 rounded-md px-1.5 py-0.5 text-[10px] font-bold">${dayOptions}</select>`;
-
-        row.innerHTML = `
-          <div class="flex-1 space-y-0.5">
-            <div class="flex items-center gap-1.5">
-              ${daySelectorOrLabel}
-              <span class="font-semibold text-stone-400 text-[10px]">${item.time}</span>
-              ${badge}
-            </div>
-            <div class="font-bold text-stone-800 text-xs">${item.title}</div>
-            ${travelBadge}
+        dayBlock.innerHTML = `
+          <div class="flex items-center justify-between px-1 pb-1 border-b border-stone-200/60">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-stone-700 flex items-center gap-1.5">
+              <span class="h-2 w-2 rounded-full bg-pastelPink"></span>
+              <span>${dayName}</span>
+            </span>
+            <span class="text-[10px] bg-white px-2 py-0.5 rounded-md font-semibold text-stone-500">${dayStops.length} tappe</span>
           </div>
-          ${controlSection}
+          <div class="space-y-1.5" id="day-group-${dayName.replace(/\s+/g, '-')}"></div>
         `;
-        listCont.appendChild(row);
+
+        const itemsContainer = dayBlock.querySelector(`#day-group-${dayName.replace(/\s+/g, '-')}`);
+
+        dayStops.forEach(item => {
+          const originalIndex = pendingProposal.findIndex(p => p.id === item.id);
+          const row = document.createElement('div');
+          row.className = "p-2 rounded-xl bg-white border border-stone-100 text-xs flex justify-between items-center gap-2 shadow-2xs";
+
+          let dayOptions = uniqueDays.map(d => `<option value="${d}" ${item.day === d ? 'selected' : ''}>${d.split(' ')[0]} ${d.split(' ')[1] || ''}</option>`).join('');
+
+          let badge = `<span class="bg-${item.color || 'pastelSage'} px-2 py-0.5 rounded-md font-semibold text-stone-700 text-[10px]">${item.tag}</span>`;
+          if (item.isBooked) badge = `<span class="bg-pastelPink font-bold text-stone-800 px-2 py-0.5 rounded-md text-[10px]">🎟️ Prenotato</span>`;
+          if (item.isTransfer) badge = `<span class="bg-pastelBlue font-semibold text-stone-800 px-2 py-0.5 rounded-md text-[10px]">🚆 Transfer</span>`;
+
+          let travelBadge = item.travelTime ? `<div class="text-[10px] text-indigo-600 font-semibold mt-0.5">⏱️ ${item.travelTime}</div>` : '';
+
+          let controlSection = '';
+          if (item.isLocked) {
+            controlSection = `
+              <div class="flex items-center gap-1">
+                <span class="bg-stone-100 text-stone-500 font-bold px-2 py-1 rounded-lg text-[10px]" title="Punto fisso logistico">🔒 Fisso</span>
+              </div>
+            `;
+          } else {
+            controlSection = `
+              <div class="flex items-center gap-1">
+                <button onclick="moveProposalItem(${originalIndex}, -1)" class="bg-stone-50 hover:bg-stone-100 border border-stone-200 p-1 rounded-md text-[10px]" title="Sposta Su">⬆️</button>
+                <button onclick="moveProposalItem(${originalIndex}, 1)" class="bg-stone-50 hover:bg-stone-100 border border-stone-200 p-1 rounded-md text-[10px]" title="Sposta Giù">⬇️</button>
+                <button onclick="removeProposalItem(${originalIndex})" class="bg-stone-50 hover:bg-rose-50 border border-rose-200 text-rose-500 font-bold px-1.5 py-0.5 rounded-md text-[10px]" title="Rimuovi">✕</button>
+              </div>
+            `;
+          }
+
+          let daySelectorOrLabel = item.isLocked 
+            ? `<span class="font-bold text-stone-600 text-[10px] bg-stone-50 px-1.5 py-0.5 rounded-md border border-stone-200">${item.day.split(' ')[0]}</span>`
+            : `<select onchange="changeProposalDay(${originalIndex}, this.value)" class="bg-stone-50 border border-stone-300 rounded-md px-1.5 py-0.5 text-[10px] font-bold">${dayOptions}</select>`;
+
+          row.innerHTML = `
+            <div class="flex-1 space-y-0.5">
+              <div class="flex items-center gap-1.5">
+                ${daySelectorOrLabel}
+                <span class="font-semibold text-stone-400 text-[10px]">${item.time}</span>
+                ${badge}
+              </div>
+              <div class="font-bold text-stone-800 text-xs">${item.title}</div>
+              ${travelBadge}
+            </div>
+            ${controlSection}
+          `;
+          itemsContainer.appendChild(row);
+        });
+
+        listCont.appendChild(dayBlock);
       });
     }
 
@@ -1003,12 +1055,12 @@
       document.getElementById('reviewModal').classList.remove('hidden');
     }
 
-    // Quando sposti una tappa, RIBILANCIA IMMEDIATAMENTE GLI ORARI DEL GIORNO DI PARTENZA E DI ARRIVO
+    // Spostamento immediato in direzione del giorno scelto con riordino cronologico automatico
     function changeProposalDay(index, newDay) {
       if (pendingProposal[index].isLocked) return;
       pendingProposal[index].day = newDay;
       
-      // Auto-rebalance istantaneo degli orari per non creare buchi o ubiquità
+      // Auto-rebalance istantaneo e riordino cronologico
       pendingProposal = rebalanceDayTimeSlots(pendingProposal);
       renderProposalList();
     }
@@ -1042,26 +1094,19 @@
 
       pendingProposal.forEach(item => {
         if (item.isLocked) return;
-        if (item.day.includes(dayA)) {
-          item.day = item.day.replace(dayA, "__TEMP__");
-        }
+        if (item.day.includes(dayA)) item.day = item.day.replace(dayA, "__TEMP__");
       });
 
       pendingProposal.forEach(item => {
         if (item.isLocked) return;
-        if (item.day.includes(dayB)) {
-          item.day = item.day.replace(dayB, dayA);
-        }
+        if (item.day.includes(dayB)) item.day = item.day.replace(dayB, dayA);
       });
 
       pendingProposal.forEach(item => {
         if (item.isLocked) return;
-        if (item.day.includes("__TEMP__")) {
-          item.day = item.day.replace("__TEMP__", dayB);
-        }
+        if (item.day.includes("__TEMP__")) item.day = item.day.replace("__TEMP__", dayB);
       });
 
-      // Ribilanciamento automatico post-scambio
       pendingProposal = rebalanceDayTimeSlots(pendingProposal);
       renderProposalList();
     }
@@ -1090,7 +1135,7 @@
         container.innerHTML = `
           <div class="bg-white/90 backdrop-blur-md p-8 rounded-3xl text-center space-y-2 border border-dashed border-pastelSage">
             <p class="text-stone-600 font-semibold text-sm">Nessuna tappa inserita in questo viaggio 🌸</p>
-            <p class="text-xs text-stone-400">Clicca su "Ricalcola Itinerario & Tappe" per generare le schede con tempi e mezzi!</p>
+            <p class="text-xs text-stone-400">Clicca su "Ricalcola Itinerario & Tappe" per iniziare.</p>
           </div>
         `;
         return;
