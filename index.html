@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Travel Co-Planner • Smart Rebalance</title>
+  <title>Travel Co-Planner • Single World Map</title>
   
   <!-- Font morbidi da Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,15 +34,16 @@
   <style>
     body { 
       font-family: 'Quicksand', sans-serif; 
-      background-color: #f7f6f2;
+      background-color: #f6f5f0;
+      /* Mappamondo mondiale stilizzato UNICO a tutto schermo (NO REPEAT) */
       background-image: 
-        radial-gradient(at 10% 10%, rgba(220, 214, 247, 0.28) 0px, transparent 50%),
-        radial-gradient(at 90% 90%, rgba(255, 202, 212, 0.22) 0px, transparent 50%),
-        radial-gradient(at 50% 50%, rgba(216, 226, 220, 0.25) 0px, transparent 60%),
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='800' viewBox='0 0 800 800'%3E%3Cg fill='none' stroke='%23b8aed6' stroke-width='1.2' stroke-opacity='0.18'%3E%3Ccircle cx='400' cy='400' r='280' stroke-dasharray='6 6'/%3E%3Ccircle cx='400' cy='400' r='210'/%3E%3Ccircle cx='400' cy='400' r='130'/%3E%3Cellipse cx='400' cy='400' rx='280' ry='120'/%3E%3Cellipse cx='400' cy='400' rx='130' ry='280'/%3E%3Cpath d='M120 400 H680 M400 120 V680'/%3E%3Cpath d='M250 200 C320 280 480 240 550 320' stroke='%23e5989b' stroke-dasharray='4 4' stroke-width='1.5' stroke-opacity='0.25'/%3E%3Cpath d='M200 550 C300 480 500 520 620 420' stroke='%239a8c98' stroke-dasharray='4 4' stroke-width='1.5' stroke-opacity='0.25'/%3E%3Ccircle cx='550' cy='320' r='4' fill='%23e5989b' fill-opacity='0.3'/%3E%3Ccircle cx='250' cy='200' r='4' fill='%23b8aed6' fill-opacity='0.3'/%3E%3C/g%3E%3C/svg%3E");
+        radial-gradient(at 10% 10%, rgba(220, 214, 247, 0.35) 0px, transparent 50%),
+        radial-gradient(at 90% 90%, rgba(255, 202, 212, 0.28) 0px, transparent 50%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900' width='1600' height='900'%3E%3Cg fill='%23b8aed6' fill-opacity='0.16' stroke='%23a295c9' stroke-width='1' stroke-opacity='0.25'%3E%3C!-- Nord America --%3E%3Cpath d='M180 180 Q240 150 320 170 Q420 160 440 230 Q410 320 370 380 Q320 400 300 470 Q270 430 250 360 Q210 320 180 280 Z'/%3E%3C!-- Sud America --%3E%3Cpath d='M340 480 Q430 490 440 570 Q420 690 380 780 Q340 760 330 670 Q310 580 340 480 Z'/%3E%3C!-- Europa e UK --%3E%3Cpath d='M680 180 Q740 160 810 190 Q830 250 780 300 Q740 330 690 320 Q670 260 680 180 Z'/%3E%3Ccircle cx='665' cy='220' r='14'/%3E%3C!-- Africa --%3E%3Cpath d='M670 360 Q790 350 830 430 Q840 550 780 670 Q730 690 690 620 Q640 530 640 440 Z'/%3E%3C!-- Asia --%3E%3Cpath d='M830 160 Q1050 140 1200 220 Q1240 330 1150 420 Q1020 450 940 380 Q870 340 830 270 Z'/%3E%3C!-- Oceania --%3E%3Cpath d='M1150 560 Q1280 550 1310 640 Q1270 730 1180 720 Q1130 670 1150 560 Z'/%3E%3C/g%3E%3C!-- Linee reticolato e rotta aereo --%3E%3Cg fill='none' stroke='%23a295c9' stroke-opacity='0.18'%3E%3Cpath d='M100 450 H1500' stroke-width='1.5' stroke-dasharray='8 8'/%3E%3Cpath d='M800 100 V800' stroke-width='1.5' stroke-dasharray='8 8'/%3E%3Cellipse cx='800' cy='450' rx='680' ry='340' stroke-width='1.2' stroke-dasharray='12 12'/%3E%3C!-- Rotta tratteggiata volo --%3E%3Cpath d='M350 280 Q520 180 700 230' stroke='%23e5989b' stroke-width='2' stroke-dasharray='6 6' stroke-opacity='0.45'/%3E%3Ccircle cx='350' cy='280' r='5' fill='%23e5989b' fill-opacity='0.5'/%3E%3Ccircle cx='700' cy='230' r='5' fill='%23e5989b' fill-opacity='0.5'/%3E%3C/g%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center center;
       background-attachment: fixed;
-      background-position: center;
-      background-repeat: repeat;
+      background-size: cover;
     }
     h1, h2, h3, h4, .font-title { font-family: 'Comfortaa', cursive, sans-serif; }
     
@@ -244,7 +245,7 @@
           </button>
         </div>
         <p class="text-[10px] text-stone-400 leading-tight">
-          ⚡ Spostando una tappa al Giorno 5, la vedrai scendere subito al Giorno 5 con gli orari ricalcolati!
+          ⚡ Spostando una tappa, la vedrai traslocare subito nel blocco del giorno scelto con gli orari ricalcolati!
         </p>
         <div id="proposalList" class="space-y-3 max-h-80 overflow-y-auto pr-1"></div>
         <div class="flex gap-2 pt-1">
@@ -283,7 +284,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'pastel_trips_library_v9';
+    const STORAGE_KEY = 'pastel_trips_library_v10';
 
     let allTrips = {};
     let currentTripId = null;
@@ -638,15 +639,12 @@
       `;
     }
 
-    // MOTORE DI ORDINAMENTO E RIBILANCIAMENTO ORARI AUTOMATICO SENZA CONFLITTI
     function rebalanceDayTimeSlots(stopsArray) {
-      // 1. Ordina l'array primario in base al numero del giorno (Giorno 1 prima di Giorno 2, ecc.)
       function getDayNumber(dayStr) {
         const match = dayStr.match(/Giorno\s*(\d+)/i);
         return match ? parseInt(match[1], 10) : 999;
       }
 
-      // Raggruppa per giorno preservando l'ordine
       const dayMap = {};
       stopsArray.forEach(st => {
         if (!dayMap[st.day]) dayMap[st.day] = [];
@@ -662,15 +660,12 @@
       ];
 
       const sortedStops = [];
-
-      // Ordina i giorni in sequenza
       const sortedDayKeys = Object.keys(dayMap).sort((a, b) => getDayNumber(a) - getDayNumber(b));
 
       sortedDayKeys.forEach(dayKey => {
         const dayStops = dayMap[dayKey];
         const isFirstDay = dayKey.includes('Giorno 1');
         
-        // Mette in testa eventuali elementi Locked (come transfer arrivo) e in coda transfer partenza
         dayStops.sort((a, b) => {
           if (a.isTransfer && a.id && a.id.includes('-arr')) return -1;
           if (b.isTransfer && b.id && b.id.includes('-arr')) return 1;
@@ -900,7 +895,6 @@
         }
       });
 
-      // Match eventi prenotati
       fixedEvents.forEach(ev => {
         let assignedDayLabel = days[0].label;
         const matched = days.find(d => 
@@ -960,16 +954,13 @@
       showProposalModal();
     }
 
-    // Renderizza l'anteprima RAGGRUPPATA PER GIORNO in modo ordinato e cronologico
     function renderProposalList() {
       const listCont = document.getElementById('proposalList');
       listCont.innerHTML = '';
       
-      // Calcola l'elenco ordinato di tutti i giorni disponibili
       const days = generateDaysArray(getCurrentTrip().startDate, getCurrentTrip().endDate);
       const uniqueDays = days.map(d => d.label);
 
-      // Raggruppa le tappe per giorno
       const grouped = {};
       uniqueDays.forEach(d => { grouped[d] = []; });
       pendingProposal.forEach(item => {
@@ -977,7 +968,6 @@
         grouped[item.day].push(item);
       });
 
-      // Renderizza gruppo per gruppo in ordine di giorno
       uniqueDays.forEach(dayName => {
         const dayStops = grouped[dayName] || [];
         if (dayStops.length === 0) return;
@@ -1055,12 +1045,9 @@
       document.getElementById('reviewModal').classList.remove('hidden');
     }
 
-    // Spostamento immediato in direzione del giorno scelto con riordino cronologico automatico
     function changeProposalDay(index, newDay) {
       if (pendingProposal[index].isLocked) return;
       pendingProposal[index].day = newDay;
-      
-      // Auto-rebalance istantaneo e riordino cronologico
       pendingProposal = rebalanceDayTimeSlots(pendingProposal);
       renderProposalList();
     }
