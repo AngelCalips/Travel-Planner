@@ -212,8 +212,8 @@
           <span class="text-[10px] font-bold uppercase tracking-wider text-stone-400">Itinerario Attivo</span>
           <h2 class="text-lg font-bold text-stone-800" id="tripTitle">Nuovo Viaggio</h2>
         </div>
-        <button onclick="openAddStopModal()" class="no-print text-xs bg-pastelPeach hover:bg-pastelPink text-stone-800 font-semibold px-3.5 py-2 rounded-xl transition shadow-2xs flex items-center gap-1">
-          <span>+</span> <span>Aggiungi Tappa</span>
+        <button id="btnAddStopMain" onclick="tryOpenAddStopModal()" class="no-print text-xs bg-pastelPeach hover:bg-pastelPink text-stone-800 font-semibold px-3.5 py-2 rounded-xl transition shadow-2xs flex items-center gap-1">
+          <span id="addStopIcon">+</span> <span id="addStopLabel">Aggiungi Tappa</span>
         </button>
       </div>
 
@@ -222,15 +222,16 @@
         <div class="flex justify-between items-center">
           <div class="flex items-center gap-1.5">
             <span>💬</span>
-            <h3 class="font-bold text-stone-800 text-xs">Anteprima Mete: Sposta o Inverti!</h3>
+            <h3 class="font-bold text-stone-800 text-xs">Anteprima Proposta: Sposta o Conferma!</h3>
           </div>
           <button onclick="swapProposalDaysPrompt()" class="text-[10px] bg-pastelLavender/60 hover:bg-pastelLavender text-stone-700 font-bold px-2.5 py-1 rounded-lg transition">
             🔄 Inverti Mete Giorni
           </button>
         </div>
-        <p class="text-[10px] text-stone-400 leading-tight">
-          ⚡ Spostando una tappa dal menu a tendina, si ricolloca subito nel blocco del giorno scelto!
-        </p>
+        <div class="bg-pastelPeach/40 border border-pastelPeach p-2.5 rounded-xl text-[11px] text-stone-700 flex items-start gap-1.5">
+          <span class="text-sm">⚠️</span>
+          <span><strong>Conferma la proposta</strong> per salvare questa struttura ed iniziare ad aggiungere ulteriori tappe personalizzate.</span>
+        </div>
         <div id="proposalList" class="space-y-3 max-h-80 overflow-y-auto pr-1"></div>
         <div class="flex gap-2 pt-1">
           <button onclick="confirmProposal()" class="flex-1 bg-pastelSage hover:bg-emerald-200 text-stone-800 font-bold py-2 rounded-xl text-xs transition">
@@ -324,11 +325,12 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'pastel_trips_library_clean_v7';
+    const STORAGE_KEY = 'pastel_trips_library_clean_v8';
 
     let allTrips = {};
     let currentTripId = null;
     let pendingProposal = [];
+    let isProposalOpen = false;
 
     function createEmptyTrip(title = "Nuovo Viaggio") {
       return {
@@ -384,6 +386,7 @@
         syncFormWithCurrentTrip();
         renderTripsSidebar();
         renderItinerary();
+        updateAddStopButtonState();
       } catch (err) {
         console.error("Init error:", err);
       }
@@ -644,7 +647,7 @@
       }
 
       const titleElem = document.getElementById('tripTitle');
-      if (titleElem) titleElem.innerText = trip.destination ? `Viaggio a ${trip.destination}` : (trip.title || "Nuovo Viaggio");
+      if (titleElem) titleElem.innerText = trip.destination ? `Soggiorno a ${trip.destination}` : (trip.title || "Nuovo Viaggio");
     }
 
     function addBookedEventInput(dateVal = '', timeVal = '', descVal = '') {
@@ -712,11 +715,8 @@
       return days;
     }
 
-    // INTELLIGENZA TERRITORIALE: Riconosce borghi/paesini e suggerisce il polo o dintorni
     function detectHubAndNearby(dest) {
       const d = (dest || '').toLowerCase().trim();
-      
-      // Esempio hinterland milanese (Buccinasco, Corsico, Assago, Rozzano...)
       if (d.includes('buccinasco') || d.includes('corsico') || d.includes('assago') || d.includes('cesano boscone') || d.includes('trezzano')) {
         return {
           isSmallTown: true,
@@ -729,7 +729,6 @@
           ]
         };
       }
-      
       return { isSmallTown: false, hub: dest, localHighlight: null, nearbyHighlights: [] };
     }
 
@@ -820,8 +819,6 @@
     function buildAccurateItinerary(dest, expType, transportPref, airport, hotel, sDate, sTime, eDate, eTime, fixedEvents, interests) {
       const days = generateDaysArray(sDate, eDate);
       let list = [];
-
-      // Controllo paese piccolo vs città con dintorni
       const geoInfo = detectHubAndNearby(dest);
 
       days.forEach((dayObj, index) => {
@@ -892,7 +889,6 @@
           });
         }
         else {
-          // GIORNI INTERMEDI: se è un paesino, mostra i DINTORNI (es. Navigli, Milano centro, Abbazia)
           if (geoInfo.isSmallTown && geoInfo.nearbyHighlights.length > 0) {
             const h1 = geoInfo.nearbyHighlights[(index - 1) % geoInfo.nearbyHighlights.length];
             const h2 = geoInfo.nearbyHighlights[index % geoInfo.nearbyHighlights.length];
@@ -1019,6 +1015,8 @@
 
         pendingProposal = buildAccurateItinerary(dest, expType, transportPref, airport, hotel, sDate, sTime, eDate, eTime, fixedEvents, interests);
         
+        isProposalOpen = true;
+        updateAddStopButtonState();
         renderProposalList();
         showProposalModal();
       } catch (err) {
@@ -1177,18 +1175,53 @@
       renderProposalList();
     }
 
+    // CONFERMA PROPOSTA: SBLOCCA L'AGGIUNTA TAPPE
     function confirmProposal() {
       const trip = getCurrentTrip();
       if (!trip) return;
       trip.stops = [...pendingProposal];
       saveAllTripsToStorage();
+      isProposalOpen = false;
+      updateAddStopButtonState();
       document.getElementById('reviewModal').classList.add('hidden');
       renderItinerary();
     }
 
     function cancelProposal() {
+      isProposalOpen = false;
+      updateAddStopButtonState();
       const el = document.getElementById('reviewModal');
       if (el) el.classList.add('hidden');
+    }
+
+    // GESTIONE STATO PULSANTE "+ AGGIUNGI TAPPA"
+    function updateAddStopButtonState() {
+      const btn = document.getElementById('btnAddStopMain');
+      const icon = document.getElementById('addStopIcon');
+      const label = document.getElementById('addStopLabel');
+      if (!btn) return;
+
+      if (isProposalOpen) {
+        btn.classList.add('opacity-60', 'cursor-not-allowed', 'bg-stone-200', 'text-stone-500');
+        btn.classList.remove('bg-pastelPeach', 'hover:bg-pastelPink', 'text-stone-800');
+        if (icon) icon.innerText = '🔒';
+        if (label) label.innerText = 'Prima conferma la proposta';
+      } else {
+        btn.classList.remove('opacity-60', 'cursor-not-allowed', 'bg-stone-200', 'text-stone-500');
+        btn.classList.add('bg-pastelPeach', 'hover:bg-pastelPink', 'text-stone-800');
+        if (icon) icon.innerText = '+';
+        if (label) label.innerText = 'Aggiungi Tappa';
+      }
+    }
+
+    function tryOpenAddStopModal() {
+      if (isProposalOpen) {
+        alert("💬 Prima conferma o annulla la proposta dell'itinerario in alto per poter aggiungere nuove mete personalizzate!");
+        const reviewBox = document.getElementById('reviewModal');
+        if (reviewBox) reviewBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      openAddStopModal();
     }
 
     function renderItinerary() {
@@ -1202,7 +1235,7 @@
       if (!trip.stops || trip.stops.length === 0) {
         container.innerHTML = `
           <div class="bg-white p-8 rounded-3xl text-center space-y-2 border border-dashed border-pastelSage">
-            <p class="text-stone-600 font-semibold text-sm">Nessuna tappa inserita in questo viaggio 🌸</p>
+            <p class="text-stone-600 font-semibold text-sm">Nessuna tappa confermata per questo viaggio 🌸</p>
             <p class="text-xs text-stone-400">Compila la località a sinistra e clicca su "Ricalcola Itinerario & Tappe".</p>
           </div>
         `;
