@@ -58,7 +58,7 @@
       <span class="text-xl">✈️</span>
       <div>
         <h1 class="font-title text-base sm:text-lg font-bold text-stone-800 leading-tight">Travel Co-Planner</h1>
-        <p class="text-[10px] text-stone-400 font-medium">Dashboard intelligente & itinerari su misura</p>
+        <p class="text-[10px] text-stone-400 font-medium">Dashboard intelligente per viaggiatori</p>
       </div>
     </div>
     
@@ -75,7 +75,7 @@
   <!-- CONTAINER DASHBOARD A 3 COLONNE -->
   <main class="flex-1 w-full max-w-[1650px] mx-auto p-3 sm:p-5 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
 
-    <!-- COLONNA 1 (SX): I MIEI VIAGGI SALVATI (lg:col-span-3) -->
+    <!-- COLONNA 1 (SX): I MIEI VIAGGI SALVATI -->
     <aside class="no-print lg:col-span-3 bg-white border border-pastelLavender/80 p-4 rounded-3xl shadow-xs space-y-3 lg:sticky lg:top-20 lg:max-h-[calc(100vh-100px)] flex flex-col">
       <div class="flex items-center justify-between">
         <span class="text-xs font-bold uppercase tracking-wider text-stone-500 flex items-center gap-1.5">
@@ -89,7 +89,7 @@
       <div id="tripsListContainer" class="space-y-2 flex-1 overflow-y-auto pr-1"></div>
     </aside>
 
-    <!-- COLONNA 2 (CENTRO): GESTORE PARAMETRI & MODIFICHE LIVE (lg:col-span-4) -->
+    <!-- COLONNA 2 (CENTRO): GESTORE PARAMETRI & MODIFICHE LIVE -->
     <section class="no-print lg:col-span-4 bg-white border border-pastelSage/80 p-4 sm:p-5 rounded-3xl shadow-xs space-y-4 lg:sticky lg:top-20 lg:max-h-[calc(100vh-100px)] overflow-y-auto pr-2">
       <div class="flex justify-between items-center border-b border-stone-100 pb-2">
         <h2 class="text-xs font-bold uppercase tracking-wider text-stone-600 flex items-center gap-1.5">
@@ -132,7 +132,7 @@
       <!-- SEZIONE CITTÀ SINGOLA -->
       <div id="singleCitySection" class="space-y-2.5">
         <div>
-          <label class="block text-xs font-semibold text-stone-600 mb-1">Destinazione</label>
+          <label class="block text-xs font-semibold text-stone-600 mb-1">Destinazione *</label>
           <input type="text" id="destInput" oninput="updateTripField('destination', this.value)" placeholder="Es. Londra, Parigi, New York..." 
                  class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
         </div>
@@ -157,13 +157,13 @@
       <!-- LOGISTICA VOLI & DATE -->
       <div class="bg-pastelCream/60 p-3.5 rounded-2xl border border-pastelSage/50 space-y-3">
         <span class="text-xs font-bold uppercase tracking-wide text-stone-700 flex items-center gap-1">
-          <span>✈️</span> <span>Voli & Orari Operativi</span>
+          <span>✈️</span> <span>Voli & Date</span>
         </span>
 
         <div class="space-y-2 text-xs">
           <div>
             <label class="block text-[11px] text-stone-500 font-medium mb-0.5">Arrivo / Andata</label>
-            <input type="text" id="airportInput" oninput="updateTripField('airport', this.value)" placeholder="Aeroporto (es. Gatwick, Malpensa...)" 
+            <input type="text" id="airportInput" oninput="updateTripField('airport', this.value)" placeholder="Aeroporto di Arrivo (es. Gatwick)" 
                    class="w-full bg-white border border-stone-200 rounded-lg px-2.5 py-1 text-xs mb-1">
             <div class="flex gap-1.5">
               <input type="date" id="startDate" onchange="updateTripField('startDate', this.value)" class="w-2/3 bg-white border border-stone-200 rounded-lg px-2 py-1 text-xs font-semibold">
@@ -196,8 +196,8 @@
 
       <!-- INTERESSI -->
       <div>
-        <label class="block text-xs font-semibold text-stone-600 mb-1">Interessi & Luoghi Chiave</label>
-        <input type="text" id="interestsInput" oninput="updateTripField('interests', this.value)" placeholder="Es. Musei, Parchi, Mercatini vintage, Locali tipici..." 
+        <label class="block text-xs font-semibold text-stone-600 mb-1">Interessi & Fandom</label>
+        <input type="text" id="interestsInput" oninput="updateTripField('interests', this.value)" placeholder="Es. Harry Potter, Sherlock Holmes, Musei, Cibo locale..." 
                class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
       </div>
 
@@ -207,7 +207,7 @@
       </button>
     </section>
 
-    <!-- COLONNA 3 (DX): ITINERARIO UFFICIALE & ANTEPRIMA AI (lg:col-span-5) -->
+    <!-- COLONNA 3 (DX): ITINERARIO UFFICIALE & ANTEPRIMA -->
     <section class="lg:col-span-5 space-y-4 print-area">
       
       <!-- Header Itinerario -->
@@ -233,7 +233,7 @@
           </button>
         </div>
         <p class="text-[10px] text-stone-400 leading-tight">
-          ⚡ Spostando una tappa, si ricolloca automaticamente nel blocco del giorno scelto con orari scalati!
+          ⚡ Spostando una tappa dal menu a tendina, si sposta subito nel blocco del giorno scelto!
         </p>
         <div id="proposalList" class="space-y-3 max-h-80 overflow-y-auto pr-1"></div>
         <div class="flex gap-2 pt-1">
@@ -252,7 +252,7 @@
 
   </main>
 
-  <!-- MODAL NUOVA TAPPA RAPIDA & INTELLIGENTE (no-print) -->
+  <!-- MODAL NUOVA TAPPA RAPIDA (no-print) -->
   <div id="addStopModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-stone-900/40 p-4 no-print">
     <div class="bg-white border-2 border-pastelLavender rounded-3xl p-5 sm:p-6 max-w-md w-full shadow-xl space-y-4">
       <div class="flex justify-between items-center border-b border-stone-100 pb-2">
@@ -266,18 +266,17 @@
         <div>
           <label class="block font-semibold text-stone-600 mb-1">Quale giorno?</label>
           <select id="modalStopDay" class="w-full bg-stone-50 border border-pastelSage rounded-xl px-3 py-2 font-bold text-stone-700 focus:outline-none focus:ring-2 focus:ring-pastelPink">
-            <!-- Popolato con i giorni reali del viaggio -->
           </select>
         </div>
 
         <div>
           <label class="block font-semibold text-stone-600 mb-1">Nome Luogo / Cosa vuoi fare?</label>
-          <input type="text" id="modalStopTitle" placeholder="Es. Museo, Passeggiata al porto, Cena tipica..." 
+          <input type="text" id="modalStopTitle" placeholder="Es. Museo, Passeggiata, Cena tipica..." 
                  class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pastelPink">
         </div>
 
         <div>
-          <label class="block font-semibold text-stone-600 mb-1">Fascia Oraria / Momento della giornata</label>
+          <label class="block font-semibold text-stone-600 mb-1">Fascia Oraria</label>
           <select id="modalTimeSlot" onchange="toggleCustomTimeField(this.value)" class="w-full bg-stone-50 border border-pastelSage rounded-xl px-3 py-2 font-medium text-stone-700 focus:outline-none focus:ring-2 focus:ring-pastelPink">
             <option value="morning">🌅 Mattina (09:30 - 12:30)</option>
             <option value="afternoon">☀️ Pomeriggio (14:30 - 17:00)</option>
@@ -293,15 +292,15 @@
         </div>
 
         <div>
-          <label class="block font-semibold text-stone-600 mb-1">Note, Dettagli o Consigli (Opzionale)</label>
-          <textarea id="modalStopDesc" rows="2" placeholder="Es. Prenotare in anticipo, portare macchina fotografica..." 
+          <label class="block font-semibold text-stone-600 mb-1">Note (Opzionale)</label>
+          <textarea id="modalStopDesc" rows="2" placeholder="Es. Prenotare in anticipo, portare fotocamera..." 
                     class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pastelPink"></textarea>
         </div>
       </div>
 
       <div class="pt-2 flex gap-2">
         <button onclick="submitSmartStop()" class="flex-1 bg-pastelLavender hover:bg-pastelPink text-stone-800 font-bold py-2.5 rounded-xl text-xs transition shadow-2xs">
-          ✨ Calcola Percorrenza e Inserisci
+          ✨ Inserisci Meta
         </button>
         <button onclick="closeAddStopModal()" class="bg-stone-100 hover:bg-stone-200 text-stone-600 font-semibold px-4 py-2.5 rounded-xl text-xs transition">
           Annulla
@@ -310,13 +309,13 @@
     </div>
   </div>
 
-  <!-- MODAL DI SICUREZZA PER RESET VIAGGIO (no-print) -->
+  <!-- MODAL DI SICUREZZA RESET (no-print) -->
   <div id="resetSecurityModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-stone-900/40 p-4 no-print">
     <div class="bg-white border-2 border-pastelPink rounded-3xl p-6 max-w-sm w-full shadow-lg space-y-4 text-center">
       <div class="text-3xl">⚠️</div>
       <h3 class="font-title text-base font-bold text-stone-800">Vuoi resettare questo viaggio?</h3>
       <p class="text-xs text-stone-500 leading-relaxed">
-        Tutti i parametri, gli alloggi e le tappe create per questo itinerario verranno azzerati per farti ricominciare da capo. L'operazione non può essere annullata.
+        Tutti i dati inseriti per questo viaggio verranno azzerati. Sei sicuro di voler ricominciare?
       </p>
       <div class="flex gap-2 pt-2">
         <button onclick="executeResetTrip()" class="flex-1 bg-rose-400 hover:bg-rose-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-xs">
@@ -330,13 +329,12 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'pastel_trips_library_clean_v3';
+    const STORAGE_KEY = 'pastel_trips_library_clean_v4';
 
     let allTrips = {};
     let currentTripId = null;
     let pendingProposal = [];
 
-    // Struttura viaggio COMPLETAMENTE PULITA (zero dati preimpostati)
     function createEmptyTrip(title = "Nuovo Viaggio") {
       return {
         id: "trip-" + Date.now(),
@@ -360,48 +358,55 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const sharedData = urlParams.get('trip');
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const sharedData = urlParams.get('trip');
 
-      loadAllTripsFromStorage();
+        loadAllTripsFromStorage();
 
-      if (sharedData) {
-        try {
-          const importedTrip = JSON.parse(decodeURIComponent(escape(atob(sharedData))));
-          if (importedTrip && importedTrip.id) {
-            allTrips[importedTrip.id] = importedTrip;
-            currentTripId = importedTrip.id;
-            saveAllTripsToStorage();
+        if (sharedData) {
+          try {
+            const importedTrip = JSON.parse(decodeURIComponent(escape(atob(sharedData))));
+            if (importedTrip && importedTrip.id) {
+              allTrips[importedTrip.id] = importedTrip;
+              currentTripId = importedTrip.id;
+              saveAllTripsToStorage();
+            }
+          } catch (e) {
+            console.error("Errore lettura link:", e);
           }
-        } catch (e) {
-          console.error("Errore lettura link:", e);
         }
-      }
 
-      // Se non ci sono viaggi salvati, apri con una scheda completamente pulita
-      if (Object.keys(allTrips).length === 0) {
-        const defaultTrip = createEmptyTrip("Nuovo Viaggio");
-        allTrips[defaultTrip.id] = defaultTrip;
-        currentTripId = defaultTrip.id;
-        saveAllTripsToStorage();
-      } else if (!currentTripId || !allTrips[currentTripId]) {
-        currentTripId = Object.keys(allTrips)[0];
-      }
+        if (Object.keys(allTrips).length === 0) {
+          const defaultTrip = createEmptyTrip("Nuovo Viaggio");
+          allTrips[defaultTrip.id] = defaultTrip;
+          currentTripId = defaultTrip.id;
+          saveAllTripsToStorage();
+        } else if (!currentTripId || !allTrips[currentTripId]) {
+          currentTripId = Object.keys(allTrips)[0];
+        }
 
-      syncFormWithCurrentTrip();
-      renderTripsSidebar();
-      renderItinerary();
+        syncFormWithCurrentTrip();
+        renderTripsSidebar();
+        renderItinerary();
+      } catch (err) {
+        console.error("Init error:", err);
+      }
     });
 
     function loadAllTripsFromStorage() {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        try { allTrips = JSON.parse(saved); } catch(e){ allTrips = {}; }
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) allTrips = JSON.parse(saved);
+      } catch(e) {
+        allTrips = {};
       }
     }
 
     function saveAllTripsToStorage() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(allTrips));
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(allTrips));
+      } catch(e){}
     }
 
     function getCurrentTrip() {
@@ -422,11 +427,13 @@
     }
 
     function openResetModal() {
-      document.getElementById('resetSecurityModal').classList.remove('hidden');
+      const el = document.getElementById('resetSecurityModal');
+      if (el) el.classList.remove('hidden');
     }
 
     function closeResetModal() {
-      document.getElementById('resetSecurityModal').classList.add('hidden');
+      const el = document.getElementById('resetSecurityModal');
+      if (el) el.classList.add('hidden');
     }
 
     function executeResetTrip() {
@@ -546,11 +553,11 @@
       const singleSec = document.getElementById('singleCitySection');
       const multiSec = document.getElementById('multiStopSection');
       if (mode === 'multistop') {
-        singleSec.classList.add('hidden');
-        multiSec.classList.remove('hidden');
+        if (singleSec) singleSec.classList.add('hidden');
+        if (multiSec) multiSec.classList.remove('hidden');
       } else {
-        singleSec.classList.remove('hidden');
-        multiSec.classList.add('hidden');
+        if (singleSec) singleSec.classList.remove('hidden');
+        if (multiSec) multiSec.classList.add('hidden');
       }
       updateTripField('mode', mode);
     }
@@ -559,36 +566,41 @@
       const trip = getCurrentTrip();
       if (!trip) return;
 
-      document.getElementById('modeSelect').value = trip.mode || 'single';
-      document.getElementById('expTypeSelect').value = trip.expType || 'first';
-      document.getElementById('transportPrefSelect').value = trip.transportPref || 'transit';
+      const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+      setVal('modeSelect', trip.mode || 'single');
+      setVal('expTypeSelect', trip.expType || 'first');
+      setVal('transportPrefSelect', trip.transportPref || 'transit');
       toggleTripMode(trip.mode || 'single');
 
-      document.getElementById('destInput').value = trip.destination || '';
-      document.getElementById('hotelInput').value = trip.hotel || '';
-      document.getElementById('airportInput').value = trip.airport || '';
-      document.getElementById('returnAirportInput').value = trip.returnAirport || '';
-      document.getElementById('startDate').value = trip.startDate || '';
-      document.getElementById('startTime').value = trip.startTime || '10:00';
-      document.getElementById('endDate').value = trip.endDate || '';
-      document.getElementById('endTime').value = trip.endTime || '18:00';
-      document.getElementById('interestsInput').value = trip.interests || '';
+      setVal('destInput', trip.destination);
+      setVal('hotelInput', trip.hotel);
+      setVal('airportInput', trip.airport);
+      setVal('returnAirportInput', trip.returnAirport);
+      setVal('startDate', trip.startDate);
+      setVal('startTime', trip.startTime || '10:00');
+      setVal('endDate', trip.endDate);
+      setVal('endTime', trip.endTime || '18:00');
+      setVal('interestsInput', trip.interests);
 
       const bookedCont = document.getElementById('bookedEventsList');
-      bookedCont.innerHTML = '';
-      if (trip.fixedEvents && trip.fixedEvents.length > 0) {
-        trip.fixedEvents.forEach(ev => addBookedEventInput(ev.day, ev.time, ev.title));
+      if (bookedCont) {
+        bookedCont.innerHTML = '';
+        if (trip.fixedEvents && trip.fixedEvents.length > 0) {
+          trip.fixedEvents.forEach(ev => addBookedEventInput(ev.day, ev.time, ev.title));
+        }
       }
 
-      document.getElementById('tripTitle').innerText = trip.destination ? `Viaggio a ${trip.destination}` : (trip.title || "Nuovo Viaggio");
+      const titleElem = document.getElementById('tripTitle');
+      if (titleElem) titleElem.innerText = trip.destination ? `Viaggio a ${trip.destination}` : (trip.title || "Nuovo Viaggio");
     }
 
     function addBookedEventInput(dateVal = '', timeVal = '', descVal = '') {
       const list = document.getElementById('bookedEventsList');
+      if (!list) return;
       const row = document.createElement('div');
       row.className = "flex gap-1.5 items-center bg-white p-1.5 rounded-xl border border-pastelPeach/80 text-xs";
       row.innerHTML = `
-        <input type="text" placeholder="Data (es. 16/11/2026)" value="${dateVal}" class="event-day w-1/3 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1 text-[11px]">
+        <input type="text" placeholder="Data" value="${dateVal}" class="event-day w-1/3 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1 text-[11px]">
         <input type="time" value="${timeVal}" class="event-time w-1/4 bg-stone-50 border border-stone-200 rounded-lg px-1.5 py-1 text-[11px]">
         <input type="text" placeholder="Biglietto / Evento" value="${descVal}" class="event-desc flex-1 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1 text-[11px]">
         <button onclick="this.parentElement.remove()" class="text-rose-400 hover:text-rose-600 font-bold px-1">✕</button>
@@ -608,8 +620,9 @@
       return list;
     }
 
+    // GENERATORE DATE A PROVA DI CRASH
     function generateDaysArray(startDateStr, endDateStr) {
-      if (!startDateStr || !endDateStr) {
+      if (!startDateStr || !endDateStr || isNaN(new Date(startDateStr).getTime()) || isNaN(new Date(endDateStr).getTime())) {
         return [
           { num: 1, label: "Giorno 1", shortDate: "Giorno 1", isoDate: "" },
           { num: 2, label: "Giorno 2", shortDate: "Giorno 2", isoDate: "" },
@@ -621,13 +634,13 @@
       const start = new Date(startDateStr);
       const end = new Date(endDateStr);
       const diffTime = end.getTime() - start.getTime();
-      const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24)) + 1;
-      const totalDays = Math.max(1, diffDays);
+      let diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24)) + 1;
+      if (diffDays < 1 || isNaN(diffDays)) diffDays = 3;
 
       const daysOfWeek = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
       const months = ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'];
 
-      for (let i = 0; i < totalDays; i++) {
+      for (let i = 0; i < diffDays; i++) {
         const d = new Date(start);
         d.setDate(start.getDate() + i);
         const dayName = daysOfWeek[d.getDay()];
@@ -647,26 +660,8 @@
       return days;
     }
 
-    function getAirportTransitTips(airport, hotel) {
-      const aLow = (airport || '').toLowerCase();
-      if (aLow.includes('gatwick')) {
-        return `
-          <div class="mt-2 p-2 bg-pastelBlue/20 rounded-xl text-[11px] text-stone-700 space-y-1">
-            <div class="font-bold text-stone-800">🚆 Transfer da Gatwick verso l'hotel:</div>
-            <div>• <span class="font-semibold text-emerald-700">Meno Costoso:</span> Thameslink fino a Blackfriars/London Bridge + Metro Circle Line (~£13-15, 55 min).</div>
-            <div>• <span class="font-semibold text-indigo-700">Più Rapido:</span> Gatwick Express fino a Victoria (~£21, 30 min) + metro o taxi verso l'alloggio.</div>
-          </div>
-        `;
-      }
-      return `
-        <div class="mt-2 p-2 bg-pastelBlue/20 rounded-xl text-[11px] text-stone-700">
-          • Spostamento con navetta aeroportuale o treno verso il centro città, poi metro o taxi per raggiungere l'alloggio.
-        </div>
-      `;
-    }
-
     function estimateTravelTimeAndTag(title, desc, transportPref) {
-      const text = (title + " " + desc).toLowerCase();
+      const text = ((title || '') + " " + (desc || '')).toLowerCase();
       let estTime = "🚇 15 min con i mezzi";
       let estTag = "Visita";
 
@@ -681,32 +676,25 @@
         estTime = "🚆 50 min Treno Express";
       } else if (text.includes("museo") || text.includes("museum") || text.includes("gallery") || text.includes("louvre") || text.includes("british")) {
         estTag = "Cultura";
-        estTime = "🚇 18 min Metro + a piedi";
-      } else if (text.includes("cena") || text.includes("pub") || text.includes("food") || text.includes("ristorante") || text.includes("mercato")) {
+        estTime = "🚇 18 min con i mezzi";
+      } else if (text.includes("cena") || text.includes("pub") || text.includes("food") || text.includes("ristorante")) {
         estTag = "Food & Relax";
-        estTime = "🚶 10-15 min passeggiata";
-      } else if (text.includes("parco") || text.includes("park") || text.includes("giardino") || text.includes("passeggiata")) {
+        estTime = "🚶 10-15 min a piedi";
+      } else if (text.includes("parco") || text.includes("park") || text.includes("passeggiata")) {
         estTag = "Passeggiata";
-        estTime = "🚶 10 min a piedi dall'hotel";
-      } else if (text.includes("shopping") || text.includes("negozi") || text.includes("centro")) {
-        estTag = "Shopping";
-        estTime = "🚇 15 min Metro";
+        estTime = "🚶 10 min a piedi";
       }
 
-      if (transportPref === 'walk_transit' && !text.includes("studios")) {
-        estTime = "🚶 15-20 min a piedi / Metro breve";
-      } else if (transportPref === 'taxi') {
-        estTime = "🚕 15-25 min Taxi / Ride";
-      } else if (transportPref === 'car') {
-        estTime = "🚗 20 min in auto";
-      }
+      if (transportPref === 'walk_transit') estTime = "🚶 15 min a piedi / Metro";
+      else if (transportPref === 'taxi') estTime = "🚕 15 min Taxi";
+      else if (transportPref === 'car') estTime = "🚗 20 min auto";
 
       return { travelTime: estTime, tag: estTag };
     }
 
     function rebalanceDayTimeSlots(stopsArray) {
       function getDayNumber(dayStr) {
-        const match = dayStr.match(/Giorno\s*(\d+)/i);
+        const match = (dayStr || '').match(/Giorno\s*(\d+)/i);
         return match ? parseInt(match[1], 10) : 999;
       }
 
@@ -766,9 +754,6 @@
     function buildAccurateItinerary(dest, expType, transportPref, airport, hotel, sDate, sTime, eDate, eTime, fixedEvents, interests) {
       const days = generateDaysArray(sDate, eDate);
       let list = [];
-      const iLow = (interests || '').toLowerCase();
-      const isReturning = expType === 'returning';
-      const transitExtraHtml = getAirportTransitTips(airport, hotel);
 
       days.forEach((dayObj, index) => {
         const isFirst = index === 0;
@@ -778,9 +763,9 @@
           list.push({
             id: `stop-${dayObj.num}-arr`,
             day: dayObj.label,
-            time: `${sTime} - Arrivo & Check-in`,
+            time: `${sTime || '10:00'} - Arrivo & Check-in`,
             title: `Arrivo a ${airport || 'Aeroporto'} ➔ Check-in a ${hotel || 'Alloggio'}`,
-            desc: `Ritiro valigie e sistemazione in hotel.<br>${transitExtraHtml}`,
+            desc: "Ritiro valigie, transfer verso l'alloggio e deposito bagagli.",
             tag: "Transfer & Hotel",
             color: "pastelBlue",
             isTransfer: true,
@@ -792,68 +777,22 @@
             id: `stop-${dayObj.num}-pm`,
             day: dayObj.label,
             time: "Pomeriggio • 15:00 - 17:30",
-            title: `Primo contatto e passeggiata nel cuore di ${dest}`,
-            desc: "Passeggiata rilassante per iniziare a scoprire l'atmosfera della città partendo dall'alloggio.",
-            tag: isReturning ? "Scorci Nascosti" : "Must See",
+            title: `Passeggiata nel cuore di ${dest}`,
+            desc: "Primo contatto e scoperta dell'atmosfera del centro città.",
+            tag: "Must See",
             color: "pastelSage",
-            travelTime: "🚶 10-15 min a piedi"
+            travelTime: "🚶 10 min a piedi"
           });
 
           list.push({
             id: `stop-${dayObj.num}-eve`,
             day: dayObj.label,
             time: "Sera • 19:30 - 22:00",
-            title: `Cena tipica & Quartiere serale di ${dest}`,
-            desc: "Serata rilassata in una taverna o ristorante storico della zona.",
+            title: `Cena tipica in centro a ${dest}`,
+            desc: "Cena rilassata in un locale storico o taverna tipica.",
             tag: "Food & Relax",
             color: "pastelPink",
             travelTime: "🚶 10 min a piedi"
-          });
-        }
-        else if (index === 1) {
-          list.push({
-            id: `stop-${dayObj.num}-1`,
-            day: dayObj.label,
-            time: "Mattina • 09:30 - 12:00",
-            title: `Museo / Punto Iconico di ${dest}`,
-            desc: `Visita ai capolavori o all'attrazione cardine legata a: ${interests || 'cultura e storia locale'}.`,
-            tag: "Cultura",
-            color: "pastelLavender",
-            travelTime: "🚇 15 min con i mezzi"
-          });
-
-          list.push({
-            id: `stop-${dayObj.num}-2`,
-            day: dayObj.label,
-            time: "Pomeriggio • 14:00 - 16:30",
-            title: `Piazza Storica & Vicoli Caratteristici a ${dest}`,
-            desc: "Esplorazione del centro storico e dei mercati tipici.",
-            tag: "Icone",
-            color: "pastelPeach",
-            travelTime: "🚶 15 min a piedi"
-          });
-        }
-        else if (index === 2) {
-          list.push({
-            id: `stop-${dayObj.num}-1`,
-            day: dayObj.label,
-            time: "Mattina • 09:30 - 12:30",
-            title: `Attrazione Panoramica & Fandom a ${dest}`,
-            desc: `Tappa speciale dedicata alle tue preferenze: ${interests || 'panorami mozzafiato e scorci celebri'}.`,
-            tag: "Must See",
-            color: "pastelPeach",
-            travelTime: "🚇 20 min con i mezzi"
-          });
-
-          list.push({
-            id: `stop-${dayObj.num}-2`,
-            day: dayObj.label,
-            time: "Pomeriggio • 15:00 - 18:00",
-            title: `Mercatini, Botteghe & Relax a ${dest}`,
-            desc: "Tempo dedicato a passeggiare senza fretta, shopping locale e scatti fotografici.",
-            tag: "Shopping & Relax",
-            color: "pastelLavender",
-            travelTime: "🚶 15 min a piedi"
           });
         }
         else if (isLast) {
@@ -861,8 +800,8 @@
             id: `stop-${dayObj.num}-am`,
             day: dayObj.label,
             time: "Mattina • 09:30 - 12:00",
-            title: `Ultime visite & Street Food a ${dest}`,
-            desc: "Ultima mattinata per gli ultimi acquisti, foto ricordo e pranzo tipico.",
+            title: `Ultime visite & Mercato locale a ${dest}`,
+            desc: "Ultime foto, acquisti tipici e pranzo veloce prima del rientro.",
             tag: "Gourmet & Vista",
             color: "pastelPeach",
             travelTime: "🚶 15 min a piedi"
@@ -871,9 +810,9 @@
           list.push({
             id: `stop-${dayObj.num}-tr`,
             day: dayObj.label,
-            time: `Prima delle ${eTime}`,
+            time: `Prima delle ${eTime || '18:00'}`,
             title: `Ritiro Bagagli ➔ Transfer verso ${airport || 'Aeroporto'}`,
-            desc: `Rientro in hotel per le valigie e spostamento in aeroporto con anticipo per il volo delle ${eTime}.`,
+            desc: `Spostamento in tempo per il volo di rientro delle ${eTime || '18:00'}.`,
             tag: "Rientro",
             color: "pastelBlue",
             isTransfer: true,
@@ -885,11 +824,11 @@
           list.push({
             id: `stop-${dayObj.num}-1`,
             day: dayObj.label,
-            time: "Mattina • 09:30 - 12:00",
-            title: `Quartiere Tradizionale & Scorci Pittoreschi`,
-            desc: "Esplorazione approfondita dei quartieri residenziali e dei parchi più belli.",
-            tag: "Atmosfera",
-            color: "pastelSage",
+            time: "Mattina • 09:30 - 12:30",
+            title: `Attrazione Cardine / Museo di ${dest}`,
+            desc: `Visita ai luoghi celebri legati a: ${interests || 'arte, storia e cultura'}.`,
+            tag: "Cultura",
+            color: "pastelLavender",
             travelTime: "🚇 15 min con i mezzi"
           });
 
@@ -897,10 +836,10 @@
             id: `stop-${dayObj.num}-2`,
             day: dayObj.label,
             time: "Pomeriggio • 14:00 - 17:00",
-            title: `Galleria d'Arte / Punti di Interesse Locale`,
-            desc: "Pomeriggio culturale e pausa caffè in un locale storico.",
-            tag: "Cultura",
-            color: "pastelLavender",
+            title: `Scorci Panoramici & Botteghe Tipiche`,
+            desc: "Esplorazione senza fretta dei quartieri caratteristici.",
+            tag: "Icone",
+            color: "pastelPeach",
             travelTime: "🚶 15 min a piedi"
           });
         }
@@ -935,21 +874,21 @@
         const trip = getCurrentTrip();
         if (!trip) return;
 
-        const dest = document.getElementById('destInput').value.trim();
+        const dest = (document.getElementById('destInput').value || '').trim();
         if (!dest) {
-          alert("Inserisci almeno la destinazione prima di calcolare l'itinerario!");
+          alert("Inserisci almeno la destinazione prima di procedere!");
           return;
         }
 
         const expType = document.getElementById('expTypeSelect').value || 'first';
         const transportPref = document.getElementById('transportPrefSelect').value || 'transit';
-        const hotel = document.getElementById('hotelInput').value.trim() || 'Hotel';
-        const airport = document.getElementById('airportInput').value.trim() || 'Aeroporto';
+        const hotel = (document.getElementById('hotelInput').value || '').trim() || 'Hotel';
+        const airport = (document.getElementById('airportInput').value || '').trim() || 'Aeroporto';
         const sDate = document.getElementById('startDate').value;
         const sTime = document.getElementById('startTime').value || '10:00';
         const eDate = document.getElementById('endDate').value;
         const eTime = document.getElementById('endTime').value || '18:00';
-        const interests = document.getElementById('interestsInput').value.trim();
+        const interests = (document.getElementById('interestsInput').value || '').trim();
         const fixedEvents = collectFixedEvents();
 
         trip.destination = dest;
@@ -971,7 +910,7 @@
         showProposalModal();
       } catch (err) {
         console.error("Errore calcolo itinerario:", err);
-        alert("Si è verificato un errore nel calcolo: " + err.message);
+        alert("Errore durante il calcolo: " + err.message);
       }
     }
 
@@ -980,7 +919,8 @@
       if (!listCont) return;
       listCont.innerHTML = '';
       
-      const days = generateDaysArray(getCurrentTrip().startDate, getCurrentTrip().endDate);
+      const trip = getCurrentTrip() || {};
+      const days = generateDaysArray(trip.startDate, trip.endDate);
       const uniqueDays = days.map(d => d.label);
 
       const grouped = {};
@@ -1027,7 +967,7 @@
           if (item.isLocked) {
             controlSection = `
               <div class="flex items-center gap-1">
-                <span class="bg-stone-100 text-stone-500 font-bold px-2 py-1 rounded-lg text-[10px]" title="Punto fisso logistico">🔒 Fisso</span>
+                <span class="bg-stone-100 text-stone-500 font-bold px-2 py-1 rounded-lg text-[10px]">🔒 Fisso</span>
               </div>
             `;
           } else {
@@ -1065,7 +1005,10 @@
 
     function showProposalModal() {
       const el = document.getElementById('reviewModal');
-      if (el) el.classList.remove('hidden');
+      if (el) {
+        el.classList.remove('hidden');
+        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
     }
 
     function changeProposalDay(index, newDay) {
@@ -1131,7 +1074,8 @@
     }
 
     function cancelProposal() {
-      document.getElementById('reviewModal').classList.add('hidden');
+      const el = document.getElementById('reviewModal');
+      if (el) el.classList.add('hidden');
     }
 
     function renderItinerary() {
@@ -1146,7 +1090,7 @@
         container.innerHTML = `
           <div class="bg-white p-8 rounded-3xl text-center space-y-2 border border-dashed border-pastelSage">
             <p class="text-stone-600 font-semibold text-sm">Nessuna tappa inserita in questo viaggio 🌸</p>
-            <p class="text-xs text-stone-400">Compila i dati a sinistra e clicca su "Ricalcola Itinerario & Tappe".</p>
+            <p class="text-xs text-stone-400">Compila la destinazione a sinistra e clicca su "Ricalcola Itinerario & Tappe".</p>
           </div>
         `;
         return;
@@ -1236,20 +1180,20 @@
       document.getElementById('modalTimeSlot').value = 'afternoon';
       toggleCustomTimeField('afternoon');
 
-      document.getElementById('addStopModal').classList.remove('hidden');
+      const modal = document.getElementById('addStopModal');
+      if (modal) modal.classList.remove('hidden');
     }
 
     function closeAddStopModal() {
-      document.getElementById('addStopModal').classList.add('hidden');
+      const modal = document.getElementById('addStopModal');
+      if (modal) modal.classList.add('hidden');
     }
 
     function toggleCustomTimeField(val) {
       const box = document.getElementById('customTimeBox');
-      if (val === 'custom') {
-        box.classList.remove('hidden');
-      } else {
-        box.classList.add('hidden');
-      }
+      if (!box) return;
+      if (val === 'custom') box.classList.remove('hidden');
+      else box.classList.add('hidden');
     }
 
     function submitSmartStop() {
