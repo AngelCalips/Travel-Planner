@@ -118,6 +118,7 @@
         <label class="block text-[11px] font-bold uppercase tracking-wider text-stone-500 mb-1">Come preferite spostarvi?</label>
         <select id="transportPrefSelect" onchange="updateTripField('transportPref', this.value)" class="w-full bg-stone-50 border border-pastelSage rounded-xl px-2.5 py-1.5 text-xs font-semibold text-stone-700 focus:outline-none focus:ring-2 focus:ring-pastelPink">
           <option value="transit">🚇 Mezzi Pubblici (Metro / Bus / Tram)</option>
+          <option value="bike">🚲 Noleggio Bici / Bike Sharing</option>
           <option value="walk_transit">🚶 A Piedi + Mezzi per tratte lunghe</option>
           <option value="car">🚗 Auto a Noleggio / Guidata</option>
           <option value="taxi">🚕 Taxi / Uber / Ride-sharing</option>
@@ -128,7 +129,7 @@
       <div id="singleCitySection" class="space-y-2.5">
         <div>
           <label class="block text-xs font-semibold text-stone-600 mb-1">Destinazione *</label>
-          <input type="text" id="destInput" oninput="updateTripField('destination', this.value)" placeholder="Es. Londra, Parigi, New York..." 
+          <input type="text" id="destInput" oninput="updateTripField('destination', this.value)" placeholder="Es. Amsterdam, Londra, Parigi..." 
                  class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
         </div>
         <div>
@@ -158,10 +159,10 @@
         <div class="space-y-2 text-xs">
           <div>
             <label class="block text-[11px] text-stone-500 font-medium mb-0.5">Arrivo / Andata</label>
-            <input type="text" id="airportInput" oninput="updateTripField('airport', this.value)" placeholder="Aeroporto di Arrivo (es. Gatwick)" 
+            <input type="text" id="airportInput" oninput="updateTripField('airport', this.value)" placeholder="Aeroporto di Arrivo (es. Schiphol)" 
                    class="w-full bg-white border border-stone-200 rounded-lg px-2.5 py-1 text-xs mb-1">
             <div class="flex gap-1.5">
-              <input type="date" id="startDate" onchange="updateTripField('startDate', this.value)" class="w-2/3 bg-white border border-stone-200 rounded-lg px-2 py-1 text-xs font-semibold">
+              <input type="date" id="startDate" onchange="handleStartDateChange(this.value)" class="w-2/3 bg-white border border-stone-200 rounded-lg px-2 py-1 text-xs font-semibold">
               <input type="time" id="startTime" onchange="updateTripField('startTime', this.value)" value="10:00" class="w-1/3 bg-white border border-stone-200 rounded-lg px-1.5 py-1 text-xs">
             </div>
           </div>
@@ -171,7 +172,7 @@
             <input type="text" id="returnAirportInput" oninput="updateTripField('returnAirport', this.value)" placeholder="Aeroporto Ritorno" 
                    class="w-full bg-white border border-stone-200 rounded-lg px-2.5 py-1 text-xs mb-1">
             <div class="flex gap-1.5">
-              <input type="date" id="endDate" onchange="updateTripField('endDate', this.value)" class="w-2/3 bg-white border border-stone-200 rounded-lg px-2 py-1 text-xs font-semibold">
+              <input type="date" id="endDate" onchange="handleEndDateChange(this.value)" class="w-2/3 bg-white border border-stone-200 rounded-lg px-2 py-1 text-xs font-semibold">
               <input type="time" id="endTime" onchange="updateTripField('endTime', this.value)" value="18:00" class="w-1/3 bg-white border border-stone-200 rounded-lg px-1.5 py-1 text-xs">
             </div>
           </div>
@@ -192,7 +193,7 @@
       <!-- INTERESSI -->
       <div>
         <label class="block text-xs font-semibold text-stone-600 mb-1">Interessi & Fandom</label>
-        <input type="text" id="interestsInput" oninput="updateTripField('interests', this.value)" placeholder="Es. Harry Potter, Sherlock Holmes, Musei, Cibo locale..." 
+        <input type="text" id="interestsInput" oninput="updateTripField('interests', this.value)" placeholder="Es. Musei, Canali, Mercatini vintage, Cibo locale..." 
                class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
       </div>
 
@@ -264,7 +265,7 @@
 
         <div>
           <label class="block font-semibold text-stone-600 mb-1">Nome Luogo / Cosa vuoi fare?</label>
-          <input type="text" id="modalStopTitle" placeholder="Es. Museo, Passeggiata, Cena tipica..." 
+          <input type="text" id="modalStopTitle" placeholder="Es. Museo Van Gogh, Giro dei canali, Mercato dei fiori..." 
                  class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pastelPink">
         </div>
 
@@ -286,7 +287,7 @@
 
         <div>
           <label class="block font-semibold text-stone-600 mb-1">Note (Opzionale)</label>
-          <textarea id="modalStopDesc" rows="2" placeholder="Es. Prenotare in anticipo..." 
+          <textarea id="modalStopDesc" rows="2" placeholder="Es. Piste ciclabili comode, prenotare slot online..." 
                     class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pastelPink"></textarea>
         </div>
       </div>
@@ -322,7 +323,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'pastel_trips_library_clean_v5';
+    const STORAGE_KEY = 'pastel_trips_library_clean_v6';
 
     let allTrips = {};
     let currentTripId = null;
@@ -419,6 +420,30 @@
       if (titleElem) titleElem.innerText = trip.title;
     }
 
+    // GESTIONE DATE SICURE: impedisce che il rientro sia antecedente all'andata
+    function handleStartDateChange(val) {
+      updateTripField('startDate', val);
+      const endInput = document.getElementById('endDate');
+      if (endInput) {
+        endInput.min = val; // Vincola il calendario di rientro a non andare indietro
+        if (endInput.value && endInput.value < val) {
+          endInput.value = val;
+          updateTripField('endDate', val);
+        }
+      }
+    }
+
+    function handleEndDateChange(val) {
+      const startVal = document.getElementById('startDate').value;
+      if (startVal && val < startVal) {
+        alert("⚠️ La data di ritorno non può essere precedente a quella di andata!");
+        document.getElementById('endDate').value = startVal;
+        updateTripField('endDate', startVal);
+        return;
+      }
+      updateTripField('endDate', val);
+    }
+
     function openResetModal() {
       const el = document.getElementById('resetSecurityModal');
       if (el) el.classList.remove('hidden');
@@ -429,7 +454,6 @@
       if (el) el.classList.add('hidden');
     }
 
-    // RESET SOLIDO E COMPLETO
     function executeResetTrip() {
       const trip = getCurrentTrip();
       if (!trip) return;
@@ -598,7 +622,12 @@
       setVal('endTime', trip.endTime || '18:00');
       setVal('interestsInput', trip.interests);
 
-      // Pulisce e ripopola tappe Road Trip
+      // Aggiorna vincolo min calendario
+      const endInput = document.getElementById('endDate');
+      if (endInput && trip.startDate) {
+        endInput.min = trip.startDate;
+      }
+
       const routeCont = document.getElementById('routeStopsList');
       if (routeCont) {
         routeCont.innerHTML = '';
@@ -654,7 +683,6 @@
         ];
       }
 
-      const days = [];
       const start = new Date(startDateStr);
       const end = new Date(endDateStr);
       const diffTime = end.getTime() - start.getTime();
@@ -664,6 +692,7 @@
       const daysOfWeek = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
       const months = ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'];
 
+      const days = [];
       for (let i = 0; i < diffDays; i++) {
         const d = new Date(start);
         d.setDate(start.getDate() + i);
@@ -684,6 +713,7 @@
       return days;
     }
 
+    // CALCOLO PERCORRENZA INTELLIGENTE CON BICI, MEZZI E A PIEDI
     function estimateTravelTimeAndTag(title, desc, transportPref) {
       const text = ((title || '') + " " + (desc || '')).toLowerCase();
       let estTime = "🚇 15 min con i mezzi";
@@ -691,27 +721,34 @@
 
       if (text.includes("sherlock") || text.includes("baker")) {
         estTag = "Sherlock";
-        estTime = "🚇 14 min Bakerloo/Circle Line";
+        estTime = "🚇 14 min Metro";
       } else if (text.includes("potter") || text.includes("king's cross") || text.includes("9 3/4")) {
         estTag = "Harry Potter";
         estTime = "🚇 20 min Metro";
       } else if (text.includes("studios") || text.includes("watford")) {
         estTag = "Harry Potter";
         estTime = "🚆 50 min Treno Express";
-      } else if (text.includes("museo") || text.includes("museum") || text.includes("gallery") || text.includes("louvre") || text.includes("british")) {
+      } else if (text.includes("museo") || text.includes("museum") || text.includes("gallery") || text.includes("louvre") || text.includes("rijksmuseum") || text.includes("van gogh")) {
         estTag = "Cultura";
         estTime = "🚇 18 min con i mezzi";
-      } else if (text.includes("cena") || text.includes("pub") || text.includes("food") || text.includes("ristorante")) {
+      } else if (text.includes("cena") || text.includes("pub") || text.includes("food") || text.includes("ristorante") || text.includes("canali")) {
         estTag = "Food & Relax";
         estTime = "🚶 10-15 min a piedi";
-      } else if (text.includes("parco") || text.includes("park") || text.includes("passeggiata")) {
+      } else if (text.includes("parco") || text.includes("park") || text.includes("vondelpark") || text.includes("passeggiata")) {
         estTag = "Passeggiata";
         estTime = "🚶 10 min a piedi";
       }
 
-      if (transportPref === 'walk_transit') estTime = "🚶 15 min a piedi / Metro";
-      else if (transportPref === 'taxi') estTime = "🚕 15 min Taxi";
-      else if (transportPref === 'car') estTime = "🚗 20 min auto";
+      // Adattamento al mezzo di trasporto
+      if (transportPref === 'bike') {
+        estTime = "🚲 10-15 min in pista ciclabile";
+      } else if (transportPref === 'walk_transit') {
+        estTime = "🚶 15 min a piedi / Metro";
+      } else if (transportPref === 'taxi') {
+        estTime = "🚕 15 min Taxi";
+      } else if (transportPref === 'car') {
+        estTime = "🚗 20 min auto";
+      }
 
       return { travelTime: estTime, tag: estTag };
     }
@@ -778,6 +815,7 @@
     function buildAccurateItinerary(dest, expType, transportPref, airport, hotel, sDate, sTime, eDate, eTime, fixedEvents, interests) {
       const days = generateDaysArray(sDate, eDate);
       let list = [];
+      const bikeNote = transportPref === 'bike' ? ' (perfetta da esplorare in bici 🚲)' : '';
 
       days.forEach((dayObj, index) => {
         const isFirst = index === 0;
@@ -794,18 +832,18 @@
             color: "pastelBlue",
             isTransfer: true,
             isLocked: true,
-            travelTime: "Percorrenza: ~55 min"
+            travelTime: "Percorrenza: ~45-55 min"
           });
 
           list.push({
             id: `stop-${dayObj.num}-pm`,
             day: dayObj.label,
             time: "Pomeriggio • 15:00 - 17:30",
-            title: `Passeggiata nel cuore di ${dest}`,
-            desc: "Primo contatto e scoperta dell'atmosfera del centro città.",
+            title: `Passeggiata nel cuore di ${dest}${bikeNote}`,
+            desc: "Primo contatto e scoperta dell'atmosfera del centro città e dei suoi scorci iconici.",
             tag: "Must See",
             color: "pastelSage",
-            travelTime: "🚶 10 min a piedi"
+            travelTime: transportPref === 'bike' ? "🚲 10 min in bici" : "🚶 10 min a piedi"
           });
 
           list.push({
@@ -828,7 +866,7 @@
             desc: "Ultime foto, acquisti tipici e pranzo veloce prima del rientro.",
             tag: "Gourmet & Vista",
             color: "pastelPeach",
-            travelTime: "🚶 15 min a piedi"
+            travelTime: transportPref === 'bike' ? "🚲 12 min in bici" : "🚶 15 min a piedi"
           });
 
           list.push({
@@ -853,7 +891,7 @@
             desc: `Visita ai luoghi celebri legati a: ${interests || 'arte, storia e cultura'}.`,
             tag: "Cultura",
             color: "pastelLavender",
-            travelTime: "🚇 15 min con i mezzi"
+            travelTime: transportPref === 'bike' ? "🚲 15 min in pista ciclabile" : "🚇 15 min con i mezzi"
           });
 
           list.push({
@@ -861,10 +899,10 @@
             day: dayObj.label,
             time: "Pomeriggio • 14:00 - 17:00",
             title: `Scorci Panoramici & Botteghe Tipiche`,
-            desc: "Esplorazione senza fretta dei quartieri caratteristici.",
+            desc: "Esplorazione senza fretta dei quartieri caratteristici e delle piazze principali.",
             tag: "Icone",
             color: "pastelPeach",
-            travelTime: "🚶 15 min a piedi"
+            travelTime: transportPref === 'bike' ? "🚲 10 min in bici" : "🚶 15 min a piedi"
           });
         }
       });
@@ -910,13 +948,21 @@
           return;
         }
 
+        const sDate = document.getElementById('startDate').value;
+        const eDate = document.getElementById('endDate').value;
+
+        // CONTROLLO DI SICUREZZA DATE
+        if (sDate && eDate && eDate < sDate) {
+          alert("⚠️ Errore Date: La data di ritorno non può essere precedente a quella di andata!");
+          document.getElementById('endDate').value = sDate;
+          return;
+        }
+
         const expType = document.getElementById('expTypeSelect').value || 'first';
         const transportPref = document.getElementById('transportPrefSelect').value || 'transit';
         const hotel = (document.getElementById('hotelInput').value || '').trim() || 'Hotel';
         const airport = (document.getElementById('airportInput').value || '').trim() || 'Aeroporto';
-        const sDate = document.getElementById('startDate').value;
         const sTime = document.getElementById('startTime').value || '10:00';
-        const eDate = document.getElementById('endDate').value;
         const eTime = document.getElementById('endTime').value || '18:00';
         const interests = (document.getElementById('interestsInput').value || '').trim();
         const fixedEvents = collectFixedEvents();
