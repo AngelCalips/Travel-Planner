@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Travel Co-Planner • Dynamic Routing</title>
+  <title>Travel Co-Planner • Real Spots</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,7 +53,7 @@
       <span class="text-xl">✈️</span>
       <div>
         <h1 class="font-title text-base sm:text-lg font-bold text-stone-800 leading-tight">Travel Co-Planner</h1>
-        <p class="text-[10px] text-stone-400 font-medium">Logistica sequenziale & tappe A ➔ B</p>
+        <p class="text-[10px] text-stone-400 font-medium">Dashboard intelligente & itinerari su misura</p>
       </div>
     </div>
     
@@ -100,7 +100,7 @@
         <div>
           <label class="block text-[11px] font-bold uppercase tracking-wider text-stone-500 mb-1">Tipologia</label>
           <select id="modeSelect" onchange="toggleTripMode(this.value)" class="w-full bg-stone-50 border border-pastelSage rounded-xl px-2.5 py-1.5 text-xs font-semibold text-stone-700 focus:outline-none focus:ring-2 focus:ring-pastelPink">
-            <option value="single">🏙️ Soggiorno / Base locale</option>
+            <option value="single">🏙️ Città Singola</option>
             <option value="multistop">🚗 Road Trip</option>
           </select>
         </div>
@@ -128,14 +128,13 @@
       <!-- SEZIONE CITTÀ SINGOLA -->
       <div id="singleCitySection" class="space-y-2.5">
         <div>
-          <label class="block text-xs font-semibold text-stone-600 mb-1">Località di Base / Destinazione *</label>
-          <input type="text" id="destInput" oninput="updateTripField('destination', this.value)" placeholder="Es. Buccinasco, Londra, Amsterdam..." 
+          <label class="block text-xs font-semibold text-stone-600 mb-1">Destinazione *</label>
+          <input type="text" id="destInput" oninput="updateTripField('destination', this.value)" placeholder="Es. Londra, Amsterdam, Buccinasco..." 
                  class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
-          <p class="text-[10px] text-stone-400 mt-1">💡 Se inserisci un piccolo paese, pianificheremo visite locali + i dintorni imperdibili vicini!</p>
         </div>
         <div>
-          <label class="block text-xs font-semibold text-stone-600 mb-1">Alloggio / Hotel (Punto di partenza giornaliero)</label>
-          <input type="text" id="hotelInput" oninput="updateTripField('hotel', this.value)" placeholder="Es. Hotel in centro, Airbnb a Navigli..." 
+          <label class="block text-xs font-semibold text-stone-600 mb-1">Alloggio / Hotel (Partenza tappe)</label>
+          <input type="text" id="hotelInput" oninput="updateTripField('hotel', this.value)" placeholder="Es. The Royale Chulan Hyde Park Hotel..." 
                  class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
         </div>
       </div>
@@ -154,27 +153,27 @@
       <!-- LOGISTICA VOLI & DATE -->
       <div class="bg-pastelCream/60 p-3.5 rounded-2xl border border-pastelSage/50 space-y-3">
         <span class="text-xs font-bold uppercase tracking-wide text-stone-700 flex items-center gap-1">
-          <span>✈️</span> <span>Arrivi, Partenze & Date</span>
+          <span>✈️</span> <span>Voli & Date</span>
         </span>
 
         <div class="space-y-2 text-xs">
           <div>
-            <label class="block text-[11px] text-stone-500 font-medium mb-0.5">Arrivo / Punto di partenza</label>
-            <input type="text" id="airportInput" oninput="updateTripField('airport', this.value)" placeholder="Aeroporto o Stazione (es. Gatwick, Linate)" 
+            <label class="block text-[11px] text-stone-500 font-medium mb-0.5">Arrivo / Andata</label>
+            <input type="text" id="airportInput" oninput="updateTripField('airport', this.value)" placeholder="Aeroporto di Arrivo (es. Londra Gatwick)" 
                    class="w-full bg-white border border-stone-200 rounded-lg px-2.5 py-1 text-xs mb-1">
             <div class="flex gap-1.5">
               <input type="date" id="startDate" onchange="handleStartDateChange(this.value)" class="w-2/3 bg-white border border-stone-200 rounded-lg px-2 py-1 text-xs font-semibold">
-              <input type="time" id="startTime" onchange="updateTripField('startTime', this.value)" value="10:00" class="w-1/3 bg-white border border-stone-200 rounded-lg px-1.5 py-1 text-xs">
+              <input type="time" id="startTime" onchange="updateTripField('startTime', this.value)" value="12:30" class="w-1/3 bg-white border border-stone-200 rounded-lg px-1.5 py-1 text-xs">
             </div>
           </div>
 
           <div>
-            <label class="block text-[11px] text-stone-500 font-medium mb-0.5">Rientro</label>
-            <input type="text" id="returnAirportInput" oninput="updateTripField('returnAirport', this.value)" placeholder="Aeroporto o Stazione Ritorno" 
+            <label class="block text-[11px] text-stone-500 font-medium mb-0.5">Rientro / Partenza</label>
+            <input type="text" id="returnAirportInput" oninput="updateTripField('returnAirport', this.value)" placeholder="Aeroporto Ritorno" 
                    class="w-full bg-white border border-stone-200 rounded-lg px-2.5 py-1 text-xs mb-1">
             <div class="flex gap-1.5">
               <input type="date" id="endDate" onchange="handleEndDateChange(this.value)" class="w-2/3 bg-white border border-stone-200 rounded-lg px-2 py-1 text-xs font-semibold">
-              <input type="time" id="endTime" onchange="updateTripField('endTime', this.value)" value="18:00" class="w-1/3 bg-white border border-stone-200 rounded-lg px-1.5 py-1 text-xs">
+              <input type="time" id="endTime" onchange="updateTripField('endTime', this.value)" value="17:25" class="w-1/3 bg-white border border-stone-200 rounded-lg px-1.5 py-1 text-xs">
             </div>
           </div>
         </div>
@@ -193,8 +192,8 @@
 
       <!-- INTERESSI -->
       <div>
-        <label class="block text-xs font-semibold text-stone-600 mb-1">Interessi & Cosa vorresti vedere nei dintorni</label>
-        <input type="text" id="interestsInput" oninput="updateTripField('interests', this.value)" placeholder="Es. Navigli, Duomo, Natura, Harry Potter..." 
+        <label class="block text-xs font-semibold text-stone-600 mb-1">Interessi & Fandom</label>
+        <input type="text" id="interestsInput" oninput="updateTripField('interests', this.value)" placeholder="Es. Harry Potter, Sherlock Holmes, Mercati vintage..." 
                class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
       </div>
 
@@ -222,7 +221,7 @@
         <div class="flex justify-between items-center">
           <div class="flex items-center gap-1.5">
             <span>💬</span>
-            <h3 class="font-bold text-stone-800 text-xs">Anteprima Proposta: Sposta o Inverti!</h3>
+            <h3 class="font-bold text-stone-800 text-xs">Anteprima Proposta: Punti Reali & Tempi A ➔ B!</h3>
           </div>
           <button onclick="swapProposalDaysPrompt()" class="text-[10px] bg-pastelLavender/60 hover:bg-pastelLavender text-stone-700 font-bold px-2.5 py-1 rounded-lg transition">
             🔄 Inverti Mete Giorni
@@ -230,7 +229,7 @@
         </div>
         <div class="bg-pastelPeach/40 border border-pastelPeach p-2.5 rounded-xl text-[11px] text-stone-700 flex items-start gap-1.5">
           <span class="text-sm">💡</span>
-          <span>I tempi di percorrenza e le provenienze (<strong>A ➔ B</strong>) si ricalcolano da soli ad ogni spostamento!</span>
+          <span>I tempi di percorrenza sono calcolati dal luogo precedente verso quello successivo. Conferma la proposta per sbloccare l'aggiunta manuale.</span>
         </div>
         <div id="proposalList" class="space-y-3 max-h-80 overflow-y-auto pr-1"></div>
         <div class="flex gap-2 pt-1">
@@ -267,7 +266,7 @@
 
         <div>
           <label class="block font-semibold text-stone-600 mb-1">Nome Luogo / Attività</label>
-          <input type="text" id="modalStopTitle" placeholder="Es. Darsena & Navigli, Duomo, Ristorante tipico..." 
+          <input type="text" id="modalStopTitle" placeholder="Es. British Museum, Borough Market..." 
                  class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pastelPink">
         </div>
 
@@ -289,7 +288,7 @@
 
         <div>
           <label class="block font-semibold text-stone-600 mb-1">Note (Opzionale)</label>
-          <textarea id="modalStopDesc" rows="2" placeholder="Es. Linea bus diretta verso la metro, prenotare tavolo..." 
+          <textarea id="modalStopDesc" rows="2" placeholder="Note o consigli sulla visita..." 
                     class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pastelPink"></textarea>
         </div>
       </div>
@@ -325,7 +324,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'pastel_trips_library_routing_v1';
+    const STORAGE_KEY = 'pastel_trips_library_real_v1';
 
     let allTrips = {};
     let currentTripId = null;
@@ -344,9 +343,9 @@
         airport: "",
         returnAirport: "",
         startDate: "",
-        startTime: "10:00",
+        startTime: "12:30",
         endDate: "",
-        endTime: "18:00",
+        endTime: "17:25",
         fixedEvents: [],
         interests: "",
         routeStops: [],
@@ -630,9 +629,9 @@
       setVal('airportInput', trip.airport);
       setVal('returnAirportInput', trip.returnAirport);
       setVal('startDate', trip.startDate);
-      setVal('startTime', trip.startTime || '10:00');
+      setVal('startTime', trip.startTime || '12:30');
       setVal('endDate', trip.endDate);
-      setVal('endTime', trip.endTime || '18:00');
+      setVal('endTime', trip.endTime || '17:25');
       setVal('interestsInput', trip.interests);
 
       const endInput = document.getElementById('endDate');
@@ -657,7 +656,7 @@
       }
 
       const titleElem = document.getElementById('tripTitle');
-      if (titleElem) titleElem.innerText = trip.destination ? `Soggiorno a ${trip.destination}` : (trip.title || "Nuovo Viaggio");
+      if (titleElem) titleElem.innerText = trip.destination ? `Viaggio a ${trip.destination}` : (trip.title || "Nuovo Viaggio");
     }
 
     function addBookedEventInput(dateVal = '', timeVal = '', descVal = '') {
@@ -695,6 +694,7 @@
         ];
       }
 
+      const days = [];
       const start = new Date(startDateStr);
       const end = new Date(endDateStr);
       const diffTime = end.getTime() - start.getTime();
@@ -704,7 +704,6 @@
       const daysOfWeek = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'];
       const months = ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'];
 
-      const days = [];
       for (let i = 0; i < diffDays; i++) {
         const d = new Date(start);
         d.setDate(start.getDate() + i);
@@ -725,29 +724,11 @@
       return days;
     }
 
-    function detectHubAndNearby(dest) {
-      const d = (dest || '').toLowerCase().trim();
-      if (d.includes('buccinasco') || d.includes('corsico') || d.includes('assago') || d.includes('cesano boscone') || d.includes('trezzano')) {
-        return {
-          isSmallTown: true,
-          hub: "Milano & Dintorni",
-          localHighlight: "Passeggiata rilassante ai Laghetti / Parco Spina Azzurra e cena tipica lombarda",
-          nearbyHighlights: [
-            { title: "Darsena & Navigli Milanesi", desc: "La zona storica dei canali milanesi a breve distanza dalla base." },
-            { title: "Basilica di Sant'Ambrogio & Centro Storico", desc: "La cattedrale romanica simbolo di Milano e passeggiata verso il centro." },
-            { title: "Parco Agricolo Sud Milano & Abbazia di Mirasole", desc: "Oasi rurale, cascine e storico complesso monastico trecentesco." }
-          ]
-        };
-      }
-      return { isSmallTown: false, hub: dest, localHighlight: null, nearbyHighlights: [] };
-    }
-
-    // MOTORE SEQUENZIALE LOGISTICO: Calcola SEMPRE la percorrenza dal luogo precedente (A ➔ B)
+    // MOTORE SEQUENZIALE LOGISTICO A ➔ B
     function recomputeSequentialTravelTimes(stopsArray, hotelName, transportPref) {
       const baseHotel = hotelName ? hotelName.trim() : "Alloggio/Hotel";
       const icon = transportPref === 'bike' ? '🚲' : (transportPref === 'car' ? '🚗' : (transportPref === 'walk_transit' ? '🚶' : '🚇'));
 
-      // Raggruppa per giorno
       const dayMap = {};
       stopsArray.forEach(st => {
         if (!dayMap[st.day]) dayMap[st.day] = [];
@@ -759,31 +740,26 @@
         let prevLocationName = baseHotel;
 
         dayStops.forEach((st, idx) => {
-          // Se è transfer iniziale dall'aeroporto all'alloggio
           if (st.isTransfer && st.id && st.id.includes('-arr')) {
             st.travelTime = `${icon} ~45-55 min dall'Aeroporto/Stazione a ${baseHotel}`;
             prevLocationName = baseHotel;
             return;
           }
-          // Se è transfer finale di rientro
           if (st.isTransfer && st.id && st.id.includes('-tr')) {
-            st.travelTime = `${icon} ~45-60 min da ${prevLocationName} verso l'Aeroporto`;
+            const shortPrev = prevLocationName.length > 25 ? prevLocationName.substring(0, 22) + '...' : prevLocationName;
+            st.travelTime = `${icon} ~45-60 min da "${shortPrev}" verso l'Aeroporto`;
             return;
           }
 
-          // Se è la prima tappa del giorno (fuori dall'hotel)
           if (idx === 0 || (idx === 1 && dayStops[0].isTransfer && dayStops[0].id && dayStops[0].id.includes('-arr'))) {
-            let minEst = transportPref === 'bike' ? '12 min' : (transportPref === 'car' ? '15 min' : '15-20 min');
+            let minEst = transportPref === 'bike' ? '10-15 min' : (transportPref === 'car' ? '12-15 min' : '15-20 min');
             st.travelTime = `${icon} ~${minEst} da ${baseHotel}`;
           } else {
-            // Tappe successive: CALCOLATE DIRETTAMENTE DAL LUOGO PRECEDENTE!
-            let minEst = transportPref === 'bike' ? '10-12 min' : (transportPref === 'car' ? '12-15 min' : '15-18 min');
-            // Tronca il nome della tappa precedente se troppo lungo per eleganza
-            const shortPrev = prevLocationName.length > 28 ? prevLocationName.substring(0, 25) + '...' : prevLocationName;
+            let minEst = transportPref === 'bike' ? '10-12 min' : (transportPref === 'car' ? '10-15 min' : '15-18 min');
+            const shortPrev = prevLocationName.length > 25 ? prevLocationName.substring(0, 22) + '...' : prevLocationName;
             st.travelTime = `${icon} ~${minEst} da "${shortPrev}"`;
           }
 
-          // Memorizza questa tappa come nuovo punto di partenza per la successiva!
           prevLocationName = st.title;
         });
       });
@@ -851,95 +827,257 @@
       return recomputeSequentialTravelTimes(sortedStops, trip.hotel, trip.transportPref || 'transit');
     }
 
+    // BANCA DATI METE REALI (Londra, Amsterdam, Milano/Buccinasco e generiche)
     function buildAccurateItinerary(dest, expType, transportPref, airport, hotel, sDate, sTime, eDate, eTime, fixedEvents, interests) {
       const days = generateDaysArray(sDate, eDate);
       let list = [];
-      const geoInfo = detectHubAndNearby(dest);
+      const dLow = (dest || '').toLowerCase();
+      const iLow = (interests || '').toLowerCase();
+      const isReturning = expType === 'returning';
 
-      days.forEach((dayObj, index) => {
-        const isFirst = index === 0;
-        const isLast = index === days.length - 1;
+      // 1. DATABASE LONDRA
+      if (dLow.includes('londra') || dLow.includes('london')) {
+        days.forEach((dayObj, index) => {
+          const isFirst = index === 0;
+          const isLast = index === days.length - 1;
 
-        if (isFirst) {
-          list.push({
-            id: `stop-${dayObj.num}-arr`,
-            day: dayObj.label,
-            time: `${sTime || '10:00'} - Arrivo & Sistemazione`,
-            title: `Arrivo a ${airport || 'Stazione / Aeroporto'} ➔ Check-in a ${hotel || dest}`,
-            desc: `Ritiro valigie, transfer verso la base di ${dest} e deposito bagagli.`,
-            tag: "Transfer & Base",
-            color: "pastelBlue",
-            isTransfer: true,
-            isLocked: true
-          });
-
-          list.push({
-            id: `stop-${dayObj.num}-pm`,
-            day: dayObj.label,
-            time: "Pomeriggio • 15:00 - 17:30",
-            title: geoInfo.isSmallTown ? `${geoInfo.localHighlight}` : `Passeggiata nel cuore di ${dest}`,
-            desc: geoInfo.isSmallTown 
-              ? `Primo contatto tranquillo nei dintorni dell'alloggio a ${dest} prima di esplorare l'area circostante.` 
-              : `Primo contatto e scoperta dell'atmosfera del centro città.`,
-            tag: geoInfo.isSmallTown ? "Relax Locale" : "Must See",
-            color: "pastelSage"
-          });
-
-          list.push({
-            id: `stop-${dayObj.num}-eve`,
-            day: dayObj.label,
-            time: "Sera • 19:30 - 22:00",
-            title: geoInfo.isSmallTown ? `Cena in trattoria / cascina tipica a ${dest}` : `Cena tipica in centro a ${dest}`,
-            desc: "Cena rilassata gustando le specialità gastronomiche locali.",
-            tag: "Food & Relax",
-            color: "pastelPink"
-          });
-        }
-        else if (isLast) {
-          list.push({
-            id: `stop-${dayObj.num}-am`,
-            day: dayObj.label,
-            time: "Mattina • 09:30 - 12:00",
-            title: geoInfo.isSmallTown ? `Colazione tipica & Dintorni verdi di ${dest}` : `Ultime visite & Mercato locale a ${dest}`,
-            desc: "Ultime foto, acquisti di prodotti tipici e pranzo prima di organizzare il rientro.",
-            tag: "Gourmet & Relax",
-            color: "pastelPeach"
-          });
-
-          list.push({
-            id: `stop-${dayObj.num}-tr`,
-            day: dayObj.label,
-            time: `Prima delle ${eTime || '18:00'}`,
-            title: `Ritiro Bagagli ➔ Rientro verso ${airport || 'Stazione / Aeroporto'}`,
-            desc: `Check-out da ${dest} e spostamento in tempo utile per la partenza delle ${eTime || '18:00'}.`,
-            tag: "Rientro",
-            color: "pastelBlue",
-            isTransfer: true,
-            isLocked: true
-          });
-        }
-        else {
-          if (geoInfo.isSmallTown && geoInfo.nearbyHighlights.length > 0) {
-            const h1 = geoInfo.nearbyHighlights[(index - 1) % geoInfo.nearbyHighlights.length];
-            const h2 = geoInfo.nearbyHighlights[index % geoInfo.nearbyHighlights.length];
-
+          if (isFirst) {
             list.push({
-              id: `stop-${dayObj.num}-1`,
+              id: `stop-${dayObj.num}-arr`,
               day: dayObj.label,
-              time: "Mattina • 09:30 - 12:30",
-              title: `Dintorni di ${dest}: ${h1.title}`,
-              desc: `${h1.desc}`,
-              tag: "Dintorni & Must",
-              color: "pastelLavender"
+              time: `${sTime || '12:30'} - Arrivo & Sistemazione`,
+              title: `Arrivo a ${airport || 'Londra Gatwick'} ➔ Check-in a ${hotel || 'Hyde Park'}`,
+              desc: "Ritiro valigie, treno verso la stazione centrale e deposito bagagli in hotel.",
+              tag: "Transfer & Hotel",
+              color: "pastelBlue",
+              isTransfer: true,
+              isLocked: true
             });
+
+            if (isReturning) {
+              list.push({
+                id: `stop-${dayObj.num}-pm`,
+                day: dayObj.label,
+                time: "Pomeriggio • 15:00 - 17:30",
+                title: "Little Venice & Passeggiata lungo Regent's Canal",
+                desc: "Angolo pittoresco tra houseboat colorate, caffè galleggianti e scorci tranquilli.",
+                tag: "Scorci Nascosti",
+                color: "pastelSage"
+              });
+              list.push({
+                id: `stop-${dayObj.num}-eve`,
+                day: dayObj.label,
+                time: "Sera • 19:30 - 22:00",
+                title: "Neal's Yard & Seven Dials in Serata",
+                desc: "Cortile colorato nascosto a Covent Garden e cena in taverna storica.",
+                tag: "Atmosfera & Food",
+                color: "pastelPink"
+              });
+            } else {
+              list.push({
+                id: `stop-${dayObj.num}-pm`,
+                day: dayObj.label,
+                time: "Pomeriggio • 15:00 - 17:30",
+                title: "Hyde Park, Kensington Gardens & Notting Hill",
+                desc: "Italian Gardens, Round Pond e le iconiche casette pastello di Portobello Road.",
+                tag: "Must See",
+                color: "pastelSage"
+              });
+              list.push({
+                id: `stop-${dayObj.num}-eve`,
+                day: dayObj.label,
+                time: "Sera • 19:30 - 22:00",
+                title: "Covent Garden & Luminarie Natalizie",
+                desc: "Spettacoli di artisti di strada, mercato coperto illuminato e pub tradizionale.",
+                tag: "Luci & Relax",
+                color: "pastelPink"
+              });
+            }
+          }
+          else if (index === 1) {
+            if (iLow.includes('sherlock')) {
+              list.push({
+                id: `stop-${dayObj.num}-1`,
+                day: dayObj.label,
+                time: "Mattina • 09:30 - 12:00",
+                title: "Baker Street 221B & Sherlock Holmes Museum",
+                desc: "Visita allo storico appartamento vittoriano, statua in bronzo e Daunt Books a Marylebone.",
+                tag: "Sherlock",
+                color: "pastelLavender"
+              });
+            } else {
+              list.push({
+                id: `stop-${dayObj.num}-1`,
+                day: dayObj.label,
+                time: "Mattina • 09:30 - 12:00",
+                title: isReturning ? "Sir John Soane's Museum" : "British Museum",
+                desc: isReturning ? "Casa-museo eclettica con reperti e curiosità segrete." : "I grandi capolavori storici e la maestosa Great Court.",
+                tag: "Cultura",
+                color: "pastelBlue"
+              });
+            }
 
             list.push({
               id: `stop-${dayObj.num}-2`,
               day: dayObj.label,
+              time: "Pomeriggio • 14:00 - 16:30",
+              title: isReturning ? "Leadenhall Market & St Dunstan in the East" : "Westminster Abbey & Big Ben",
+              desc: isReturning ? "Giardino medievale incastonato nelle rovine di una chiesa e mercato vittoriano." : "La classica icona londinese lungo il Tamigi con vista sul Parlamento.",
+              tag: isReturning ? "Chicche Nascoste" : "Icone di Londra",
+              color: "pastelPeach"
+            });
+          }
+          else if (index === 2) {
+            if (iLow.includes('harry potter')) {
+              list.push({
+                id: `stop-${dayObj.num}-1`,
+                day: dayObj.label,
+                time: "Mattina • 09:00 - 11:00",
+                title: "King's Cross Station & Platform 9 ¾",
+                desc: "Foto con la sciarpa al carrello nel muro e sosta al Potter Shop ufficiale.",
+                tag: "Harry Potter",
+                color: "pastelPeach"
+              });
+              list.push({
+                id: `stop-${dayObj.num}-2`,
+                day: dayObj.label,
+                time: "Pomeriggio • 16:30 - 18:30",
+                title: isReturning ? "Cecil Court & Godwin's Court" : "Millennium Bridge & Borough Market",
+                desc: isReturning ? "Stretti vicoli a lume di gas ispirazione per Diagon Alley." : "Ponte pedonale sul Tamigi e street food locale.",
+                tag: "Harry Potter & Chicche",
+                color: "pastelLavender"
+              });
+            } else {
+              list.push({
+                id: `stop-${dayObj.num}-1`,
+                day: dayObj.label,
+                time: "Mattina • 09:30 - 13:00",
+                title: isReturning ? "Greenwich & Mercatino Vintage" : "Tower of London & Tower Bridge",
+                desc: isReturning ? "Osservatorio, meridiano zero e mercato coperto vintage." : "I gioielli della corona e la celebre fortezza medievale.",
+                tag: "Scoperta",
+                color: "pastelSage"
+              });
+            }
+          }
+          else if (index === 3) {
+            list.push({
+              id: `stop-${dayObj.num}-1`,
+              day: dayObj.label,
+              time: "Mattina • 09:30 - 12:00",
+              title: isReturning ? "Hampstead Village & Pergola" : "Buckingham Palace & St James's Park",
+              desc: isReturning ? "Atmosfera da borgo di campagna inglese e vista panoramica." : "Cambio della guardia e passeggiata rilassata nel parco reale.",
+              tag: isReturning ? "Pittoresco" : "Reale",
+              color: "pastelSage"
+            });
+            list.push({
+              id: `stop-${dayObj.num}-2`,
+              day: dayObj.label,
+              time: "Pomeriggio • 14:00 - 16:30",
+              title: isReturning ? "Camden Passage (Islington)" : "Regent Street, Carnaby & Oxford Street",
+              desc: isReturning ? "Vicolo pedonale appartato celebre per antiquariato e botteghe." : "Shopping londinese e splendide vetrine illuminate per l'inverno.",
+              tag: "Shopping & Luci",
+              color: "pastelLavender"
+            });
+          }
+          else if (isLast) {
+            list.push({
+              id: `stop-${dayObj.num}-am`,
+              day: dayObj.label,
+              time: "Mattina • 09:30 - 12:00",
+              title: isReturning ? "Borough Yards & Southwark Cathedral" : "Tower Bridge & Southbank",
+              desc: isReturning ? "Nuovi scorci recuperati sotto le arcate e street food locale." : "Ultime foto panoramiche sul Tamigi prima del rientro.",
+              tag: "Gourmet & Vista",
+              color: "pastelPeach"
+            });
+
+            list.push({
+              id: `stop-${dayObj.num}-tr`,
+              day: dayObj.label,
+              time: `Prima delle ${eTime || '17:25'}`,
+              title: `Ritiro Bagagli ➔ Transfer verso ${airport || 'Londra Gatwick'}`,
+              desc: `Rientro in alloggio per le valigie e transfer in tempo per il volo di ritorno delle ${eTime || '17:25'}.`,
+              tag: "Rientro",
+              color: "pastelBlue",
+              isTransfer: true,
+              isLocked: true
+            });
+          }
+        });
+      }
+      // 2. DATABASE BUCCINASCO / MILANO E DINTORNI
+      else if (dLow.includes('buccinasco') || dLow.includes('corsico') || dLow.includes('assago')) {
+        days.forEach((dayObj, index) => {
+          const isFirst = index === 0;
+          const isLast = index === days.length - 1;
+
+          if (isFirst) {
+            list.push({
+              id: `stop-${dayObj.num}-arr`,
+              day: dayObj.label,
+              time: `${sTime || '10:00'} - Arrivo & Sistemazione`,
+              title: `Arrivo a ${airport || 'Stazione / Aeroporto'} ➔ Check-in a ${hotel || dest}`,
+              desc: "Ritiro valigie, transfer verso la base alloggio e deposito bagagli.",
+              tag: "Transfer & Base",
+              color: "pastelBlue",
+              isTransfer: true,
+              isLocked: true
+            });
+            list.push({
+              id: `stop-${dayObj.num}-pm`,
+              day: dayObj.label,
+              time: "Pomeriggio • 15:00 - 17:30",
+              title: "Passeggiata rilassante ai Laghetti & Parco Spina Azzurra",
+              desc: "Primo contatto rilassato nel verde di Buccinasco vicino all'alloggio.",
+              tag: "Relax Locale",
+              color: "pastelSage"
+            });
+            list.push({
+              id: `stop-${dayObj.num}-eve`,
+              day: dayObj.label,
+              time: "Sera • 19:30 - 22:00",
+              title: "Cena in cascina / trattoria tipica lombarda",
+              desc: "Cena tipica con riso al salto, cotoletta o tagliere locale.",
+              tag: "Food & Relax",
+              color: "pastelPink"
+            });
+          } else if (isLast) {
+            list.push({
+              id: `stop-${dayObj.num}-am`,
+              day: dayObj.label,
+              time: "Mattina • 09:30 - 12:00",
+              title: "Parco Agricolo Sud Milano & Abbazia di Mirasole",
+              desc: "Storico complesso monastico trecentesco immerso nelle cascine a pochi minuti.",
+              tag: "Cultura & Natura",
+              color: "pastelPeach"
+            });
+            list.push({
+              id: `stop-${dayObj.num}-tr`,
+              day: dayObj.label,
+              time: `Prima delle ${eTime || '18:00'}`,
+              title: `Ritiro Bagagli ➔ Rientro verso ${airport || 'Stazione / Aeroporto'}`,
+              desc: "Spostamento in tempo utile per la partenza.",
+              tag: "Rientro",
+              color: "pastelBlue",
+              isTransfer: true,
+              isLocked: true
+            });
+          } else if (index === 1) {
+            list.push({
+              id: `stop-${dayObj.num}-1`,
+              day: dayObj.label,
+              time: "Mattina • 09:30 - 12:30",
+              title: "Darsena & Navigli Milanesi",
+              desc: "Vicolo dei Lavandai, scorci storici e passeggiata lungo il Naviglio Grande.",
+              tag: "Must See",
+              color: "pastelLavender"
+            });
+            list.push({
+              id: `stop-${dayObj.num}-2`,
+              day: dayObj.label,
               time: "Pomeriggio • 14:00 - 17:30",
-              title: `Dintorni di ${dest}: ${h2.title}`,
-              desc: `${h2.desc}`,
-              tag: "Esplorazione",
+              title: "Basilica di Sant'Ambrogio & Colonne di San Lorenzo",
+              desc: "La cattedrale romanica simbolo di Milano e passeggiata tra botteghe storiche.",
+              tag: "Cultura",
               color: "pastelPeach"
             });
           } else {
@@ -947,24 +1085,102 @@
               id: `stop-${dayObj.num}-1`,
               day: dayObj.label,
               time: "Mattina • 09:30 - 12:30",
-              title: `Punto Iconico / Museo di ${dest}`,
-              desc: `Visita ai luoghi celebri legati a: ${interests || 'arte, storia e cultura'}.`,
-              tag: "Cultura",
-              color: "pastelLavender"
+              title: "Piazza Duomo & Galleria Vittorio Emanuele II",
+              desc: "Visita alle terrazze del Duomo e quadrilatero della moda.",
+              tag: "Icone",
+              color: "pastelPeach"
             });
-
             list.push({
               id: `stop-${dayObj.num}-2`,
               day: dayObj.label,
               time: "Pomeriggio • 14:00 - 17:00",
-              title: `Scorci Panoramici & Botteghe Tipiche`,
-              desc: "Esplorazione senza fretta dei quartieri caratteristici e delle piazze principali.",
+              title: "Brera & Castello Sforzesco",
+              desc: "Passeggiata nel borgo bohémien di Brera e Parco Sempione.",
+              tag: "Arte & Relax",
+              color: "pastelLavender"
+            });
+          }
+        });
+      }
+      // 3. DATABASE GENERALE PER ALTRE CITTÀ
+      else {
+        days.forEach((dayObj, index) => {
+          const isFirst = index === 0;
+          const isLast = index === days.length - 1;
+
+          if (isFirst) {
+            list.push({
+              id: `stop-${dayObj.num}-arr`,
+              day: dayObj.label,
+              time: `${sTime || '10:00'} - Arrivo & Sistemazione`,
+              title: `Arrivo a ${airport || 'Aeroporto'} ➔ Check-in a ${hotel || dest}`,
+              desc: "Ritiro valigie, transfer e deposito bagagli in alloggio.",
+              tag: "Transfer & Base",
+              color: "pastelBlue",
+              isTransfer: true,
+              isLocked: true
+            });
+            list.push({
+              id: `stop-${dayObj.num}-pm`,
+              day: dayObj.label,
+              time: "Pomeriggio • 15:00 - 17:30",
+              title: `Centro Storico & Piazze Principali di ${dest}`,
+              desc: "Passeggiata rilassante per iniziare a scoprire l'atmosfera della città.",
+              tag: "Must See",
+              color: "pastelSage"
+            });
+            list.push({
+              id: `stop-${dayObj.num}-eve`,
+              day: dayObj.label,
+              time: "Sera • 19:30 - 22:00",
+              title: `Cena tipica in un locale caratteristico di ${dest}`,
+              desc: "Serata rilassata gustando le specialità gastronomiche locali.",
+              tag: "Food & Relax",
+              color: "pastelPink"
+            });
+          } else if (isLast) {
+            list.push({
+              id: `stop-${dayObj.num}-am`,
+              day: dayObj.label,
+              time: "Mattina • 09:30 - 12:00",
+              title: `Mercato Centrale & Ultimi Scorci a ${dest}`,
+              desc: "Ultime foto, acquisti di souvenir tipici e pranzo prima di organizzare il rientro.",
+              tag: "Gourmet & Vista",
+              color: "pastelPeach"
+            });
+            list.push({
+              id: `stop-${dayObj.num}-tr`,
+              day: dayObj.label,
+              time: `Prima delle ${eTime || '18:00'}`,
+              title: `Ritiro Bagagli ➔ Rientro verso ${airport || 'Aeroporto'}`,
+              desc: `Spostamento in tempo utile per il volo di rientro delle ${eTime || '18:00'}.`,
+              tag: "Rientro",
+              color: "pastelBlue",
+              isTransfer: true,
+              isLocked: true
+            });
+          } else {
+            list.push({
+              id: `stop-${dayObj.num}-1`,
+              day: dayObj.label,
+              time: "Mattina • 09:30 - 12:30",
+              title: `Museo Cardine & Monumenti Celebri di ${dest}`,
+              desc: `Visita ai luoghi di interesse legati a: ${interests || 'storia, arte e architettura'}.`,
+              tag: "Cultura",
+              color: "pastelLavender"
+            });
+            list.push({
+              id: `stop-${dayObj.num}-2`,
+              day: dayObj.label,
+              time: "Pomeriggio • 14:00 - 17:00",
+              title: `Quartiere Tradizionale & Botteghe Artigiane`,
+              desc: "Esplorazione dei vicoli più caratteristici e pausa caffè panoramica.",
               tag: "Icone",
               color: "pastelPeach"
             });
           }
-        }
-      });
+        });
+      }
 
       fixedEvents.forEach(ev => {
         let assignedDayLabel = days[0].label;
@@ -1002,7 +1218,7 @@
         }
 
         if (!dest) {
-          alert("Inserisci almeno la località di base prima di procedere!");
+          alert("Inserisci almeno la destinazione prima di procedere!");
           return;
         }
 
@@ -1017,10 +1233,10 @@
 
         const expType = document.getElementById('expTypeSelect').value || 'first';
         const transportPref = document.getElementById('transportPrefSelect').value || 'transit';
-        const hotel = (document.getElementById('hotelInput').value || '').trim() || 'Alloggio';
-        const airport = (document.getElementById('airportInput').value || '').trim() || 'Arrivo';
-        const sTime = document.getElementById('startTime').value || '10:00';
-        const eTime = document.getElementById('endTime').value || '18:00';
+        const hotel = (document.getElementById('hotelInput').value || '').trim() || 'Hotel';
+        const airport = (document.getElementById('airportInput').value || '').trim() || 'Aeroporto';
+        const sTime = document.getElementById('startTime').value || '12:30';
+        const eTime = document.getElementById('endTime').value || '17:25';
         const interests = (document.getElementById('interestsInput').value || '').trim();
         const fixedEvents = collectFixedEvents();
 
@@ -1036,7 +1252,7 @@
         trip.endTime = eTime;
         trip.interests = interests;
         trip.fixedEvents = fixedEvents;
-        trip.title = `Soggiorno a ${dest}`;
+        trip.title = `Viaggio a ${dest}`;
 
         pendingProposal = buildAccurateItinerary(dest, expType, transportPref, airport, hotel, sDate, sTime, eDate, eTime, fixedEvents, interests);
         
