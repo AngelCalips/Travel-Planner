@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Travel Co-Planner • Single World Map</title>
+  <title>Travel Co-Planner • Pastel Edition</title>
   
   <!-- Font morbidi da Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,16 +34,7 @@
   <style>
     body { 
       font-family: 'Quicksand', sans-serif; 
-      background-color: #f6f5f0;
-      /* Mappamondo mondiale stilizzato UNICO a tutto schermo (NO REPEAT) */
-      background-image: 
-        radial-gradient(at 10% 10%, rgba(220, 214, 247, 0.35) 0px, transparent 50%),
-        radial-gradient(at 90% 90%, rgba(255, 202, 212, 0.28) 0px, transparent 50%),
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900' width='1600' height='900'%3E%3Cg fill='%23b8aed6' fill-opacity='0.16' stroke='%23a295c9' stroke-width='1' stroke-opacity='0.25'%3E%3C!-- Nord America --%3E%3Cpath d='M180 180 Q240 150 320 170 Q420 160 440 230 Q410 320 370 380 Q320 400 300 470 Q270 430 250 360 Q210 320 180 280 Z'/%3E%3C!-- Sud America --%3E%3Cpath d='M340 480 Q430 490 440 570 Q420 690 380 780 Q340 760 330 670 Q310 580 340 480 Z'/%3E%3C!-- Europa e UK --%3E%3Cpath d='M680 180 Q740 160 810 190 Q830 250 780 300 Q740 330 690 320 Q670 260 680 180 Z'/%3E%3Ccircle cx='665' cy='220' r='14'/%3E%3C!-- Africa --%3E%3Cpath d='M670 360 Q790 350 830 430 Q840 550 780 670 Q730 690 690 620 Q640 530 640 440 Z'/%3E%3C!-- Asia --%3E%3Cpath d='M830 160 Q1050 140 1200 220 Q1240 330 1150 420 Q1020 450 940 380 Q870 340 830 270 Z'/%3E%3C!-- Oceania --%3E%3Cpath d='M1150 560 Q1280 550 1310 640 Q1270 730 1180 720 Q1130 670 1150 560 Z'/%3E%3C/g%3E%3C!-- Linee reticolato e rotta aereo --%3E%3Cg fill='none' stroke='%23a295c9' stroke-opacity='0.18'%3E%3Cpath d='M100 450 H1500' stroke-width='1.5' stroke-dasharray='8 8'/%3E%3Cpath d='M800 100 V800' stroke-width='1.5' stroke-dasharray='8 8'/%3E%3Cellipse cx='800' cy='450' rx='680' ry='340' stroke-width='1.2' stroke-dasharray='12 12'/%3E%3C!-- Rotta tratteggiata volo --%3E%3Cpath d='M350 280 Q520 180 700 230' stroke='%23e5989b' stroke-width='2' stroke-dasharray='6 6' stroke-opacity='0.45'/%3E%3Ccircle cx='350' cy='280' r='5' fill='%23e5989b' fill-opacity='0.5'/%3E%3Ccircle cx='700' cy='230' r='5' fill='%23e5989b' fill-opacity='0.5'/%3E%3C/g%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: center center;
-      background-attachment: fixed;
-      background-size: cover;
+      background-color: #fbfaf7;
     }
     h1, h2, h3, h4, .font-title { font-family: 'Comfortaa', cursive, sans-serif; }
     
@@ -60,10 +51,52 @@
     }
   </style>
 </head>
-<body class="text-stone-700 min-h-screen antialiased flex flex-col">
+<body class="text-stone-700 min-h-screen antialiased flex flex-col relative overflow-x-hidden">
+
+  <!-- SFONDO MAPPAMONDO SINGOLO, ADATTIVO E STILIZZATO (NON DISTURBA E SCALA IN PERCENTUALE) -->
+  <div class="fixed inset-0 pointer-events-none -z-10 flex items-center justify-center overflow-hidden">
+    <!-- Glow pastello soffuso -->
+    <div class="absolute w-[60vw] h-[60vw] max-w-[800px] max-h-[800px] rounded-full bg-radial from-pastelLavender/25 via-pastelPink/15 to-transparent blur-3xl"></div>
+    
+    <!-- Mappamondo vettoriale con continenti, rotta e meridiani -->
+    <svg class="w-[85vw] max-w-[680px] h-auto text-pastelLavender/60 opacity-60 transition-all duration-300" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Cerchio globo con paralleli e meridiani -->
+      <circle cx="250" cy="250" r="210" stroke="#b4a9d6" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.6"/>
+      <ellipse cx="250" cy="250" rx="210" ry="105" stroke="#b4a9d6" stroke-width="1" stroke-dasharray="3 3" opacity="0.4"/>
+      <ellipse cx="250" cy="250" rx="105" ry="210" stroke="#b4a9d6" stroke-width="1" stroke-dasharray="3 3" opacity="0.4"/>
+      <line x1="40" y1="250" x2="460" y2="250" stroke="#b4a9d6" stroke-width="1" opacity="0.3"/>
+      <line x1="250" y1="40" x2="250" y2="460" stroke="#b4a9d6" stroke-width="1" opacity="0.3"/>
+
+      <!-- Continenti sagomati morbidi -->
+      <g fill="#c5b9e8" fill-opacity="0.28" stroke="#a396cf" stroke-width="1" stroke-opacity="0.35">
+        <!-- Nord America -->
+        <path d="M120 140 C140 120, 180 130, 200 150 C210 170, 190 200, 170 210 C150 220, 130 200, 120 180 Z"/>
+        <path d="M170 210 C180 230, 190 250, 180 260 C170 260, 160 240, 170 210 Z"/>
+        <!-- Sud America -->
+        <path d="M170 270 C190 270, 210 300, 200 340 C190 370, 170 380, 160 360 C150 330, 150 290, 170 270 Z"/>
+        <!-- Europa e UK -->
+        <path d="M260 140 C280 130, 300 140, 300 160 C290 180, 270 180, 260 160 Z"/>
+        <circle cx="252" cy="150" r="4" />
+        <!-- Africa -->
+        <path d="M260 190 C290 190, 310 220, 300 270 C290 300, 270 310, 250 280 C240 250, 240 210, 260 190 Z"/>
+        <!-- Asia -->
+        <path d="M310 130 C360 120, 410 150, 400 200 C390 230, 350 230, 330 200 C310 170, 300 150, 310 130 Z"/>
+        <!-- Oceania -->
+        <path d="M370 290 C400 290, 420 320, 400 340 C380 350, 360 330, 370 290 Z"/>
+      </g>
+
+      <!-- Rotta aereo tratteggiata -->
+      <path d="M160 170 Q240 100, 270 150" stroke="#f4a261" stroke-width="1.8" stroke-dasharray="4 4" opacity="0.6"/>
+      <circle cx="160" cy="170" r="3.5" fill="#f4a261" opacity="0.7"/>
+      <!-- Icona aereo stilizzato sulla rotta -->
+      <g transform="translate(268, 147) rotate(45) scale(0.75)" fill="#e76f51" opacity="0.8">
+        <path d="M0 -6 L3 4 L0 2 L-3 4 Z"/>
+      </g>
+    </svg>
+  </div>
 
   <!-- TOP HEADER MOBILE / LOGO -->
-  <header class="no-print bg-white/85 backdrop-blur-md border-b border-pastelSage/40 px-4 py-3 sticky top-0 z-30 flex items-center justify-between shadow-2xs">
+  <header class="no-print bg-white/80 backdrop-blur-md border-b border-pastelSage/40 px-4 py-3 sticky top-0 z-30 flex items-center justify-between shadow-2xs">
     <div class="flex items-center gap-2.5">
       <span class="text-xl">✈️</span>
       <div>
@@ -284,7 +317,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'pastel_trips_library_v10';
+    const STORAGE_KEY = 'pastel_trips_library_v11';
 
     let allTrips = {};
     let currentTripId = null;
