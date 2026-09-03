@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Travel Co-Planner • Universal Engine</title>
+  <title>Travel Co-Planner • Universal Transit & Ferries</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,7 +53,7 @@
       <span class="text-xl">✈️</span>
       <div>
         <h1 class="font-title text-base sm:text-lg font-bold text-stone-800 leading-tight">Travel Co-Planner</h1>
-        <p class="text-[10px] text-stone-400 font-medium">Motore di viaggio universale & percorsi A ➔ B</p>
+        <p class="text-[10px] text-stone-400 font-medium">Logistica universale: Mezzi, Bici & Traghetti ⛴️</p>
       </div>
     </div>
     
@@ -113,11 +113,12 @@
         </div>
       </div>
 
-      <!-- Modalità Spostamenti Sul Posto -->
+      <!-- Modalità Spostamenti Sul Posto con Traghetti inclusi -->
       <div>
         <label class="block text-[11px] font-bold uppercase tracking-wider text-stone-500 mb-1">Come preferite spostarvi?</label>
         <select id="transportPrefSelect" onchange="handleTransportPrefChange(this.value)" class="w-full bg-stone-50 border border-pastelSage rounded-xl px-2.5 py-1.5 text-xs font-semibold text-stone-700 focus:outline-none focus:ring-2 focus:ring-pastelPink">
           <option value="transit">🚇 Mezzi Pubblici (Metro / Bus / Tram / Treno)</option>
+          <option value="ferry">⛴️ Traghetto / Battello / Vaporetto</option>
           <option value="bike">🚲 Noleggio Bici / Bike Sharing</option>
           <option value="walk_transit">🚶 A Piedi + Mezzi per tratte lunghe</option>
           <option value="car">🚗 Auto a Noleggio / Macchina propria</option>
@@ -129,13 +130,13 @@
       <div id="singleCitySection" class="space-y-2.5">
         <div>
           <label class="block text-xs font-semibold text-stone-600 mb-1">Destinazione o Località di Base *</label>
-          <input type="text" id="destInput" oninput="updateTripField('destination', this.value)" placeholder="Es. Londra, Parigi, Tokyo, Buccinasco..." 
+          <input type="text" id="destInput" oninput="updateTripField('destination', this.value)" placeholder="Es. Monte Isola, Londra, Amsterdam, Venezia..." 
                  class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
-          <p class="text-[10px] text-stone-400 mt-1">💡 Funziona ovunque: se metti un paesino, valorizziamo la base + i punti chiave vicini!</p>
+          <p class="text-[10px] text-stone-400 mt-1">💡 Se inserisci un'isola o un lago, integreremo i battelli e le traversate panoramiche!</p>
         </div>
         <div>
-          <label class="block text-xs font-semibold text-stone-600 mb-1">Alloggio / Hotel (Punto di partenza delle giornate)</label>
-          <input type="text" id="hotelInput" oninput="updateTripField('hotel', this.value)" placeholder="Es. Nome Hotel, B&B o Quartiere..." 
+          <label class="block text-xs font-semibold text-stone-600 mb-1">Alloggio / Hotel (Punto di partenza)</label>
+          <input type="text" id="hotelInput" oninput="updateTripField('hotel', this.value)" placeholder="Es. B&B sul lago, Hotel in centro, Airbnb..." 
                  class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
         </div>
       </div>
@@ -160,7 +161,7 @@
         <div class="space-y-2 text-xs">
           <div>
             <label class="block text-[11px] text-stone-500 font-medium mb-0.5">Arrivo / Punto d'ingresso</label>
-            <input type="text" id="airportInput" oninput="updateTripField('airport', this.value)" placeholder="Aeroporto o Stazione d'arrivo" 
+            <input type="text" id="airportInput" oninput="updateTripField('airport', this.value)" placeholder="Aeroporto, Stazione o Molo d'imbarco" 
                    class="w-full bg-white border border-stone-200 rounded-lg px-2.5 py-1 text-xs mb-1">
             <div class="flex gap-1.5">
               <input type="date" id="startDate" onchange="handleStartDateChange(this.value)" class="w-2/3 bg-white border border-stone-200 rounded-lg px-2 py-1 text-xs font-semibold">
@@ -170,7 +171,7 @@
 
           <div>
             <label class="block text-[11px] text-stone-500 font-medium mb-0.5">Rientro</label>
-            <input type="text" id="returnAirportInput" oninput="updateTripField('returnAirport', this.value)" placeholder="Aeroporto o Stazione di ritorno" 
+            <input type="text" id="returnAirportInput" oninput="updateTripField('returnAirport', this.value)" placeholder="Aeroporto, Stazione o Porto di ritorno" 
                    class="w-full bg-white border border-stone-200 rounded-lg px-2.5 py-1 text-xs mb-1">
             <div class="flex gap-1.5">
               <input type="date" id="endDate" onchange="handleEndDateChange(this.value)" class="w-2/3 bg-white border border-stone-200 rounded-lg px-2 py-1 text-xs font-semibold">
@@ -194,7 +195,7 @@
       <!-- INTERESSI -->
       <div>
         <label class="block text-xs font-semibold text-stone-600 mb-1">Interessi, Mete Desiderate & Fandom</label>
-        <input type="text" id="interestsInput" oninput="updateTripField('interests', this.value)" placeholder="Es. Musei d'arte, Harry Potter, Mercati vintage, Parchi..." 
+        <input type="text" id="interestsInput" oninput="updateTripField('interests', this.value)" placeholder="Es. Giro in battello, Borghi di pescatori, Musei, Panorami..." 
                class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
       </div>
 
@@ -230,7 +231,7 @@
         </div>
         <div class="bg-pastelPeach/40 border border-pastelPeach p-2.5 rounded-xl text-[11px] text-stone-700 flex items-start gap-1.5">
           <span class="text-sm">🧭</span>
-          <span>Ogni tempo di percorrenza è calcolato dalla <strong>tappa precedente (A ➔ B)</strong> con tempi reali urbani o extra-urbani.</span>
+          <span>Tempi realistici per ogni mezzo (inclusi <strong>traghetti e battelli ⛴️</strong>). Conferma la proposta per sbloccare l'aggiunta manuale.</span>
         </div>
         <div id="proposalList" class="space-y-3 max-h-80 overflow-y-auto pr-1"></div>
         <div class="flex gap-2 pt-1">
@@ -267,7 +268,7 @@
 
         <div>
           <label class="block font-semibold text-stone-600 mb-1">Nome Luogo / Attività</label>
-          <input type="text" id="modalStopTitle" placeholder="Es. Museo, Passeggiata al porto, Cena tipica..." 
+          <input type="text" id="modalStopTitle" placeholder="Es. Peschiera Maraglio, Santuario della Ceriola..." 
                  class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pastelPink">
         </div>
 
@@ -289,7 +290,7 @@
 
         <div>
           <label class="block font-semibold text-stone-600 mb-1">Note (Opzionale)</label>
-          <textarea id="modalStopDesc" rows="2" placeholder="Note o consigli sulla visita..." 
+          <textarea id="modalStopDesc" rows="2" placeholder="Es. Orario corse del battello, noleggio bici sull'isola..." 
                     class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pastelPink"></textarea>
         </div>
       </div>
@@ -325,7 +326,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'pastel_trips_library_universal_v1';
+    const STORAGE_KEY = 'pastel_trips_library_ferry_v1';
 
     let allTrips = {};
     let currentTripId = null;
@@ -608,7 +609,7 @@
         </div>
         <div class="flex gap-1.5 items-center">
           <input type="text" placeholder="Alloggio" value="${stay}" class="route-stay flex-1 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1 text-[11px]">
-          <input type="text" placeholder="Mezzo" value="${transport}" class="route-transport w-1/3 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1 text-[11px]">
+          <input type="text" placeholder="Mezzo (es. Auto, Traghetto)" value="${transport}" class="route-transport w-1/3 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1 text-[11px]">
           <button onclick="this.parentElement.parentElement.remove()" class="text-rose-400 hover:text-rose-600 font-bold px-1">✕</button>
         </div>
       `;
@@ -725,36 +726,55 @@
       return days;
     }
 
-    // MOTORE UNIVERSALE DI CALCOLO GEOGRAFICO A LIVELLI (4 LIVELLI DI DISTANZA)
+    // MOTORE UNIVERSALE DI CALCOLO GEOGRAFICO CON SUPPORTO TRAGHETTI & ISOLE
     function computeUniversalTransit(fromLoc, toLoc, transportPref) {
       const from = (fromLoc || '').toLowerCase().trim();
       const to = (toLoc || '').toLowerCase().trim();
-      const icon = transportPref === 'bike' ? '🚲' : (transportPref === 'car' ? '🚗' : (transportPref === 'walk_transit' ? '🚶' : '🚇'));
+      
+      let icon = '🚇';
+      if (transportPref === 'ferry') icon = '⛴️';
+      else if (transportPref === 'bike') icon = '🚲';
+      else if (transportPref === 'car') icon = '🚗';
+      else if (transportPref === 'walk_transit') icon = '🚶';
 
-      // Parole chiave che identificano poli fuori porta / satelliti lontani dal centro urbano
+      // 1. RICONOSCIMENTO TRATTE VIA ACQUA (TRAGHETTO / BATTELLO / ISOLE)
+      const waterKeywords = ['isola', 'traghetto', 'battello', 'vaporetto', 'ferry', 'molo', 'porto', 'navigazione', 'lago'];
+      const isWaterRoute = transportPref === 'ferry' || waterKeywords.some(kw => from.includes(kw) || to.includes(kw));
+
+      if (isWaterRoute) {
+        // Se è Monte Isola o Lago d'Iseo
+        if (from.includes('monte isola') || to.includes('monte isola') || from.includes('sulzano') || to.includes('sulzano') || from.includes('iseo') || to.includes('iseo')) {
+          return `⛴️ ~15-20 min Battello (Imbarco Sulzano ➔ Monte Isola)`;
+        }
+        // Se è Venezia o laguna
+        if (from.includes('venezia') || to.includes('venezia') || from.includes('murano') || to.includes('burano')) {
+          return `⛴️ ~20-30 min Vaporetto Linea Lagunare`;
+        }
+        // Tratta lacustre/marittima generica
+        return `⛴️ ~20-25 min Battello/Traghetto (Imbarco + Traversata)`;
+      }
+
+      // 2. LIVELLO 4: FUORI PORTA / SATELLITE LONTANO (>25-35 km dal centro)
       const outOfTownKeywords = [
         'studios', 'watford', 'leavesden', 'warner bros', 
         'disneyland', 'versailles', 'windsor', 'fontainebleau',
         'tivoli', 'pompei', 'abbazia', 'mirasole', 'parco archeologico',
-        'outlet', 'serravalle', 'castel romano', 'monastero', 'sacra di san michele'
+        'outlet', 'serravalle', 'castel romano', 'monastero'
       ];
 
       const isOutOfTown = outOfTownKeywords.some(kw => from.includes(kw) || to.includes(kw));
-
-      // 1. LIVELLO 4: FUORI PORTA / SATELLITE LONTANO (>25-35 km dal centro)
       if (isOutOfTown) {
         if (transportPref === 'car') return `🚗 ~45-60 min (tratto extra-urbano/autostrada)`;
         return `🚆 ~65-80 min (Treno veloce + Navetta di collegamento)`;
       }
 
-      // 2. TRASFERIMENTI AEROPORTUALI
+      // 3. TRASFERIMENTI AEROPORTUALI
       if (from.includes('aeroporto') || to.includes('aeroporto') || from.includes('airport') || to.includes('airport') || 
           from.includes('gatwick') || to.includes('gatwick') || from.includes('malpensa') || to.includes('schiphol')) {
         return `🚆 ~45-55 min (Navetta aeroportuale / Treno diretto)`;
       }
 
-      // 3. LIVELLO 1: STESSA MICRO-ZONA / QUARTIERE (Walkable a piedi)
-      // Se condividono parole chiave di zona o se è una continuazione a piedi
+      // 4. LIVELLO 1: STESSA MICRO-ZONA / QUARTIERE (Walkable a piedi)
       const wordsA = from.split(/[\s,&/]+/);
       const wordsB = to.split(/[\s,&/]+/);
       const sharedArea = wordsA.some(w => w.length > 4 && wordsB.includes(w));
@@ -764,7 +784,7 @@
         return `🚶 ~8-12 min a piedi (stessa area)`;
       }
 
-      // 4. LIVELLO 2: TRATTE URBANE NORMALI (Centro o quartieri vicini)
+      // 5. LIVELLO 2: TRATTE URBANE NORMALI (Centro o quartieri vicini)
       if (transportPref === 'bike') return `🚲 ~12-15 min in bici`;
       if (transportPref === 'car') return `🚗 ~15-20 min in auto`;
       if (transportPref === 'walk_transit') return `🚶 ~18 min (a piedi + metro)`;
@@ -870,7 +890,7 @@
       return recomputeSequentialTravelTimes(sortedStops, trip.hotel, trip.transportPref || 'transit');
     }
 
-    // GENERATORE UNIVERSALE (Combina conoscenza specifica per le città note + sintetizzatore dinamico per qualsiasi altra città nel mondo)
+    // BANCA DATI & GENERATORE UNIVERSALE CON SUPPORTO PER MONTE ISOLA / LAGHI
     function buildAccurateItinerary(dest, expType, transportPref, airport, hotel, sDate, sTime, eDate, eTime, fixedEvents, interests) {
       const days = generateDaysArray(sDate, eDate);
       let list = [];
@@ -878,8 +898,106 @@
       const iLow = (interests || '').toLowerCase();
       const isReturning = expType === 'returning';
 
-      // 1. BANCA DATI LONDRA (Se l'utente cerca Londra)
-      if (dLow.includes('londra') || dLow.includes('london')) {
+      // 1. BANCA DATI MONTE ISOLA & LAGO D'ISEO (Specifica per isole/battelli)
+      if (dLow.includes('monte isola') || dLow.includes('iseo') || dLow.includes('sulzano')) {
+        days.forEach((dayObj, index) => {
+          const isFirst = index === 0;
+          const isLast = index === days.length - 1;
+
+          if (isFirst) {
+            list.push({
+              id: `stop-${dayObj.num}-arr`,
+              day: dayObj.label,
+              time: `${sTime || '12:30'} - Arrivo & Traversata`,
+              title: `Arrivo al Molo d'imbarco ➔ Battello verso ${dest}`,
+              desc: "Imbarco sul battello a Sulzano/Iseo, traversata panoramica e check-in all'alloggio sull'isola.",
+              tag: "Traghetto & Base",
+              color: "pastelBlue",
+              isTransfer: true,
+              isLocked: true
+            });
+            list.push({
+              id: `stop-${dayObj.num}-pm`,
+              day: dayObj.label,
+              time: "Pomeriggio • 15:00 - 17:30",
+              title: "Peschiera Maraglio & Passeggiata lungolago tra gli ulivi",
+              desc: "Borgo pittoresco dei pescatori, case in pietra, vicoli acciottolati e noleggio bici locali.",
+              tag: "Borgo & Lago",
+              color: "pastelSage"
+            });
+            list.push({
+              id: `stop-${dayObj.num}-eve`,
+              day: dayObj.label,
+              time: "Sera • 19:30 - 22:00",
+              title: "Cena a base di pesce di lago (sardina essiccata & polenta)",
+              desc: "Cena romantica sul lago con le ricette storiche dell'isola.",
+              tag: "Food Tipico",
+              color: "pastelPink"
+            });
+          } else if (isLast) {
+            list.push({
+              id: `stop-${dayObj.num}-am`,
+              day: dayObj.label,
+              time: "Mattina • 09:30 - 12:00",
+              title: "Carzano, Isola di Loreto & Ultime botteghe artigiane",
+              desc: "Vista sulla suggestiva isola privata di Loreto e acquisto del celebre salame di Monte Isola.",
+              tag: "Scorci & Shopping",
+              color: "pastelPeach"
+            });
+            list.push({
+              id: `stop-${dayObj.num}-tr`,
+              day: dayObj.label,
+              time: `Prima delle ${eTime || '17:25'}`,
+              title: `Battello di ritorno ➔ Partenza verso la terraferma`,
+              desc: "Traversata in battello verso il molo di Sulzano/Iseo per il rientro.",
+              tag: "Rientro",
+              color: "pastelBlue",
+              isTransfer: true,
+              isLocked: true
+            });
+          } else if (index === 1) {
+            list.push({
+              id: `stop-${dayObj.num}-1`,
+              day: dayObj.label,
+              time: "Mattina • 09:30 - 12:30",
+              title: "Salita al Santuario della Madonna della Ceriola",
+              desc: "Il punto più alto dell'isola (600m): panorama a 360 gradi mozzafiato su tutto il Lago d'Iseo e le Alpi.",
+              tag: "Trekking & Vista",
+              color: "pastelLavender"
+            });
+            list.push({
+              id: `stop-${dayObj.num}-2`,
+              day: dayObj.label,
+              time: "Pomeriggio • 14:00 - 17:30",
+              title: "Tour perimetrale dell'isola in Bicicletta / Navetta",
+              desc: "9 km di strada costiera senza auto tra reti da pesca stese al sole, borghi e silenzi d'altri tempi.",
+              tag: "Bici & Relax",
+              color: "pastelPeach"
+            });
+          } else {
+            list.push({
+              id: `stop-${dayObj.num}-1`,
+              day: dayObj.label,
+              time: "Mattina • 09:30 - 12:30",
+              title: "Crociera delle 3 Isole (Loreto, San Paolo e Monte Isola)",
+              desc: "Escursione in battello tra le acque limpide del lago ammirando le ville storiche.",
+              tag: "Navigazione ⛴️",
+              color: "pastelBlue"
+            });
+            list.push({
+              id: `stop-${dayObj.num}-2`,
+              day: dayObj.label,
+              time: "Pomeriggio • 14:00 - 17:00",
+              title: "Rocca Martinengo & Borgo medievale di Menzino",
+              desc: "Antica fortezza degli Oldofredi e passeggiata rilassata tra i frantoi.",
+              tag: "Storia & Borghi",
+              color: "pastelSage"
+            });
+          }
+        });
+      }
+      // 2. LONDRA (Punti reali già collaudati)
+      else if (dLow.includes('londra') || dLow.includes('london')) {
         days.forEach((dayObj, index) => {
           const isFirst = index === 0;
           const isLast = index === days.length - 1;
@@ -1047,7 +1165,7 @@
           }
         });
       }
-      // 2. MOTORE UNIVERSALE PER QUALSIASI ALTRA DESTINAZIONE NEL MONDO
+      // 3. GENERATORE UNIVERSALE PER QUALSIASI ALTRA META NEL MONDO
       else {
         days.forEach((dayObj, index) => {
           const isFirst = index === 0;
@@ -1102,7 +1220,7 @@
               day: dayObj.label,
               time: `Prima delle ${eTime || '18:00'}`,
               title: `Ritiro Bagagli ➔ Rientro verso ${airport || 'Stazione / Aeroporto'}`,
-              desc: `Check-out e trasferimento verso l'aeroporto/stazione in tempo utile per il viaggio di rientro.`,
+              desc: `Check-out e trasferimento in tempo utile per il viaggio di rientro.`,
               tag: "Rientro",
               color: "pastelBlue",
               isTransfer: true,
@@ -1110,14 +1228,13 @@
             });
           }
           else {
-            // Tappe intermedie universali basate sugli interessi inseriti
             const focus = interests ? interests : "arte, monumenti storici e panorami";
             list.push({
               id: `stop-${dayObj.num}-1`,
               day: dayObj.label,
               time: "Mattina • 09:30 - 12:30",
               title: `Attrazione Principale & Monumento Iconico di ${dest}`,
-              desc: `Visita guidata o percorso tematico dedicato a: ${focus}.`,
+              desc: `Percorso tematico o visita guidata dedicata a: ${focus}.`,
               tag: "Cultura",
               color: "pastelLavender"
             });
@@ -1429,7 +1546,7 @@
         container.innerHTML = `
           <div class="bg-white p-8 rounded-3xl text-center space-y-2 border border-dashed border-pastelSage">
             <p class="text-stone-600 font-semibold text-sm">Nessuna tappa confermata per questo viaggio 🌸</p>
-            <p class="text-xs text-stone-400">Compila la destinazione a sinistra e clicca su "Ricalcola Itinerario & Tappe".</p>
+            <p class="text-xs text-stone-400">Compila la località a sinistra e clicca su "Ricalcola Itinerario & Tappe".</p>
           </div>
         `;
         return;
