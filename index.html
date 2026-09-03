@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Travel Co-Planner • Generic Engine</title>
+  <title>Travel Co-Planner • Production Ready</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,7 +53,7 @@
       <span class="text-xl">✈️</span>
       <div>
         <h1 class="font-title text-base sm:text-lg font-bold text-stone-800 leading-tight">Travel Co-Planner</h1>
-        <p class="text-[10px] text-stone-400 font-medium">Motore di pianificazione universale & percorsi A ➔ B</p>
+        <p class="text-[10px] text-stone-400 font-medium">Dashboard intelligente & logistica sequenziale A ➔ B</p>
       </div>
     </div>
     
@@ -117,26 +117,25 @@
       <div>
         <label class="block text-[11px] font-bold uppercase tracking-wider text-stone-500 mb-1">Come preferite spostarvi?</label>
         <select id="transportPrefSelect" onchange="handleTransportPrefChange(this.value)" class="w-full bg-stone-50 border border-pastelSage rounded-xl px-2.5 py-1.5 text-xs font-semibold text-stone-700 focus:outline-none focus:ring-2 focus:ring-pastelPink">
-          <option value="transit">🚇 Mezzi Pubblici (Metro / Bus / Tram / Battelli di linea)</option>
+          <option value="transit">🚇 Mezzi Pubblici (Metro / Bus / Tram / Battelli)</option>
           <option value="ferry">⛴️ Traghetti & Battelli prioritari</option>
           <option value="bike">🚲 Noleggio Bici / Bike Sharing</option>
           <option value="walk_transit">🚶 A Piedi + Mezzi per tratte lunghe</option>
           <option value="car">🚗 Auto a Noleggio / Macchina propria</option>
           <option value="taxi">🚕 Taxi / Uber / Ride-sharing</option>
         </select>
-        <p class="text-[10px] text-stone-400 mt-1">💡 Se l'itinerario tocca isole o laghi, il sistema integra in automatico il battello di linea.</p>
       </div>
 
       <!-- SEZIONE DESTINAZIONE -->
       <div id="singleCitySection" class="space-y-2.5">
         <div>
           <label class="block text-xs font-semibold text-stone-600 mb-1">Destinazione o Località di Base *</label>
-          <input type="text" id="destInput" oninput="updateTripField('destination', this.value)" placeholder="Es. qualsiasi città, isola o borgo..." 
+          <input type="text" id="destInput" oninput="updateTripField('destination', this.value)" placeholder="Es. Londra, Monte Isola, Amsterdam..." 
                  class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
         </div>
         <div>
           <label class="block text-xs font-semibold text-stone-600 mb-1">Alloggio / Hotel (Punto di partenza giornaliero)</label>
-          <input type="text" id="hotelInput" oninput="updateTripField('hotel', this.value)" placeholder="Es. Nome hotel, B&B o zona di alloggio..." 
+          <input type="text" id="hotelInput" oninput="updateTripField('hotel', this.value)" placeholder="Es. Nome hotel, B&B o zona..." 
                  class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
         </div>
       </div>
@@ -161,7 +160,7 @@
         <div class="space-y-2 text-xs">
           <div>
             <label class="block text-[11px] text-stone-500 font-medium mb-0.5">Arrivo / Punto d'ingresso</label>
-            <input type="text" id="airportInput" oninput="updateTripField('airport', this.value)" placeholder="Aeroporto, Stazione o Molo d'imbarco" 
+            <input type="text" id="airportInput" oninput="updateTripField('airport', this.value)" placeholder="Aeroporto, Stazione o Molo" 
                    class="w-full bg-white border border-stone-200 rounded-lg px-2.5 py-1 text-xs mb-1">
             <div class="flex gap-1.5">
               <input type="date" id="startDate" onchange="handleStartDateChange(this.value)" class="w-2/3 bg-white border border-stone-200 rounded-lg px-2 py-1 text-xs font-semibold">
@@ -194,8 +193,8 @@
 
       <!-- INTERESSI -->
       <div>
-        <label class="block text-xs font-semibold text-stone-600 mb-1">Interessi, Mete Desiderate & Attrazioni chiave</label>
-        <input type="text" id="interestsInput" oninput="updateTripField('interests', this.value)" placeholder="Es. Musei, Mercati locali, Trekking, Fandom..." 
+        <label class="block text-xs font-semibold text-stone-600 mb-1">Interessi, Mete Desiderate & Attrazioni</label>
+        <input type="text" id="interestsInput" oninput="updateTripField('interests', this.value)" placeholder="Es. Musei, Mercati, Trekking, Fandom..." 
                class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
       </div>
 
@@ -231,7 +230,7 @@
         </div>
         <div class="bg-pastelPeach/40 border border-pastelPeach p-2.5 rounded-xl text-[11px] text-stone-700 flex items-start gap-1.5">
           <span class="text-sm">🧭</span>
-          <span>Ogni tempo di percorrenza è calcolato dalla <strong>tappa precedente (A ➔ B)</strong>. Conferma la proposta per sbloccare l'aggiunta manuale.</span>
+          <span>Ogni tempo di percorrenza è calcolato dalla <strong>tappa precedente (A ➔ B)</strong>. Conferma la proposta per salvare i dati.</span>
         </div>
         <div id="proposalList" class="space-y-3 max-h-80 overflow-y-auto pr-1"></div>
         <div class="flex gap-2 pt-1">
@@ -268,7 +267,7 @@
 
         <div>
           <label class="block font-semibold text-stone-600 mb-1">Nome Luogo / Attività</label>
-          <input type="text" id="modalStopTitle" placeholder="Es. Nome museo, piazza, belvedere, ristorante..." 
+          <input type="text" id="modalStopTitle" placeholder="Es. Nome museo, belvedere, ristorante..." 
                  class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pastelPink">
         </div>
 
@@ -290,7 +289,7 @@
 
         <div>
           <label class="block font-semibold text-stone-600 mb-1">Note (Opzionale)</label>
-          <textarea id="modalStopDesc" rows="2" placeholder="Dettagli utili sulla tappa..." 
+          <textarea id="modalStopDesc" rows="2" placeholder="Dettagli utili sulla visita..." 
                     class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pastelPink"></textarea>
         </div>
       </div>
@@ -326,7 +325,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'pastel_trips_library_generic_v3';
+    const STORAGE_KEY = 'pastel_trips_library_stable_v1';
 
     let allTrips = {};
     let currentTripId = null;
@@ -609,7 +608,7 @@
         </div>
         <div class="flex gap-1.5 items-center">
           <input type="text" placeholder="Alloggio" value="${stay}" class="route-stay flex-1 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1 text-[11px]">
-          <input type="text" placeholder="Mezzo (es. Treno, Battello)" value="${transport}" class="route-transport w-1/3 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1 text-[11px]">
+          <input type="text" placeholder="Mezzo (es. Treno, Auto)" value="${transport}" class="route-transport w-1/3 bg-stone-50 border border-stone-200 rounded-lg px-2 py-1 text-[11px]">
           <button onclick="this.parentElement.parentElement.remove()" class="text-rose-400 hover:text-rose-600 font-bold px-1">✕</button>
         </div>
       `;
@@ -726,48 +725,37 @@
       return days;
     }
 
-    // ==========================================
-    // MOTORE EURISTICO ASTRATTO (Zero Hardcoding)
-    // ==========================================
-
-    // Rileva morfologicamente se il luogo o la tratta include acque / isole
     function checkIsWaterEnvironment(text) {
       const t = (text || '').toLowerCase();
       const waterTerms = ['isola', 'island', 'isle', 'lago', 'lake', 'molo', 'porto', 'port', 'dock', 'ferry', 'traghetto', 'battello', 'vaporetto'];
       return waterTerms.some(term => t.includes(term));
     }
 
-    // Rileva se è una meta esterna / satellite / fuori porta
     function checkIsOutlierLocation(text) {
       const t = (text || '').toLowerCase();
       const outTerms = ['studios', 'studio', 'outlet', 'santuario', 'abbazia', 'abbey', 'parco', 'park', 'valle', 'valley', 'castello', 'castle', 'palace', 'reggia', 'monte', 'mount', 'archeologico'];
       return outTerms.some(term => t.includes(term));
     }
 
-    // Calcolo universale sequenziale (A ➔ B) basato sulla topologia e mezzo
     function computeUniversalTransit(fromLoc, toLoc, transportPref) {
       const from = (fromLoc || '').toLowerCase().trim();
       const to = (toLoc || '').toLowerCase().trim();
       
       const isWater = transportPref === 'ferry' || checkIsWaterEnvironment(from) || checkIsWaterEnvironment(to);
 
-      // 1. Acqua (Battelli, traghetti, vaporetti di linea)
       if (isWater) {
         return `⛴️ ~15-25 min Battello / Traghetto di linea (Imbarco + Traversata)`;
       }
 
-      // 2. Extraurbano / Fuori porta / Satelliti
       if (checkIsOutlierLocation(from) || checkIsOutlierLocation(to)) {
         if (transportPref === 'car') return `🚗 ~40-55 min (tratto extra-urbano / scorrimento)`;
         return `🚆 ~60-75 min (Treno regionale / Navetta di collegamento)`;
       }
 
-      // 3. Aeroporti / Hub di ingresso
       if (from.includes('aeroporto') || to.includes('aeroporto') || from.includes('airport') || to.includes('airport')) {
         return `🚆 ~45-55 min (Treno espresso / Navetta aeroportuale)`;
       }
 
-      // 4. Stesso distretto / quartiere a piedi (parole comuni lunghe)
       const tokensA = from.split(/[\s,&/'-]+/).filter(w => w.length > 3);
       const tokensB = to.split(/[\s,&/'-]+/).filter(w => w.length > 3);
       const sharedArea = tokensA.some(t => tokensB.includes(t));
@@ -777,7 +765,6 @@
         return `🚶 ~8-12 min a piedi (stessa area/quartiere)`;
       }
 
-      // 5. Tratte urbane ordinarie
       if (transportPref === 'bike') return `🚲 ~12-15 min in bici`;
       if (transportPref === 'car') return `🚗 ~15-20 min in auto`;
       if (transportPref === 'walk_transit') return `🚶 ~18 min (a piedi + mezzi)`;
@@ -883,14 +870,11 @@
       return recomputeSequentialTravelTimes(sortedStops, trip.hotel, trip.transportPref || 'transit');
     }
 
-    // GENERATORE TOTALMENTE ASTRATTO E MODULARE
     function buildAccurateItinerary(dest, expType, transportPref, airport, hotel, sDate, sTime, eDate, eTime, fixedEvents, interests) {
       const days = generateDaysArray(sDate, eDate);
       let list = [];
       const isWater = checkIsWaterEnvironment(dest) || transportPref === 'ferry';
       const cleanDest = dest.trim();
-
-      // Estrai interessi personalizzati dell'utente se presenti
       const userKeywords = interests ? interests.split(',').map(s => s.trim()).filter(Boolean) : [];
 
       days.forEach((dayObj, index) => {
@@ -960,7 +944,6 @@
           });
         }
         else {
-          // Giornate intermedie: adatta i titoli ai desiderata dell'utente
           const interestA = userKeywords[(index * 2 - 2) % (userKeywords.length || 1)] || "Arte, Storia e Cultura";
           const interestB = userKeywords[(index * 2 - 1) % (userKeywords.length || 1)] || "Quartieri pittoreschi e Punti panoramici";
 
@@ -988,7 +971,6 @@
         }
       });
 
-      // Biglietti o eventi vincolanti inseriti dall'utente
       fixedEvents.forEach(ev => {
         let assignedDayLabel = days[0].label;
         const matched = days.find(d => 
