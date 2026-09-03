@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Travel Co-Planner</title>
+  <title>Travel Co-Planner • Dynamic Routing</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,7 +53,7 @@
       <span class="text-xl">✈️</span>
       <div>
         <h1 class="font-title text-base sm:text-lg font-bold text-stone-800 leading-tight">Travel Co-Planner</h1>
-        <p class="text-[10px] text-stone-400 font-medium">Dashboard intelligente per viaggiatori</p>
+        <p class="text-[10px] text-stone-400 font-medium">Logistica sequenziale & tappe A ➔ B</p>
       </div>
     </div>
     
@@ -116,7 +116,7 @@
       <!-- Modalità Spostamenti Sul Posto -->
       <div>
         <label class="block text-[11px] font-bold uppercase tracking-wider text-stone-500 mb-1">Come preferite spostarvi?</label>
-        <select id="transportPrefSelect" onchange="updateTripField('transportPref', this.value)" class="w-full bg-stone-50 border border-pastelSage rounded-xl px-2.5 py-1.5 text-xs font-semibold text-stone-700 focus:outline-none focus:ring-2 focus:ring-pastelPink">
+        <select id="transportPrefSelect" onchange="handleTransportPrefChange(this.value)" class="w-full bg-stone-50 border border-pastelSage rounded-xl px-2.5 py-1.5 text-xs font-semibold text-stone-700 focus:outline-none focus:ring-2 focus:ring-pastelPink">
           <option value="transit">🚇 Mezzi Pubblici (Metro / Bus / Tram / Treno)</option>
           <option value="bike">🚲 Noleggio Bici / Bike Sharing</option>
           <option value="walk_transit">🚶 A Piedi + Mezzi per tratte lunghe</option>
@@ -128,14 +128,14 @@
       <!-- SEZIONE CITTÀ SINGOLA -->
       <div id="singleCitySection" class="space-y-2.5">
         <div>
-          <label class="block text-xs font-semibold text-stone-600 mb-1">Località di Base / Alloggio *</label>
-          <input type="text" id="destInput" oninput="updateTripField('destination', this.value)" placeholder="Es. Buccinasco, Londra, Amsterdam, Chianti..." 
+          <label class="block text-xs font-semibold text-stone-600 mb-1">Località di Base / Destinazione *</label>
+          <input type="text" id="destInput" oninput="updateTripField('destination', this.value)" placeholder="Es. Buccinasco, Londra, Amsterdam..." 
                  class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
-          <p class="text-[10px] text-stone-400 mt-1">💡 Se inserisci un piccolo paese, pianificheremo visite locali + i migliori dintorni vicini!</p>
+          <p class="text-[10px] text-stone-400 mt-1">💡 Se inserisci un piccolo paese, pianificheremo visite locali + i dintorni imperdibili vicini!</p>
         </div>
         <div>
-          <label class="block text-xs font-semibold text-stone-600 mb-1">Alloggio / Hotel</label>
-          <input type="text" id="hotelInput" oninput="updateTripField('hotel', this.value)" placeholder="Es. B&B, Hotel in centro, Airbnb..." 
+          <label class="block text-xs font-semibold text-stone-600 mb-1">Alloggio / Hotel (Punto di partenza giornaliero)</label>
+          <input type="text" id="hotelInput" oninput="updateTripField('hotel', this.value)" placeholder="Es. Hotel in centro, Airbnb a Navigli..." 
                  class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
         </div>
       </div>
@@ -160,7 +160,7 @@
         <div class="space-y-2 text-xs">
           <div>
             <label class="block text-[11px] text-stone-500 font-medium mb-0.5">Arrivo / Punto di partenza</label>
-            <input type="text" id="airportInput" oninput="updateTripField('airport', this.value)" placeholder="Aeroporto o Stazione (es. Linate, Malpensa, Centrale)" 
+            <input type="text" id="airportInput" oninput="updateTripField('airport', this.value)" placeholder="Aeroporto o Stazione (es. Gatwick, Linate)" 
                    class="w-full bg-white border border-stone-200 rounded-lg px-2.5 py-1 text-xs mb-1">
             <div class="flex gap-1.5">
               <input type="date" id="startDate" onchange="handleStartDateChange(this.value)" class="w-2/3 bg-white border border-stone-200 rounded-lg px-2 py-1 text-xs font-semibold">
@@ -194,7 +194,7 @@
       <!-- INTERESSI -->
       <div>
         <label class="block text-xs font-semibold text-stone-600 mb-1">Interessi & Cosa vorresti vedere nei dintorni</label>
-        <input type="text" id="interestsInput" oninput="updateTripField('interests', this.value)" placeholder="Es. Milano Navigli, Duomo, Natura nel Parco Sud, Cucina tipica..." 
+        <input type="text" id="interestsInput" oninput="updateTripField('interests', this.value)" placeholder="Es. Navigli, Duomo, Natura, Harry Potter..." 
                class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
       </div>
 
@@ -222,15 +222,15 @@
         <div class="flex justify-between items-center">
           <div class="flex items-center gap-1.5">
             <span>💬</span>
-            <h3 class="font-bold text-stone-800 text-xs">Anteprima Proposta: Sposta o Conferma!</h3>
+            <h3 class="font-bold text-stone-800 text-xs">Anteprima Proposta: Sposta o Inverti!</h3>
           </div>
           <button onclick="swapProposalDaysPrompt()" class="text-[10px] bg-pastelLavender/60 hover:bg-pastelLavender text-stone-700 font-bold px-2.5 py-1 rounded-lg transition">
             🔄 Inverti Mete Giorni
           </button>
         </div>
         <div class="bg-pastelPeach/40 border border-pastelPeach p-2.5 rounded-xl text-[11px] text-stone-700 flex items-start gap-1.5">
-          <span class="text-sm">⚠️</span>
-          <span><strong>Conferma la proposta</strong> per salvare questa struttura ed iniziare ad aggiungere ulteriori tappe personalizzate.</span>
+          <span class="text-sm">💡</span>
+          <span>I tempi di percorrenza e le provenienze (<strong>A ➔ B</strong>) si ricalcolano da soli ad ogni spostamento!</span>
         </div>
         <div id="proposalList" class="space-y-3 max-h-80 overflow-y-auto pr-1"></div>
         <div class="flex gap-2 pt-1">
@@ -325,7 +325,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'pastel_trips_library_clean_v8';
+    const STORAGE_KEY = 'pastel_trips_library_routing_v1';
 
     let allTrips = {};
     let currentTripId = null;
@@ -422,6 +422,16 @@
       renderTripsSidebar();
       const titleElem = document.getElementById('tripTitle');
       if (titleElem) titleElem.innerText = trip.title;
+    }
+
+    function handleTransportPrefChange(val) {
+      updateTripField('transportPref', val);
+      const trip = getCurrentTrip();
+      if (trip && trip.stops && trip.stops.length > 0) {
+        trip.stops = recomputeSequentialTravelTimes(trip.stops, trip.hotel, val);
+        saveAllTripsToStorage();
+        renderItinerary();
+      }
     }
 
     function handleStartDateChange(val) {
@@ -723,38 +733,62 @@
           hub: "Milano & Dintorni",
           localHighlight: "Passeggiata rilassante ai Laghetti / Parco Spina Azzurra e cena tipica lombarda",
           nearbyHighlights: [
-            { title: "Darsena, Navigli & Vicolo dei Lavandai", desc: "La zona storica dei canali milanesi a breve distanza da Buccinasco.", travel: "🚌 15-20 min Bus verso Metro M2 Romolo/Famagosta" },
-            { title: "Basilica di Sant'Ambrogio & Centro Storico", desc: "La cattedrale romanica simbolo di Milano e passeggiata verso il Duomo.", travel: "🚇 25 min con M2" },
-            { title: "Parco Agricolo Sud Milano & Abbazia di Mirasole", desc: "Oasi rurale, cascine e storico complesso monastico trecentesco.", travel: "🚗 12 min in auto / bus locale" }
+            { title: "Darsena & Navigli Milanesi", desc: "La zona storica dei canali milanesi a breve distanza dalla base." },
+            { title: "Basilica di Sant'Ambrogio & Centro Storico", desc: "La cattedrale romanica simbolo di Milano e passeggiata verso il centro." },
+            { title: "Parco Agricolo Sud Milano & Abbazia di Mirasole", desc: "Oasi rurale, cascine e storico complesso monastico trecentesco." }
           ]
         };
       }
       return { isSmallTown: false, hub: dest, localHighlight: null, nearbyHighlights: [] };
     }
 
-    function estimateTravelTimeAndTag(title, desc, transportPref) {
-      const text = ((title || '') + " " + (desc || '')).toLowerCase();
-      let estTime = "🚇 15 min con i mezzi";
-      let estTag = "Visita";
+    // MOTORE SEQUENZIALE LOGISTICO: Calcola SEMPRE la percorrenza dal luogo precedente (A ➔ B)
+    function recomputeSequentialTravelTimes(stopsArray, hotelName, transportPref) {
+      const baseHotel = hotelName ? hotelName.trim() : "Alloggio/Hotel";
+      const icon = transportPref === 'bike' ? '🚲' : (transportPref === 'car' ? '🚗' : (transportPref === 'walk_transit' ? '🚶' : '🚇'));
 
-      if (text.includes("navigli") || text.includes("darsena")) {
-        estTag = "Atmosfera & Canali";
-        estTime = "🚌 15 min bus verso M2";
-      } else if (text.includes("duomo") || text.includes("sant'ambrogio") || text.includes("museo") || text.includes("chiesa")) {
-        estTag = "Cultura";
-        estTime = "🚇 20-25 min mezzi";
-      } else if (text.includes("parco") || text.includes("laghetto") || text.includes("abbazia") || text.includes("passeggiata")) {
-        estTag = "Natura & Relax";
-        estTime = "🚶 10-15 min a piedi";
-      } else if (text.includes("cena") || text.includes("cascina") || text.includes("trattoria") || text.includes("food")) {
-        estTag = "Food Tipico";
-        estTime = "🚶 Vicino all'alloggio";
-      }
+      // Raggruppa per giorno
+      const dayMap = {};
+      stopsArray.forEach(st => {
+        if (!dayMap[st.day]) dayMap[st.day] = [];
+        dayMap[st.day].push(st);
+      });
 
-      if (transportPref === 'bike') estTime = "🚲 15 min in bici";
-      else if (transportPref === 'car') estTime = "🚗 12-18 min auto";
+      Object.keys(dayMap).forEach(dayKey => {
+        const dayStops = dayMap[dayKey];
+        let prevLocationName = baseHotel;
 
-      return { travelTime: estTime, tag: estTag };
+        dayStops.forEach((st, idx) => {
+          // Se è transfer iniziale dall'aeroporto all'alloggio
+          if (st.isTransfer && st.id && st.id.includes('-arr')) {
+            st.travelTime = `${icon} ~45-55 min dall'Aeroporto/Stazione a ${baseHotel}`;
+            prevLocationName = baseHotel;
+            return;
+          }
+          // Se è transfer finale di rientro
+          if (st.isTransfer && st.id && st.id.includes('-tr')) {
+            st.travelTime = `${icon} ~45-60 min da ${prevLocationName} verso l'Aeroporto`;
+            return;
+          }
+
+          // Se è la prima tappa del giorno (fuori dall'hotel)
+          if (idx === 0 || (idx === 1 && dayStops[0].isTransfer && dayStops[0].id && dayStops[0].id.includes('-arr'))) {
+            let minEst = transportPref === 'bike' ? '12 min' : (transportPref === 'car' ? '15 min' : '15-20 min');
+            st.travelTime = `${icon} ~${minEst} da ${baseHotel}`;
+          } else {
+            // Tappe successive: CALCOLATE DIRETTAMENTE DAL LUOGO PRECEDENTE!
+            let minEst = transportPref === 'bike' ? '10-12 min' : (transportPref === 'car' ? '12-15 min' : '15-18 min');
+            // Tronca il nome della tappa precedente se troppo lungo per eleganza
+            const shortPrev = prevLocationName.length > 28 ? prevLocationName.substring(0, 25) + '...' : prevLocationName;
+            st.travelTime = `${icon} ~${minEst} da "${shortPrev}"`;
+          }
+
+          // Memorizza questa tappa come nuovo punto di partenza per la successiva!
+          prevLocationName = st.title;
+        });
+      });
+
+      return stopsArray;
     }
 
     function rebalanceDayTimeSlots(stopsArray) {
@@ -813,7 +847,8 @@
         });
       });
 
-      return sortedStops;
+      const trip = getCurrentTrip() || {};
+      return recomputeSequentialTravelTimes(sortedStops, trip.hotel, trip.transportPref || 'transit');
     }
 
     function buildAccurateItinerary(dest, expType, transportPref, airport, hotel, sDate, sTime, eDate, eTime, fixedEvents, interests) {
@@ -835,8 +870,7 @@
             tag: "Transfer & Base",
             color: "pastelBlue",
             isTransfer: true,
-            isLocked: true,
-            travelTime: "Percorrenza: ~30-45 min"
+            isLocked: true
           });
 
           list.push({
@@ -848,8 +882,7 @@
               ? `Primo contatto tranquillo nei dintorni dell'alloggio a ${dest} prima di esplorare l'area circostante.` 
               : `Primo contatto e scoperta dell'atmosfera del centro città.`,
             tag: geoInfo.isSmallTown ? "Relax Locale" : "Must See",
-            color: "pastelSage",
-            travelTime: "🚶 A piedi vicino alla base"
+            color: "pastelSage"
           });
 
           list.push({
@@ -859,8 +892,7 @@
             title: geoInfo.isSmallTown ? `Cena in trattoria / cascina tipica a ${dest}` : `Cena tipica in centro a ${dest}`,
             desc: "Cena rilassata gustando le specialità gastronomiche locali.",
             tag: "Food & Relax",
-            color: "pastelPink",
-            travelTime: "🚶 10 min a piedi"
+            color: "pastelPink"
           });
         }
         else if (isLast) {
@@ -871,8 +903,7 @@
             title: geoInfo.isSmallTown ? `Colazione tipica & Dintorni verdi di ${dest}` : `Ultime visite & Mercato locale a ${dest}`,
             desc: "Ultime foto, acquisti di prodotti tipici e pranzo prima di organizzare il rientro.",
             tag: "Gourmet & Relax",
-            color: "pastelPeach",
-            travelTime: "🚶 10 min a piedi"
+            color: "pastelPeach"
           });
 
           list.push({
@@ -884,8 +915,7 @@
             tag: "Rientro",
             color: "pastelBlue",
             isTransfer: true,
-            isLocked: true,
-            travelTime: "Transfer: ~40 min"
+            isLocked: true
           });
         }
         else {
@@ -900,8 +930,7 @@
               title: `Dintorni di ${dest}: ${h1.title}`,
               desc: `${h1.desc}`,
               tag: "Dintorni & Must",
-              color: "pastelLavender",
-              travelTime: h1.travel
+              color: "pastelLavender"
             });
 
             list.push({
@@ -911,8 +940,7 @@
               title: `Dintorni di ${dest}: ${h2.title}`,
               desc: `${h2.desc}`,
               tag: "Esplorazione",
-              color: "pastelPeach",
-              travelTime: h2.travel
+              color: "pastelPeach"
             });
           } else {
             list.push({
@@ -922,8 +950,7 @@
               title: `Punto Iconico / Museo di ${dest}`,
               desc: `Visita ai luoghi celebri legati a: ${interests || 'arte, storia e cultura'}.`,
               tag: "Cultura",
-              color: "pastelLavender",
-              travelTime: "🚇 15 min con i mezzi"
+              color: "pastelLavender"
             });
 
             list.push({
@@ -933,8 +960,7 @@
               title: `Scorci Panoramici & Botteghe Tipiche`,
               desc: "Esplorazione senza fretta dei quartieri caratteristici e delle piazze principali.",
               tag: "Icone",
-              color: "pastelPeach",
-              travelTime: "🚶 15 min a piedi"
+              color: "pastelPeach"
             });
           }
         }
@@ -956,8 +982,7 @@
           tag: "Prenotato",
           color: "pastelPink",
           isBooked: true,
-          isLocked: true,
-          travelTime: "Puntualità richiesta"
+          isLocked: true
         });
       });
 
@@ -1175,7 +1200,6 @@
       renderProposalList();
     }
 
-    // CONFERMA PROPOSTA: SBLOCCA L'AGGIUNTA TAPPE
     function confirmProposal() {
       const trip = getCurrentTrip();
       if (!trip) return;
@@ -1194,7 +1218,6 @@
       if (el) el.classList.add('hidden');
     }
 
-    // GESTIONE STATO PULSANTE "+ AGGIUNGI TAPPA"
     function updateAddStopButtonState() {
       const btn = document.getElementById('btnAddStopMain');
       const icon = document.getElementById('addStopIcon');
@@ -1364,17 +1387,15 @@
       else if (slot === 'evening') timeStr = "Sera • 20:00 - 22:30";
       else if (slot === 'custom') timeStr = `Ore ${customTime || '15:00'}`;
 
-      const analysis = estimateTravelTimeAndTag(title, desc, trip.transportPref || 'transit');
-
       const newStop = {
         id: "stop-" + Date.now(),
         day: day,
         time: timeStr,
         title: title,
         desc: desc || `Tappa programmata per ${title}.`,
-        tag: analysis.tag,
-        travelTime: analysis.travelTime,
-        color: analysis.tag.includes('Food') ? 'pastelPink' : (analysis.tag.includes('Cultura') ? 'pastelLavender' : 'pastelSage'),
+        tag: "Visita",
+        travelTime: "",
+        color: 'pastelSage',
         isBooked: slot === 'custom',
         isLocked: false
       };
