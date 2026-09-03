@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Travel Co-Planner</title>
+  <title>Travel Co-Planner • Smart Quick-Add</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -216,8 +216,8 @@
           <span class="text-[10px] font-bold uppercase tracking-wider text-stone-400">Itinerario Attivo</span>
           <h2 class="text-lg font-bold text-stone-800" id="tripTitle">I Tuoi Prossimi Passi ✈️</h2>
         </div>
-        <button onclick="addNewStopPrompt()" class="no-print text-xs bg-pastelPeach hover:bg-pastelPink text-stone-800 font-semibold px-3 py-1.5 rounded-xl transition shadow-2xs">
-          + Aggiungi Tappa
+        <button onclick="openAddStopModal()" class="no-print text-xs bg-pastelPeach hover:bg-pastelPink text-stone-800 font-semibold px-3.5 py-2 rounded-xl transition shadow-2xs flex items-center gap-1">
+          <span>+</span> <span>Aggiungi Tappa</span>
         </button>
       </div>
 
@@ -252,6 +252,65 @@
 
   </main>
 
+  <!-- MODAL NUOVA TAPPA RAPIDA & INTELLIGENTE (no-print) -->
+  <div id="addStopModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-stone-900/40 p-4 no-print">
+    <div class="bg-white border-2 border-pastelLavender rounded-3xl p-5 sm:p-6 max-w-md w-full shadow-xl space-y-4">
+      <div class="flex justify-between items-center border-b border-stone-100 pb-2">
+        <h3 class="font-title text-base font-bold text-stone-800 flex items-center gap-1.5">
+          <span>✨</span> <span>Aggiungi Nuova Meta</span>
+        </h3>
+        <button onclick="closeAddStopModal()" class="text-stone-400 hover:text-stone-700 font-bold text-sm">✕</button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold text-stone-600 mb-1">Quale giorno?</label>
+          <select id="modalStopDay" class="w-full bg-stone-50 border border-pastelSage rounded-xl px-3 py-2 font-bold text-stone-700 focus:outline-none focus:ring-2 focus:ring-pastelPink">
+            <!-- Popolato con i giorni reali del viaggio -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-stone-600 mb-1">Nome Luogo / Cosa vuoi fare?</label>
+          <input type="text" id="modalStopTitle" placeholder="Es. Sherlock Holmes Museum, Big Ben, Tè a Covent Garden..." 
+                 class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pastelPink">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-stone-600 mb-1">Fascia Oraria / Momento della giornata</label>
+          <select id="modalTimeSlot" onchange="toggleCustomTimeField(this.value)" class="w-full bg-stone-50 border border-pastelSage rounded-xl px-3 py-2 font-medium text-stone-700 focus:outline-none focus:ring-2 focus:ring-pastelPink">
+            <option value="morning">🌅 Mattina (09:30 - 12:30)</option>
+            <option value="afternoon">☀️ Pomeriggio (14:30 - 17:00)</option>
+            <option value="late_afternoon">🌇 Tardo Pomeriggio (17:30 - 19:30)</option>
+            <option value="evening">🌙 Sera / Cena (20:00 - 22:30)</option>
+            <option value="custom">⏱️ Orario Specifico Personalizzato</option>
+          </select>
+        </div>
+
+        <!-- Campo orario preciso (visibile solo se sceglie 'custom') -->
+        <div id="customTimeBox" class="hidden">
+          <label class="block font-semibold text-stone-600 mb-1">Inserisci orario preciso:</label>
+          <input type="time" id="modalCustomTime" value="15:30" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-pastelPink">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-stone-600 mb-1">Note, Dettagli o Consigli (Opzionale)</label>
+          <textarea id="modalStopDesc" rows="2" placeholder="Es. Fermata metro Baker Street, prenotare biglietto online, assaggiare i muffin..." 
+                    class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pastelPink"></textarea>
+        </div>
+      </div>
+
+      <div class="pt-2 flex gap-2">
+        <button onclick="submitSmartStop()" class="flex-1 bg-pastelLavender hover:bg-pastelPink text-stone-800 font-bold py-2.5 rounded-xl text-xs transition shadow-2xs">
+          ✨ Calcola Percorrenza e Inserisci
+        </button>
+        <button onclick="closeAddStopModal()" class="bg-stone-100 hover:bg-stone-200 text-stone-600 font-semibold px-4 py-2.5 rounded-xl text-xs transition">
+          Annulla
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL DI SICUREZZA PER RESET VIAGGIO (no-print) -->
   <div id="resetSecurityModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-stone-900/40 p-4 no-print">
     <div class="bg-white border-2 border-pastelPink rounded-3xl p-6 max-w-sm w-full shadow-lg space-y-4 text-center">
@@ -272,7 +331,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'pastel_trips_library_clean_v1';
+    const STORAGE_KEY = 'pastel_trips_library_clean_v2';
 
     let allTrips = {};
     let currentTripId = null;
@@ -613,6 +672,46 @@
           • Spostamento in centro con navetta aeroportuale/treno verso la stazione centrale, poi metro o taxi all'alloggio.
         </div>
       `;
+    }
+
+    // Algoritmo di calcolo automatico dei tempi di percorrenza in base al luogo e mezzo
+    function estimateTravelTimeAndTag(title, desc, transportPref) {
+      const text = (title + " " + desc).toLowerCase();
+      let estTime = "🚇 15 min Metro";
+      let estTag = "Visita";
+
+      if (text.includes("sherlock") || text.includes("baker")) {
+        estTag = "Sherlock";
+        estTime = "🚇 14 min Bakerloo/Circle Line";
+      } else if (text.includes("potter") || text.includes("king's cross") || text.includes("9 3/4")) {
+        estTag = "Harry Potter";
+        estTime = "🚇 20 min Metro (Central/Piccadilly)";
+      } else if (text.includes("studios") || text.includes("watford")) {
+        estTag = "Harry Potter";
+        estTime = "🚆 50 min Treno Euston ➔ Watford";
+      } else if (text.includes("museo") || text.includes("museum") || text.includes("british") || text.includes("gallery")) {
+        estTag = "Cultura";
+        estTime = "🚇 18 min Metro + 5 min a piedi";
+      } else if (text.includes("cena") || text.includes("pub") || text.includes("food") || text.includes("market") || text.includes("borough")) {
+        estTag = "Food & Relax";
+        estTime = "🚶 10-15 min passeggiata";
+      } else if (text.includes("park") || text.includes("hyde") || text.includes("notting hill") || text.includes("kensington")) {
+        estTag = "Passeggiata";
+        estTime = "🚶 10 min a piedi dall'hotel";
+      } else if (text.includes("shopping") || text.includes("carnaby") || text.includes("oxford") || text.includes("regent")) {
+        estTag = "Shopping";
+        estTime = "🚇 12 min Metro";
+      }
+
+      if (transportPref === 'walk_transit' && !text.includes("studios")) {
+        estTime = "🚶 15-20 min a piedi / Metro breve";
+      } else if (transportPref === 'taxi') {
+        estTime = "🚕 15-25 min Taxi/Uber";
+      } else if (transportPref === 'car') {
+        estTime = "🚗 20 min in auto";
+      }
+
+      return { travelTime: estTime, tag: estTag };
     }
 
     function rebalanceDayTimeSlots(stopsArray) {
@@ -1168,33 +1267,87 @@
       });
     }
 
-    function addNewStopPrompt() {
+    // MODAL DI AGGIUNTA RAPIDA TAPPA
+    function openAddStopModal() {
       const trip = getCurrentTrip();
       if (!trip) return;
-      const day = prompt("Giorno (es. Giorno 1):", "Giorno 1");
-      if (!day) return;
-      const time = prompt("Orario / Fascia:", "Pomeriggio • 15:00 - 17:00");
-      const title = prompt("Nome Luogo / Attività:");
-      if (!title) return;
-      const desc = prompt("Descrizione / Note:");
-      const travel = prompt("Tempo di percorrenza stimato:", "15 min");
-      const tag = prompt("Tag tematico:", "Visita");
 
-      trip.stops.push({
+      const daySelect = document.getElementById('modalStopDay');
+      daySelect.innerHTML = '';
+      
+      const days = generateDaysArray(trip.startDate, trip.endDate);
+      days.forEach(d => {
+        const opt = document.createElement('option');
+        opt.value = d.label;
+        opt.textContent = d.label;
+        daySelect.appendChild(opt);
+      });
+
+      document.getElementById('modalStopTitle').value = '';
+      document.getElementById('modalStopDesc').value = '';
+      document.getElementById('modalTimeSlot').value = 'afternoon';
+      toggleCustomTimeField('afternoon');
+
+      document.getElementById('addStopModal').classList.remove('hidden');
+    }
+
+    function closeAddStopModal() {
+      document.getElementById('addStopModal').classList.add('hidden');
+    }
+
+    function toggleCustomTimeField(val) {
+      const box = document.getElementById('customTimeBox');
+      if (val === 'custom') {
+        box.classList.remove('hidden');
+      } else {
+        box.classList.add('hidden');
+      }
+    }
+
+    function submitSmartStop() {
+      const trip = getCurrentTrip();
+      if (!trip) return;
+
+      const day = document.getElementById('modalStopDay').value;
+      const title = document.getElementById('modalStopTitle').value.trim();
+      const slot = document.getElementById('modalTimeSlot').value;
+      const desc = document.getElementById('modalStopDesc').value.trim();
+      const customTime = document.getElementById('modalCustomTime').value;
+
+      if (!title) {
+        alert("Inserisci il nome del luogo o attività!");
+        return;
+      }
+
+      // Risoluzione orario
+      let timeStr = "Pomeriggio • 14:30 - 17:00";
+      if (slot === 'morning') timeStr = "Mattina • 09:30 - 12:30";
+      else if (slot === 'afternoon') timeStr = "Pomeriggio • 14:30 - 17:00";
+      else if (slot === 'late_afternoon') timeStr = "Tardo Pomeriggio • 17:30 - 19:30";
+      else if (slot === 'evening') timeStr = "Sera • 20:00 - 22:30";
+      else if (slot === 'custom') timeStr = `Ore ${customTime || '15:00'}`;
+
+      // Calcolo automatico intelligente dei tempi di percorrenza e del tag
+      const analysis = estimateTravelTimeAndTag(title, desc, trip.transportPref || 'transit');
+
+      const newStop = {
         id: "stop-" + Date.now(),
         day: day,
-        time: time || "Orario libero",
+        time: timeStr,
         title: title,
-        desc: desc || "",
-        tag: tag || "Tappa",
-        travelTime: travel || "",
-        color: "pastelSage",
-        isBooked: false,
+        desc: desc || `Tappa programmata per ${title}.`,
+        tag: analysis.tag,
+        travelTime: analysis.travelTime,
+        color: analysis.tag === 'Harry Potter' ? 'pastelPeach' : (analysis.tag === 'Sherlock' ? 'pastelLavender' : 'pastelSage'),
+        isBooked: slot === 'custom',
         isLocked: false
-      });
+      };
+
+      trip.stops.push(newStop);
       trip.stops = rebalanceDayTimeSlots(trip.stops);
       saveAllTripsToStorage();
       renderItinerary();
+      closeAddStopModal();
     }
 
     function editStop(index) {
@@ -1205,7 +1358,7 @@
       if (newTitle !== null) stop.title = newTitle;
       const newDesc = prompt("Modifica note:", stop.desc);
       if (newDesc !== null) stop.desc = newDesc;
-      const newTime = prompt("Modifica orario:", stop.time);
+      const newTime = prompt("Modifica orario / fascia:", stop.time);
       if (newTime !== null) stop.time = newTime;
       const newTravel = prompt("Modifica tempo di percorrenza:", stop.travelTime || "");
       if (newTravel !== null) stop.travelTime = newTravel;
