@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Travel Co-Planner • Pastel Dashboard</title>
+  <title>Travel Co-Planner • Pastel Edition</title>
   
   <!-- Font morbidi da Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,11 +32,22 @@
     }
   </script>
   <style>
-    body { font-family: 'Quicksand', sans-serif; background-color: #faf9f6; }
+    body { 
+      font-family: 'Quicksand', sans-serif; 
+      background-color: #f7f6f2;
+      background-image: 
+        radial-gradient(at 10% 10%, rgba(220, 214, 247, 0.28) 0px, transparent 50%),
+        radial-gradient(at 90% 90%, rgba(255, 202, 212, 0.22) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(216, 226, 220, 0.25) 0px, transparent 60%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='800' viewBox='0 0 800 800'%3E%3Cg fill='none' stroke='%23b8aed6' stroke-width='1.2' stroke-opacity='0.18'%3E%3Ccircle cx='400' cy='400' r='280' stroke-dasharray='6 6'/%3E%3Ccircle cx='400' cy='400' r='210'/%3E%3Ccircle cx='400' cy='400' r='130'/%3E%3Cellipse cx='400' cy='400' rx='280' ry='120'/%3E%3Cellipse cx='400' cy='400' rx='130' ry='280'/%3E%3Cpath d='M120 400 H680 M400 120 V680'/%3E%3Cpath d='M250 200 C320 280 480 240 550 320' stroke='%23e5989b' stroke-dasharray='4 4' stroke-width='1.5' stroke-opacity='0.25'/%3E%3Cpath d='M200 550 C300 480 500 520 620 420' stroke='%239a8c98' stroke-dasharray='4 4' stroke-width='1.5' stroke-opacity='0.25'/%3E%3Ccircle cx='550' cy='320' r='4' fill='%23e5989b' fill-opacity='0.3'/%3E%3Ccircle cx='250' cy='200' r='4' fill='%23b8aed6' fill-opacity='0.3'/%3E%3C/g%3E%3C/svg%3E");
+      background-attachment: fixed;
+      background-position: center;
+      background-repeat: repeat;
+    }
     h1, h2, h3, h4, .font-title { font-family: 'Comfortaa', cursive, sans-serif; }
     
     ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #faf9f6; }
+    ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #dcd6f7; border-radius: 9999px; }
     ::-webkit-scrollbar-thumb:hover { background: #ffcad4; }
 
@@ -51,12 +62,12 @@
 <body class="text-stone-700 min-h-screen antialiased flex flex-col">
 
   <!-- TOP HEADER MOBILE / LOGO -->
-  <header class="no-print bg-white/80 backdrop-blur-sm border-b border-pastelSage/40 px-4 py-3 sticky top-0 z-30 flex items-center justify-between shadow-2xs">
+  <header class="no-print bg-white/85 backdrop-blur-md border-b border-pastelSage/40 px-4 py-3 sticky top-0 z-30 flex items-center justify-between shadow-2xs">
     <div class="flex items-center gap-2.5">
       <span class="text-xl">✈️</span>
       <div>
         <h1 class="font-title text-base sm:text-lg font-bold text-stone-800 leading-tight">Travel Co-Planner</h1>
-        <p class="text-[10px] text-stone-400 font-medium">Dashboard intelligente per viaggiatori</p>
+        <p class="text-[10px] text-stone-400 font-medium">Dashboard intelligente & itinerari collaborativi</p>
       </div>
     </div>
     
@@ -71,10 +82,10 @@
   </header>
 
   <!-- CONTAINER DASHBOARD A 3 COLONNE -->
-  <main class="flex-1 w-full max-w-[1600px] mx-auto p-3 sm:p-5 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+  <main class="flex-1 w-full max-w-[1650px] mx-auto p-3 sm:p-5 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
 
     <!-- COLONNA 1 (SX): I MIEI VIAGGI SALVATI (lg:col-span-3) -->
-    <aside class="no-print lg:col-span-3 bg-white/90 backdrop-blur-sm border border-pastelLavender/80 p-4 rounded-3xl shadow-xs space-y-3 lg:sticky lg:top-20 lg:max-h-[calc(100vh-100px)] flex flex-col">
+    <aside class="no-print lg:col-span-3 bg-white/90 backdrop-blur-md border border-pastelLavender/80 p-4 rounded-3xl shadow-xs space-y-3 lg:sticky lg:top-20 lg:max-h-[calc(100vh-100px)] flex flex-col">
       <div class="flex items-center justify-between">
         <span class="text-xs font-bold uppercase tracking-wider text-stone-500 flex items-center gap-1.5">
           <span>🧳</span> <span>I Miei Viaggi</span>
@@ -90,15 +101,17 @@
     </aside>
 
     <!-- COLONNA 2 (CENTRO): GESTORE PARAMETRI & MODIFICHE LIVE (lg:col-span-4) -->
-    <section class="no-print lg:col-span-4 bg-white/90 backdrop-blur-sm border border-pastelSage/70 p-4 sm:p-5 rounded-3xl shadow-xs space-y-4 lg:sticky lg:top-20 lg:max-h-[calc(100vh-100px)] overflow-y-auto pr-2">
+    <section class="no-print lg:col-span-4 bg-white/95 backdrop-blur-md border border-pastelSage/80 p-4 sm:p-5 rounded-3xl shadow-xs space-y-4 lg:sticky lg:top-20 lg:max-h-[calc(100vh-100px)] overflow-y-auto pr-2">
       <div class="flex justify-between items-center border-b border-stone-100 pb-2">
         <h2 class="text-xs font-bold uppercase tracking-wider text-stone-600 flex items-center gap-1.5">
-          <span>⚙️</span> <span>Info di Base & Logistica</span>
+          <span>⚙️</span> <span>Parametri & Logistica</span>
         </h2>
-        <span class="text-[10px] bg-pastelSage/40 text-stone-600 px-2 py-0.5 rounded-md font-semibold">Auto-save attivo</span>
+        <button onclick="openResetModal()" class="text-[11px] text-rose-500 hover:text-rose-700 font-bold flex items-center gap-1 bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-lg transition">
+          🔄 <span>Reset Viaggio</span>
+        </button>
       </div>
 
-      <!-- Tipologia Viaggio & Livello Esperienza -->
+      <!-- Tipologia Viaggio & Esperienza -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
         <div>
           <label class="block text-[11px] font-bold uppercase tracking-wider text-stone-500 mb-1">Tipologia</label>
@@ -114,6 +127,17 @@
             <option value="returning">🌿 Ritorno (Insolito & Pittoresco)</option>
           </select>
         </div>
+      </div>
+
+      <!-- Modalità Spostamenti Sul Posto -->
+      <div>
+        <label class="block text-[11px] font-bold uppercase tracking-wider text-stone-500 mb-1">Come preferite spostarvi?</label>
+        <select id="transportPrefSelect" onchange="updateTripField('transportPref', this.value)" class="w-full bg-stone-50 border border-pastelSage rounded-xl px-2.5 py-1.5 text-xs font-semibold text-stone-700 focus:outline-none focus:ring-2 focus:ring-pastelPink">
+          <option value="transit">🚇 Mezzi Pubblici (Metro / Bus / Tram)</option>
+          <option value="walk_transit">🚶 A Piedi + Mezzi per tratte lunghe</option>
+          <option value="car">🚗 Auto a Noleggio / Guidata</option>
+          <option value="taxi">🚕 Taxi / Uber / Ride-sharing</option>
+        </select>
       </div>
 
       <!-- SEZIONE CITTÀ SINGOLA -->
@@ -198,7 +222,7 @@
     <section class="lg:col-span-5 space-y-4 print-area">
       
       <!-- Header Itinerario -->
-      <div class="bg-white/80 p-4 rounded-3xl border border-pastelSage/60 shadow-xs flex justify-between items-center">
+      <div class="bg-white/90 backdrop-blur-md p-4 rounded-3xl border border-pastelSage/60 shadow-xs flex justify-between items-center">
         <div>
           <span class="text-[10px] font-bold uppercase tracking-wider text-stone-400">Itinerario Attivo</span>
           <h2 class="text-lg font-bold text-stone-800" id="tripTitle">I Tuoi Prossimi Passi ✈️</h2>
@@ -236,8 +260,27 @@
 
   </main>
 
+  <!-- MODAL DI SICUREZZA PER RESET VIAGGIO (no-print) -->
+  <div id="resetSecurityModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-stone-900/40 backdrop-blur-xs p-4 no-print">
+    <div class="bg-white border-2 border-pastelPink rounded-3xl p-6 max-w-sm w-full shadow-lg space-y-4 text-center">
+      <div class="text-3xl">⚠️</div>
+      <h3 class="font-title text-base font-bold text-stone-800">Vuoi resettare questo viaggio?</h3>
+      <p class="text-xs text-stone-500 leading-relaxed">
+        Tutti i parametri, gli alloggi e le tappe create per questo itinerario verranno azzerati per farti ricominciare da capo. L'operazione non può essere annullata.
+      </p>
+      <div class="flex gap-2 pt-2">
+        <button onclick="executeResetTrip()" class="flex-1 bg-rose-400 hover:bg-rose-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-xs">
+          Sì, Reset Totale
+        </button>
+        <button onclick="closeResetModal()" class="flex-1 bg-stone-100 hover:bg-stone-200 text-stone-600 font-semibold py-2.5 rounded-xl text-xs transition">
+          Annulla
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    const STORAGE_KEY = 'pastel_trips_library_v5';
+    const STORAGE_KEY = 'pastel_trips_library_v6';
 
     let allTrips = {};
     let currentTripId = null;
@@ -248,7 +291,8 @@
         id: "trip-" + Date.now(),
         title: title,
         mode: "single",
-        expType: "first", // 'first' o 'returning'
+        expType: "first",
+        transportPref: "transit",
         destination: "Londra",
         hotel: "The Royale Chulan Hyde Park Hotel",
         airport: "Londra Gatwick",
@@ -324,6 +368,39 @@
       saveAllTripsToStorage();
       renderTripsSidebar();
       document.getElementById('tripTitle').innerText = trip.title;
+    }
+
+    // Modal di Reset Sicuro
+    function openResetModal() {
+      document.getElementById('resetSecurityModal').classList.remove('hidden');
+    }
+
+    function closeResetModal() {
+      document.getElementById('resetSecurityModal').classList.add('hidden');
+    }
+
+    function executeResetTrip() {
+      const trip = getCurrentTrip();
+      if (!trip) return;
+
+      trip.destination = "";
+      trip.hotel = "";
+      trip.airport = "";
+      trip.returnAirport = "";
+      trip.startDate = "";
+      trip.endDate = "";
+      trip.interests = "";
+      trip.fixedEvents = [];
+      trip.routeStops = [];
+      trip.stops = [];
+      trip.title = "Nuovo Viaggio";
+
+      saveAllTripsToStorage();
+      syncFormWithCurrentTrip();
+      renderTripsSidebar();
+      renderItinerary();
+      cancelProposal();
+      closeResetModal();
     }
 
     function renderTripsSidebar() {
@@ -439,6 +516,7 @@
 
       document.getElementById('modeSelect').value = trip.mode || 'single';
       document.getElementById('expTypeSelect').value = trip.expType || 'first';
+      document.getElementById('transportPrefSelect').value = trip.transportPref || 'transit';
       toggleTripMode(trip.mode || 'single');
 
       document.getElementById('destInput').value = trip.destination || '';
@@ -524,8 +602,43 @@
       return days;
     }
 
-    // Costruttore differenziato in base a expType (first vs returning)
-    function buildAccurateItinerary(dest, expType, airport, hotel, sDate, sTime, eDate, eTime, fixedEvents, interests) {
+    // Helper: generatore suggerimenti navetta e costi aeroporto -> hotel
+    function getAirportTransitTips(airport, hotel, transportPref) {
+      const aLow = (airport || '').toLowerCase();
+      if (aLow.includes('gatwick')) {
+        return `
+          <div class="mt-2 p-2.5 bg-pastelBlue/20 rounded-xl text-[11px] text-stone-700 space-y-1">
+            <div class="font-bold text-stone-800">🚆 Come raggiungere ${hotel || 'l\'hotel'} da Gatwick:</div>
+            <div>• <span class="font-semibold text-emerald-700">Meno Costoso:</span> Thameslink fino a Blackfriars/London Bridge + Tube Circle Line (~50-55 min, ~£13-15).</div>
+            <div>• <span class="font-semibold text-indigo-700">Più Rapido:</span> Gatwick Express fino a Victoria (~30 min, ~£21) + 10 min taxi o Circle Line verso Bayswater.</div>
+          </div>
+        `;
+      } else if (aLow.includes('stansted')) {
+        return `
+          <div class="mt-2 p-2.5 bg-pastelBlue/20 rounded-xl text-[11px] text-stone-700 space-y-1">
+            <div class="font-bold text-stone-800">🚆 Opzioni da Stansted verso ${hotel || 'l\'hotel'}:</div>
+            <div>• <span class="font-semibold text-emerald-700">Meno Costoso:</span> National Express Bus verso Baker St/Paddington (~85 min, ~£11-14).</div>
+            <div>• <span class="font-semibold text-indigo-700">Più Rapido:</span> Stansted Express fino a Liverpool Street (47 min, ~£22) + Metro Central Line.</div>
+          </div>
+        `;
+      } else if (aLow.includes('heathrow')) {
+        return `
+          <div class="mt-2 p-2.5 bg-pastelBlue/20 rounded-xl text-[11px] text-stone-700 space-y-1">
+            <div class="font-bold text-stone-800">🚇 Opzioni da Heathrow verso ${hotel || 'l\'hotel'}:</div>
+            <div>• <span class="font-semibold text-emerald-700">Meno Costoso:</span> Metro Piccadilly Line diretta in centro (~50 min, ~£5.60 con contactless).</div>
+            <div>• <span class="font-semibold text-indigo-700">Più Rapido:</span> Elizabeth Line diretta a Paddington (28 min, ~£12.80) o Heathrow Express (15 min, ~£25).</div>
+          </div>
+        `;
+      }
+      return `
+        <div class="mt-2 p-2 bg-pastelBlue/20 rounded-xl text-[11px] text-stone-700">
+          • <span class="font-semibold">Spostamento consigliato:</span> Treno navetta o linea diretta verso la stazione centrale + metro o taxi fino all'alloggio.
+        </div>
+      `;
+    }
+
+    // Costruttore differenziato in base a expType e transportPref
+    function buildAccurateItinerary(dest, expType, transportPref, airport, hotel, sDate, sTime, eDate, eTime, fixedEvents, interests) {
       const days = generateDaysArray(sDate, eDate);
       const list = [];
       const iLow = (interests || '').toLowerCase();
@@ -533,6 +646,8 @@
       const [sh, sm] = sTime.split(':').map(Number);
       const readyH = (sh + 2) % 24;
       const readyTime = `${String(readyH).padStart(2, '0')}:${String(sm).padStart(2, '0')}`;
+
+      const transitExtraHtml = getAirportTransitTips(airport, hotel, transportPref);
 
       days.forEach((dayObj, index) => {
         const isFirst = index === 0;
@@ -545,10 +660,11 @@
             day: dayObj.label,
             time: `${sTime} - ${readyTime}`,
             title: `Arrivo a ${airport} ➔ Check-in a ${hotel}`,
-            desc: "Transfer verso l'alloggio e deposito bagagli in hotel.",
+            desc: `Ritiro valigie e spostamento verso l'alloggio.<br>${transitExtraHtml}`,
             tag: "Transfer & Hotel",
             color: "pastelBlue",
-            isTransfer: true
+            isTransfer: true,
+            travelTime: "Percorrenza stimata: 50-70 min"
           });
 
           if (isReturning) {
@@ -557,18 +673,20 @@
               day: dayObj.label,
               time: `Pomeriggio • 15:30`,
               title: "Little Venice & Passeggiata lungo Regent's Canal",
-              desc: "Angolo pittoresco e tranquillo tra houseboat colorate e caffè galleggianti verso Camden.",
+              desc: "Angolo pittoresco e rilassante tra houseboat colorate e caffè galleggianti verso Camden.",
               tag: "Scorci Nascosti",
-              color: "pastelSage"
+              color: "pastelSage",
+              travelTime: "🚶 15 min a piedi dall'hotel"
             });
             list.push({
               id: `stop-${dayObj.num}-eve`,
               day: dayObj.label,
               time: `Sera • 19:30`,
               title: "Neal's Yard & Seven Dials in Serata",
-              desc: "Cortile colorato nascosto a Covent Garden e cena in una taverna storica lontano dalla folla.",
+              desc: "Cortile colorato nascosto a Covent Garden e cena in taverna storica.",
               tag: "Atmosfera & Food",
-              color: "pastelPink"
+              color: "pastelPink",
+              travelTime: "🚇 18 min in Metro (Central Line)"
             });
           } else {
             list.push({
@@ -576,18 +694,20 @@
               day: dayObj.label,
               time: `Pomeriggio • 15:30`,
               title: "Hyde Park, Kensington Gardens & Notting Hill",
-              desc: "Passeggiata nei parchi reali fino alle casette colorate di Notting Hill.",
+              desc: "Partendo dall'hotel: Italian Gardens, Round Pond e le casette pastello di Portobello Road.",
               tag: "Must See",
-              color: "pastelSage"
+              color: "pastelSage",
+              travelTime: "🚶 10 min a piedi dall'hotel"
             });
             list.push({
               id: `stop-${dayObj.num}-eve`,
               day: dayObj.label,
               time: `Sera • 19:30`,
               title: "Covent Garden & Luminarie Natalizie",
-              desc: "Spettacoli di strada, mercato coperto illuminato e pub tradizionale.",
+              desc: "Spettacoli di artisti di strada, mercato coperto illuminato e pub tradizionale vittoriano.",
               tag: "Luci & Relax",
-              color: "pastelPink"
+              color: "pastelPink",
+              travelTime: "🚇 15 min in Metro (Central Line)"
             });
           }
         }
@@ -600,9 +720,10 @@
               day: dayObj.label,
               time: "Mattina • 09:30",
               title: "Baker Street 221B & Sherlock Holmes Museum",
-              desc: "Visita alla dimora del detective, statua e Daunt Books a Marylebone.",
+              desc: "Visita alla dimora del celebre detective, statua in bronzo e Daunt Books a Marylebone.",
               tag: "Sherlock",
-              color: "pastelLavender"
+              color: "pastelLavender",
+              travelTime: "🚇 14 min in Metro (Bakerloo / Circle Line)"
             });
           } else {
             list.push({
@@ -610,9 +731,10 @@
               day: dayObj.label,
               time: "Mattina • 10:00",
               title: isReturning ? "Sir John Soane's Museum & Lincoln's Inn" : "British Museum",
-              desc: isReturning ? "Casa-museo eclettica e labirintica ricca di antichità e curiosità segrete." : "I grandi tesori della storia mondiale e la Great Court.",
+              desc: isReturning ? "Casa-museo eclettica e labirintica ricca di antichità e curiosità segrete." : "I grandi tesori della storia mondiale e la magnifica Great Court.",
               tag: "Cultura",
-              color: "pastelBlue"
+              color: "pastelBlue",
+              travelTime: "🚇 20 min in Metro"
             });
           }
 
@@ -621,9 +743,10 @@
             day: dayObj.label,
             time: "Pomeriggio • 14:30",
             title: isReturning ? "Leadenhall Market & St Dunstan in the East" : "Westminster Abbey & Big Ben",
-            desc: isReturning ? "Giardino medievale incastonato tra le rovine di una chiesa distrutta e mercato vittoriano." : "La classica cartolina londinese lungo il Tamigi.",
+            desc: isReturning ? "Giardino medievale incastonato tra le rovine di una chiesa distrutta e mercato coperto." : "La classica cartolina londinese lungo il Tamigi con vista sul Parlamento.",
             tag: isReturning ? "Chicche Nascoste" : "Icone di Londra",
-            color: "pastelPeach"
+            color: "pastelPeach",
+            travelTime: "🚇 18 min in Metro (o 25 min bus panoramico)"
           });
         }
 
@@ -635,18 +758,20 @@
               day: dayObj.label,
               time: "Mattina • 09:00",
               title: "King's Cross Station & Platform 9 ¾",
-              desc: "Foto con la sciarpa al carrello e visita al negozio ufficiale.",
+              desc: "Foto con la sciarpa al carrello nel muro e acquisti al Potter Shop ufficiale.",
               tag: "Harry Potter",
-              color: "pastelPeach"
+              color: "pastelPeach",
+              travelTime: "🚇 22 min in Metro da Hyde Park"
             });
             list.push({
               id: `stop-${dayObj.num}-2`,
               day: dayObj.label,
               time: "Pomeriggio • 16:30",
               title: isReturning ? "Cecil Court & Godwin's Court" : "Millennium Bridge & Borough Market",
-              desc: isReturning ? "Stretti vicoli edoardiani a lume di gas ispirazione autentica per Diagon Alley." : "Ponte pedonale sul Tamigi e street food.",
+              desc: isReturning ? "Stretti vicoli edoardiani a lume di gas ispirazione autentica per Diagon Alley." : "Ponte pedonale sul Tamigi e street food locale.",
               tag: "Harry Potter & Chicche",
-              color: "pastelLavender"
+              color: "pastelLavender",
+              travelTime: "🚇 15 min in Metro"
             });
           } else {
             list.push({
@@ -654,9 +779,10 @@
               day: dayObj.label,
               time: "Intera Giornata",
               title: isReturning ? "Greenwich & Mercatino Vintage" : "Tower of London & Tower Bridge",
-              desc: isReturning ? "Osservatorio, meridiano zero e mercato coperto vintage." : "I gioielli della corona e la fortezza medievale.",
+              desc: isReturning ? "Osservatorio, meridiano zero e mercato coperto vintage sul fiume." : "I gioielli della corona e la fortezza medievale.",
               tag: "Scoperta",
-              color: "pastelSage"
+              color: "pastelSage",
+              travelTime: "🚇 30 min in DLR / Metro"
             });
           }
         }
@@ -668,18 +794,20 @@
             day: dayObj.label,
             time: "Mattina • 10:00",
             title: isReturning ? "Hampstead Village & Pergola" : "Buckingham Palace & St James's Park",
-            desc: isReturning ? "Atmosfera da borgo di campagna inglese, stradine acciottolate e vista panoramica." : "Cambio della guardia e passeggiata nel parco reale.",
+            desc: isReturning ? "Atmosfera da borgo di campagna inglese, stradine acciottolate e vista panoramica." : "Cambio della guardia e passeggiata rilassata nel parco reale.",
             tag: isReturning ? "Pittoresco" : "Reale",
-            color: "pastelSage"
+            color: "pastelSage",
+            travelTime: isReturning ? "🚇 25 min Northern Line" : "🚶 20 min a piedi attraverso i giardini"
           });
           list.push({
             id: `stop-${dayObj.num}-2`,
             day: dayObj.label,
             time: "Pomeriggio • 15:00",
             title: isReturning ? "Camden Passage (Islington) & Negozi Vintage" : "Regent Street, Carnaby & Oxford Street",
-            desc: isReturning ? "Vicolo pedonale appartato celebre per antiquariato, boutique e tè pomeridiano." : "Shopping londinese e grandi vetrine illuminate.",
-            tag: "Shopping & Relax",
-            color: "pastelLavender"
+            desc: isReturning ? "Vicolo pedonale appartato celebre per antiquariato, boutique e tè pomeridiano." : "Shopping londinese e grandi vetrine illuminate per l'inverno.",
+            tag: "Shopping & Luci",
+            color: "pastelLavender",
+            travelTime: "🚇 15 min Metro"
           });
         }
 
@@ -690,9 +818,10 @@
             day: dayObj.label,
             time: "Mattina • 10:00",
             title: isReturning ? "Borough Yards & Southwark Cathedral" : "Tower Bridge & Southbank",
-            desc: isReturning ? "Nuovi scorci recuperati sotto le arcate della ferrovia e street food locale." : "Ultime foto panoramiche prima del rientro.",
+            desc: isReturning ? "Nuovi scorci recuperati sotto le arcate della ferrovia e street food locale." : "Ultime foto panoramiche sul Tamigi prima del rientro.",
             tag: "Gourmet & Vista",
-            color: "pastelPeach"
+            color: "pastelPeach",
+            travelTime: "🚇 22 min Metro"
           });
 
           const [eh, em] = eTime.split(':').map(Number);
@@ -704,10 +833,11 @@
             day: dayObj.label,
             time: `Dalle ore ${leaveTime}`,
             title: `Ritiro Bagagli ➔ Transfer verso ${airport}`,
-            desc: `Rientro in hotel per i bagagli e transfer per il volo delle ${eTime}.`,
+            desc: `Rientro in hotel per il ritiro valigie e spostamento in aeroporto con anticipo per il volo delle ${eTime}.<br>• <em>Tempo di percorrenza consigliato verso Gatwick: 60-75 min.</em>`,
             tag: "Rientro",
             color: "pastelBlue",
-            isTransfer: true
+            isTransfer: true,
+            travelTime: "Tempo transfer: ~60 min"
           });
         }
       });
@@ -725,10 +855,11 @@
           day: assignedDayLabel,
           time: `Ore ${ev.time} (Fissato)`,
           title: ev.title,
-          desc: "🎟️ Biglietto / Evento confermato con orario vincolante.",
+          desc: "🎟️ Biglietto / Evento confermato con orario vincolante.<br>• <em>Consiglio: calcola 45-60 min di treno da Euston verso Watford Junction per gli Studios.</em>",
           tag: "Prenotato",
           color: "pastelPink",
-          isBooked: true
+          isBooked: true,
+          travelTime: "🚆 50 min da London Euston"
         });
       });
 
@@ -741,6 +872,7 @@
 
       const dest = document.getElementById('destInput').value.trim() || 'Londra';
       const expType = document.getElementById('expTypeSelect').value || 'first';
+      const transportPref = document.getElementById('transportPrefSelect').value || 'transit';
       const hotel = document.getElementById('hotelInput').value.trim() || 'Hotel';
       const airport = document.getElementById('airportInput').value.trim() || 'Aeroporto';
       const sDate = document.getElementById('startDate').value;
@@ -752,6 +884,7 @@
 
       trip.destination = dest;
       trip.expType = expType;
+      trip.transportPref = transportPref;
       trip.hotel = hotel;
       trip.airport = airport;
       trip.startDate = sDate;
@@ -762,7 +895,7 @@
       trip.fixedEvents = fixedEvents;
       trip.title = `Viaggio a ${dest}`;
 
-      pendingProposal = buildAccurateItinerary(dest, expType, airport, hotel, sDate, sTime, eDate, eTime, fixedEvents, interests);
+      pendingProposal = buildAccurateItinerary(dest, expType, transportPref, airport, hotel, sDate, sTime, eDate, eTime, fixedEvents, interests);
       
       renderProposalList();
       showProposalModal();
@@ -782,6 +915,8 @@
         if (item.isBooked) badge = `<span class="bg-pastelPink font-bold text-stone-800 px-2 py-0.5 rounded-md text-[10px]">🎟️ Prenotato</span>`;
         if (item.isTransfer) badge = `<span class="bg-pastelBlue font-semibold text-stone-800 px-2 py-0.5 rounded-md text-[10px]">🚆 Transfer</span>`;
 
+        let travelBadge = item.travelTime ? `<div class="text-[10px] text-indigo-600 font-semibold mt-0.5">⏱️ ${item.travelTime}</div>` : '';
+
         row.innerHTML = `
           <div class="flex-1 space-y-0.5">
             <div class="flex items-center gap-1.5">
@@ -792,7 +927,7 @@
               ${badge}
             </div>
             <div class="font-bold text-stone-800 text-xs">${item.title}</div>
-            <div class="text-stone-500 text-[11px]">${item.desc}</div>
+            ${travelBadge}
           </div>
           <div class="flex items-center gap-1">
             <button onclick="moveProposalItem(${index}, -1)" class="bg-white border p-1 rounded-md text-[10px]">⬆️</button>
@@ -869,9 +1004,9 @@
 
       if (!trip.stops || trip.stops.length === 0) {
         container.innerHTML = `
-          <div class="bg-white/80 p-8 rounded-3xl text-center space-y-2 border border-dashed border-pastelSage">
+          <div class="bg-white/90 backdrop-blur-md p-8 rounded-3xl text-center space-y-2 border border-dashed border-pastelSage">
             <p class="text-stone-600 font-semibold text-sm">Nessuna tappa inserita in questo viaggio 🌸</p>
-            <p class="text-xs text-stone-400">Clicca su "Ricalcola Itinerario & Tappe" per iniziare.</p>
+            <p class="text-xs text-stone-400">Clicca su "Ricalcola Itinerario & Tappe" per generare le schede con tempi e mezzi!</p>
           </div>
         `;
         return;
@@ -893,11 +1028,17 @@
         stops.forEach((stop) => {
           const originalIndex = trip.stops.findIndex(s => s.id === stop.id);
           const card = document.createElement('div');
-          card.className = "print-card bg-white border border-stone-100 p-3.5 rounded-2xl shadow-2xs space-y-1 transition";
+          card.className = "print-card bg-white/95 backdrop-blur-md border border-stone-100 p-3.5 rounded-2xl shadow-2xs space-y-1.5 transition";
           
           let badge = `<span class="bg-${stop.color || 'pastelSage'} px-2.5 py-0.5 rounded-full font-semibold text-stone-700 text-[10px]">${stop.tag || 'Tappa'}</span>`;
           if (stop.isBooked) badge = `<span class="bg-pastelPink text-stone-800 px-2.5 py-0.5 rounded-full font-bold text-[10px]">🎟️ Prenotato</span>`;
           if (stop.isTransfer) badge = `<span class="bg-pastelBlue text-stone-800 px-2.5 py-0.5 rounded-full font-semibold text-[10px]">🚆 Transfer</span>`;
+
+          let travelRow = stop.travelTime ? `
+            <div class="flex items-center gap-1 text-[11px] font-semibold text-indigo-700 bg-indigo-50/70 border border-indigo-100/60 px-2.5 py-1 rounded-xl w-fit">
+              <span>⏱️</span> <span>${stop.travelTime}</span>
+            </div>
+          ` : '';
 
           card.innerHTML = `
             <div class="flex justify-between items-center text-xs">
@@ -905,7 +1046,8 @@
               ${badge}
             </div>
             <h4 class="font-bold text-stone-800 text-sm leading-snug">${stop.title}</h4>
-            <p class="text-xs text-stone-600 leading-relaxed">${stop.desc}</p>
+            ${travelRow}
+            <div class="text-xs text-stone-600 leading-relaxed">${stop.desc}</div>
             <div class="no-print flex justify-end gap-2.5 pt-1.5 border-t border-stone-50 text-[11px]">
               <button onclick="editStop(${originalIndex})" class="text-stone-500 hover:text-stone-800 font-semibold">✏️ Modifica</button>
               <button onclick="deleteStop(${originalIndex})" class="text-rose-400 hover:text-rose-600 font-semibold">🗑️ Elimina</button>
@@ -937,6 +1079,7 @@
       const title = prompt("Nome Luogo / Attività:");
       if (!title) return;
       const desc = prompt("Descrizione / Note:");
+      const travel = prompt("Tempo di percorrenza stimato (es. 15 min a piedi, 20 min metro):", "15 min");
       const tag = prompt("Tag tematico:", "Visita");
 
       trip.stops.push({
@@ -946,6 +1089,7 @@
         title: title,
         desc: desc || "",
         tag: tag || "Tappa",
+        travelTime: travel || "",
         color: "pastelSage",
         isBooked: false
       });
@@ -963,6 +1107,9 @@
       if (newDesc !== null) stop.desc = newDesc;
       const newTime = prompt("Modifica orario:", stop.time);
       if (newTime !== null) stop.time = newTime;
+      const newTravel = prompt("Modifica tempo di percorrenza:", stop.travelTime || "");
+      if (newTravel !== null) stop.travelTime = newTravel;
+
       saveAllTripsToStorage();
       renderItinerary();
     }
