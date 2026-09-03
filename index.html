@@ -239,8 +239,8 @@
             <span>💬</span>
             <h3 class="font-bold text-stone-800 text-xs">Anteprima Mete: Sposta o Conferma!</h3>
           </div>
-          <button onclick="swapProposalDaysPrompt()" class="text-[10px] bg-pastelLavender/60 text-stone-700 font-bold px-2 py-1 rounded-lg">
-            🔄 Inverti Giorni
+          <button onclick="swapProposalDaysPrompt()" class="text-[10px] bg-pastelLavender/60 hover:bg-pastelLavender text-stone-700 font-bold px-2 py-1 rounded-lg transition">
+            🔄 Inverti Mete Giorni
           </button>
         </div>
         <div id="proposalList" class="space-y-2 max-h-72 overflow-y-auto pr-1"></div>
@@ -280,7 +280,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'pastel_trips_library_v6';
+    const STORAGE_KEY = 'pastel_trips_library_v7';
 
     let allTrips = {};
     let currentTripId = null;
@@ -370,7 +370,6 @@
       document.getElementById('tripTitle').innerText = trip.title;
     }
 
-    // Modal di Reset Sicuro
     function openResetModal() {
       document.getElementById('resetSecurityModal').classList.remove('hidden');
     }
@@ -602,7 +601,6 @@
       return days;
     }
 
-    // Helper: generatore suggerimenti navetta e costi aeroporto -> hotel
     function getAirportTransitTips(airport, hotel, transportPref) {
       const aLow = (airport || '').toLowerCase();
       if (aLow.includes('gatwick')) {
@@ -637,7 +635,6 @@
       `;
     }
 
-    // Costruttore differenziato in base a expType e transportPref
     function buildAccurateItinerary(dest, expType, transportPref, airport, hotel, sDate, sTime, eDate, eTime, fixedEvents, interests) {
       const days = generateDaysArray(sDate, eDate);
       const list = [];
@@ -664,6 +661,7 @@
             tag: "Transfer & Hotel",
             color: "pastelBlue",
             isTransfer: true,
+            isLocked: true, // 🔒 BLOCCATO AL GIORNO 1
             travelTime: "Percorrenza stimata: 50-70 min"
           });
 
@@ -837,6 +835,7 @@
             tag: "Rientro",
             color: "pastelBlue",
             isTransfer: true,
+            isLocked: true, // 🔒 BLOCCATO ALL'ULTIMO GIORNO
             travelTime: "Tempo transfer: ~60 min"
           });
         }
@@ -859,6 +858,7 @@
           tag: "Prenotato",
           color: "pastelPink",
           isBooked: true,
+          isLocked: true, // 🔒 BLOCCATO ALLA DATA DEL BIGLIETTO
           travelTime: "🚆 50 min da London Euston"
         });
       });
@@ -909,6 +909,7 @@
       pendingProposal.forEach((item, index) => {
         const row = document.createElement('div');
         row.className = "p-2.5 rounded-xl bg-stone-50 border border-stone-200 text-xs flex justify-between items-center gap-2";
+        
         let dayOptions = uniqueDays.map(d => `<option value="${d}" ${item.day === d ? 'selected' : ''}>${d}</option>`).join('');
 
         let badge = `<span class="bg-${item.color || 'pastelSage'} px-2 py-0.5 rounded-md font-semibold text-stone-700 text-[10px]">${item.tag}</span>`;
@@ -917,23 +918,39 @@
 
         let travelBadge = item.travelTime ? `<div class="text-[10px] text-indigo-600 font-semibold mt-0.5">⏱️ ${item.travelTime}</div>` : '';
 
+        // Se l'elemento è un Volo/Transfer ancorato o un Biglietto Fissato, non si sposta
+        let controlSection = '';
+        if (item.isLocked) {
+          controlSection = `
+            <div class="flex items-center gap-1">
+              <span class="bg-stone-200/80 text-stone-600 font-bold px-2 py-1 rounded-lg text-[10px]" title="Punto fisso logistico, non spostabile">🔒 Fisso</span>
+            </div>
+          `;
+        } else {
+          controlSection = `
+            <div class="flex items-center gap-1">
+              <button onclick="moveProposalItem(${index}, -1)" class="bg-white border p-1 rounded-md text-[10px]" title="Sposta Su">⬆️</button>
+              <button onclick="moveProposalItem(${index}, 1)" class="bg-white border p-1 rounded-md text-[10px]" title="Sposta Giù">⬇️</button>
+              <button onclick="removeProposalItem(${index})" class="bg-white border text-rose-500 font-bold px-1.5 py-0.5 rounded-md text-[10px]" title="Rimuovi">✕</button>
+            </div>
+          `;
+        }
+
+        let daySelectorOrLabel = item.isLocked 
+          ? `<span class="font-bold text-stone-600 text-[11px] bg-white px-2 py-0.5 rounded-md border border-stone-200">${item.day.split(' ')[0]}</span>`
+          : `<select onchange="changeProposalDay(${index}, this.value)" class="bg-white border border-stone-300 rounded-md px-1.5 py-0.5 text-[10px] font-bold">${dayOptions}</select>`;
+
         row.innerHTML = `
           <div class="flex-1 space-y-0.5">
             <div class="flex items-center gap-1.5">
-              <select onchange="changeProposalDay(${index}, this.value)" class="bg-white border border-stone-300 rounded-md px-1.5 py-0.5 text-[10px] font-bold">
-                ${dayOptions}
-              </select>
+              ${daySelectorOrLabel}
               <span class="font-semibold text-stone-400 text-[10px]">${item.time}</span>
               ${badge}
             </div>
             <div class="font-bold text-stone-800 text-xs">${item.title}</div>
             ${travelBadge}
           </div>
-          <div class="flex items-center gap-1">
-            <button onclick="moveProposalItem(${index}, -1)" class="bg-white border p-1 rounded-md text-[10px]">⬆️</button>
-            <button onclick="moveProposalItem(${index}, 1)" class="bg-white border p-1 rounded-md text-[10px]">⬇️</button>
-            <button onclick="removeProposalItem(${index})" class="bg-white border text-rose-500 font-bold px-1.5 py-0.5 rounded-md text-[10px]">✕</button>
-          </div>
+          ${controlSection}
         `;
         listCont.appendChild(row);
       });
@@ -944,13 +961,17 @@
     }
 
     function changeProposalDay(index, newDay) {
+      if (pendingProposal[index].isLocked) return;
       pendingProposal[index].day = newDay;
       renderProposalList();
     }
 
     function moveProposalItem(index, direction) {
+      if (pendingProposal[index].isLocked) return;
       const targetIndex = index + direction;
       if (targetIndex >= 0 && targetIndex < pendingProposal.length) {
+        // Se il target è fisso, non lo scavalca
+        if (pendingProposal[targetIndex].isLocked) return;
         const temp = pendingProposal[index];
         pendingProposal[index] = pendingProposal[targetIndex];
         pendingProposal[targetIndex] = temp;
@@ -959,24 +980,41 @@
     }
 
     function removeProposalItem(index) {
+      if (pendingProposal[index].isLocked) return;
       pendingProposal.splice(index, 1);
       renderProposalList();
     }
 
+    // SCAMBIO INTELLIGENTE: inverte SOLO le mete turistiche/visite dei due giorni, MA NON I VOLI NÉ I TRAGITTI AEREO!
     function swapProposalDaysPrompt() {
-      const dayA = prompt("Quale giorno vuoi scambiare?", "Giorno 1");
+      const dayA = prompt("Quale giorno vuoi scambiare per le visite? (es. Giorno 1)", "Giorno 1");
       if (!dayA) return;
-      const dayB = prompt(`Con quale altro giorno vuoi scambiare?`, "Giorno 2");
+      const dayB = prompt(`Con quale altro giorno vuoi scambiare le mete di ${dayA}? (es. Giorno 2)`, "Giorno 2");
       if (!dayB) return;
 
       pendingProposal.forEach(item => {
-        if (item.day.includes(dayA)) item.day = item.day.replace(dayA, "__TEMP__");
+        // Se è un elemento bloccato (Volo di andata/rientro o biglietto data fissa), NON SI TOCCA!
+        if (item.isLocked) return;
+
+        if (item.day.includes(dayA)) {
+          item.day = item.day.replace(dayA, "__TEMP__");
+        }
       });
+
       pendingProposal.forEach(item => {
-        if (item.day.includes(dayB)) item.day = item.day.replace(dayB, dayA);
+        if (item.isLocked) return;
+
+        if (item.day.includes(dayB)) {
+          item.day = item.day.replace(dayB, dayA);
+        }
       });
+
       pendingProposal.forEach(item => {
-        if (item.day.includes("__TEMP__")) item.day = item.day.replace("__TEMP__", dayB);
+        if (item.isLocked) return;
+
+        if (item.day.includes("__TEMP__")) {
+          item.day = item.day.replace("__TEMP__", dayB);
+        }
       });
 
       renderProposalList();
@@ -1040,6 +1078,13 @@
             </div>
           ` : '';
 
+          let actionButtons = stop.isLocked ? `
+            <span class="text-[10px] text-stone-400 font-semibold italic">🔒 Punto fisso logistico</span>
+          ` : `
+            <button onclick="editStop(${originalIndex})" class="text-stone-500 hover:text-stone-800 font-semibold">✏️ Modifica</button>
+            <button onclick="deleteStop(${originalIndex})" class="text-rose-400 hover:text-rose-600 font-semibold">🗑️ Elimina</button>
+          `;
+
           card.innerHTML = `
             <div class="flex justify-between items-center text-xs">
               <span class="font-semibold text-stone-400 uppercase tracking-wide text-[10px]">${stop.time}</span>
@@ -1049,8 +1094,7 @@
             ${travelRow}
             <div class="text-xs text-stone-600 leading-relaxed">${stop.desc}</div>
             <div class="no-print flex justify-end gap-2.5 pt-1.5 border-t border-stone-50 text-[11px]">
-              <button onclick="editStop(${originalIndex})" class="text-stone-500 hover:text-stone-800 font-semibold">✏️ Modifica</button>
-              <button onclick="deleteStop(${originalIndex})" class="text-rose-400 hover:text-rose-600 font-semibold">🗑️ Elimina</button>
+              ${actionButtons}
             </div>
           `;
           container.appendChild(card);
@@ -1091,7 +1135,8 @@
         tag: tag || "Tappa",
         travelTime: travel || "",
         color: "pastelSage",
-        isBooked: false
+        isBooked: false,
+        isLocked: false
       });
       saveAllTripsToStorage();
       renderItinerary();
