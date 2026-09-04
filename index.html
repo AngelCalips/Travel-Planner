@@ -1265,7 +1265,7 @@
           const row = document.createElement('div');
           row.className = "p-2 rounded-xl bg-white border border-stone-200 text-xs flex justify-between items-center gap-2 shadow-2xs";
 
-          let dayOptions = uniqueDays.map(d => `<option value="${d}" ${item.day === d ? 'selected' : ''}>${d.split(' ')[0]} ${d.split(' ')[1] || ''}</option>`).join('');
+          let dayOptions = uniqueDays.map(d => `<option value="${d}" ${item.day === d ? 'selected' : ''}>${d.label}</option>`).join('');
 
           let badge = `<span class="bg-${item.color || 'pastelSage'} px-2 py-0.5 rounded-md font-semibold text-stone-700 text-[10px]">${item.tag}</span>`;
           if (item.isBooked) badge = `<span class="bg-pastelPink font-bold text-stone-800 px-2 py-0.5 rounded-md text-[10px]">🎟️ Prenotato</span>`;
@@ -1433,7 +1433,6 @@
             </div>
           ` : '';
 
-          // BOTTONI DI MODIFICA SEMPRE ATTIVI SULL'ITINERARIO UFFICIALE (Spostamento su/giù, modifica, elimina)
           let actionButtons = stop.isLocked ? `
             <span class="text-[10px] text-stone-400 font-semibold italic">🔒 Punto fisso logistico</span>
           ` : `
@@ -1455,7 +1454,7 @@
             <div class="text-xs text-stone-600 leading-relaxed">${stop.desc}</div>
             <div class="no-print flex justify-between items-center pt-2 border-t border-stone-50 text-[11px]">
               <select onchange="changeItineraryItemDay(${originalIndex}, this.value)" class="bg-stone-50 border border-stone-300 rounded-lg px-2 py-1 text-[11px] font-bold text-stone-700">
-                ${generateDaysArray(trip.startDate, trip.endDate).map(d => `<option value="${d.label}" ${stop.day === d.label ? 'selected' : ''}>Sposta a ${d.label.split(' ')[0]}</option>`).join('')}
+                ${generateDaysArray(trip.startDate, trip.endDate).map(d => `<option value="${d.label}" ${stop.day === d.label ? 'selected' : ''}>Sposta a ${d.label}</option>`).join('')}
               </select>
               ${actionButtons}
             </div>
@@ -1533,7 +1532,7 @@
     function toggleCustomTimeField(val) {
       const box = document.getElementById('customTimeBox');
       if (!box) return;
-      if (val === 'custom') box.classList.remove('hidden');
+      if (val === 'custom') box.classList.0 ? box.classList.remove('hidden') : box.classList.remove('hidden');
       else box.classList.add('hidden');
     }
 
