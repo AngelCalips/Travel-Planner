@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Travel Co-Planner • Universal Real Spots Engine</title>
+  <title>Travel Co-Planner</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,7 +53,7 @@
       <span class="text-xl">✈️</span>
       <div>
         <h1 class="font-title text-base sm:text-lg font-bold text-stone-800 leading-tight">Travel Co-Planner</h1>
-        <p class="text-[10px] text-stone-400 font-medium">Motore di itinerari universale & logistica A ➔ B</p>
+        <p class="text-[10px] text-stone-400 font-medium">Dashboard intelligente & logistica sequenziale A ➔ B</p>
       </div>
     </div>
     
@@ -117,8 +117,8 @@
       <div>
         <label class="block text-[11px] font-bold uppercase tracking-wider text-stone-500 mb-1">Come preferite spostarvi?</label>
         <select id="transportPrefSelect" onchange="handleTransportPrefChange(this.value)" class="w-full bg-stone-50 border border-pastelSage rounded-xl px-2.5 py-1.5 text-xs font-semibold text-stone-700 focus:outline-none focus:ring-2 focus:ring-pastelPink">
-          <option value="transit">🚇 Mezzi Pubblici (Metro / Bus / Tram / Battelli)</option>
-          <option value="ferry">⛴️ Traghetti & Battelli prioritari</option>
+          <option value="transit">🚇 Mezzi Pubblici (Metro / Bus / Treno)</option>
+          <option value="ferry">⛴️ Traghetti & Battelli (isole / laghi)</option>
           <option value="bike">🚲 Noleggio Bici / Bike Sharing</option>
           <option value="walk_transit">🚶 A Piedi + Mezzi per tratte lunghe</option>
           <option value="car">🚗 Auto a Noleggio / Macchina propria</option>
@@ -130,12 +130,12 @@
       <div id="singleCitySection" class="space-y-2.5">
         <div>
           <label class="block text-xs font-semibold text-stone-600 mb-1">Destinazione o Località di Base *</label>
-          <input type="text" id="destInput" oninput="updateTripField('destination', this.value)" placeholder="Es. Tokyo, Parigi, Roma, Londra..." 
+          <input type="text" id="destInput" oninput="updateTripField('destination', this.value)" placeholder="Es. Londra, Monte Isola, Roma..." 
                  class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
         </div>
         <div>
           <label class="block text-xs font-semibold text-stone-600 mb-1">Alloggio / Hotel (Punto di partenza giornaliero)</label>
-          <input type="text" id="hotelInput" oninput="updateTripField('hotel', this.value)" placeholder="Es. Nome hotel, B&B o zona..." 
+          <input type="text" id="hotelInput" oninput="updateTripField('hotel', this.value)" placeholder="Es. The Royale Chulan Hyde Park Hotel..." 
                  class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
         </div>
       </div>
@@ -159,8 +159,8 @@
 
         <div class="space-y-2 text-xs">
           <div>
-            <label class="block text-[11px] text-stone-500 font-medium mb-0.5">Arrivo / Punto d'ingresso</label>
-            <input type="text" id="airportInput" oninput="updateTripField('airport', this.value)" placeholder="Aeroporto, Stazione o Molo" 
+            <label class="block text-[11px] text-stone-500 font-medium mb-0.5">Arrivo / Andata</label>
+            <input type="text" id="airportInput" oninput="updateTripField('airport', this.value)" placeholder="Aeroporto o Stazione (es. Londra Gatwick)" 
                    class="w-full bg-white border border-stone-200 rounded-lg px-2.5 py-1 text-xs mb-1">
             <div class="flex gap-1.5">
               <input type="date" id="startDate" onchange="handleStartDateChange(this.value)" class="w-2/3 bg-white border border-stone-200 rounded-lg px-2 py-1 text-xs font-semibold">
@@ -169,8 +169,8 @@
           </div>
 
           <div>
-            <label class="block text-[11px] text-stone-500 font-medium mb-0.5">Rientro</label>
-            <input type="text" id="returnAirportInput" oninput="updateTripField('returnAirport', this.value)" placeholder="Aeroporto, Stazione o Molo di ritorno" 
+            <label class="block text-[11px] text-stone-500 font-medium mb-0.5">Rientro / Partenza</label>
+            <input type="text" id="returnAirportInput" oninput="updateTripField('returnAirport', this.value)" placeholder="Aeroporto Ritorno" 
                    class="w-full bg-white border border-stone-200 rounded-lg px-2.5 py-1 text-xs mb-1">
             <div class="flex gap-1.5">
               <input type="date" id="endDate" onchange="handleEndDateChange(this.value)" class="w-2/3 bg-white border border-stone-200 rounded-lg px-2 py-1 text-xs font-semibold">
@@ -193,8 +193,8 @@
 
       <!-- INTERESSI -->
       <div>
-        <label class="block text-xs font-semibold text-stone-600 mb-1">Interessi, Mete Desiderate & Fandom</label>
-        <input type="text" id="interestsInput" oninput="updateTripField('interests', this.value)" placeholder="Es. Musei, Mercati, Trekking, Fandom..." 
+        <label class="block text-xs font-semibold text-stone-600 mb-1">Interessi & Fandom</label>
+        <input type="text" id="interestsInput" oninput="updateTripField('interests', this.value)" placeholder="Es. Harry Potter, Sherlock Holmes, Musei..." 
                class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-pastelPink">
       </div>
 
@@ -222,7 +222,7 @@
         <div class="flex justify-between items-center">
           <div class="flex items-center gap-1.5">
             <span>💬</span>
-            <h3 class="font-bold text-stone-800 text-xs">Anteprima Proposta: Punti Reali & Tempi A ➔ B!</h3>
+            <h3 class="font-bold text-stone-800 text-xs">Anteprima Proposta: Logistica Corretta (A ➔ B)!</h3>
           </div>
           <button onclick="swapProposalDaysPrompt()" class="text-[10px] bg-pastelLavender/60 hover:bg-pastelLavender text-stone-700 font-bold px-2.5 py-1 rounded-lg transition">
             🔄 Inverti Mete Giorni
@@ -230,7 +230,7 @@
         </div>
         <div class="bg-pastelPeach/40 border border-pastelPeach p-2.5 rounded-xl text-[11px] text-stone-700 flex items-start gap-1.5">
           <span class="text-sm">🧭</span>
-          <span>Punti d'interesse reali (Londra o generatore universale mondiale) + tempi sequenziali calcolati dalla tappa precedente. Conferma per salvare.</span>
+          <span>I trasferimenti aeroportuali partono correttamente dall'hotel/alloggio, senza confondersi con i battelli urbani.</span>
         </div>
         <div id="proposalList" class="space-y-3 max-h-80 overflow-y-auto pr-1"></div>
         <div class="flex gap-2 pt-1">
@@ -267,7 +267,7 @@
 
         <div>
           <label class="block font-semibold text-stone-600 mb-1">Nome Luogo / Attività</label>
-          <input type="text" id="modalStopTitle" placeholder="Es. British Museum, Senso-ji, Colosseo..." 
+          <input type="text" id="modalStopTitle" placeholder="Es. British Museum, Borough Market..." 
                  class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pastelPink">
         </div>
 
@@ -731,12 +731,19 @@
       return waterTerms.some(term => t.includes(term));
     }
 
-    function computeAccurateTransitTime(fromLoc, toLoc, transportPref) {
+    function computeAccurateTransitTime(fromLoc, toLoc, transportPref, isTransferOut = false) {
       const from = (fromLoc || '').toLowerCase();
       const to = (toLoc || '').toLowerCase();
       const icon = transportPref === 'bike' ? '🚲' : (transportPref === 'car' ? '🚗' : (transportPref === 'walk_transit' ? '🚶' : '🚇'));
 
-      const isWater = transportPref === 'ferry' || checkIsWaterEnvironment(from) || checkIsWaterEnvironment(to);
+      if (isTransferOut) {
+        if (from.includes('gatwick') || to.includes('gatwick') || to.includes('aeroporto')) {
+          return `🚆 ~50-60 min (Hotel ➔ Treno Gatwick Express / Thameslink ➔ Aeroporto)`;
+        }
+        return `🚆 ~45-60 min (Hotel ➔ Treno / Navetta ➔ Aeroporto)`;
+      }
+
+      const isWater = transportPref === 'ferry' && (checkIsWaterEnvironment(from) || checkIsWaterEnvironment(to));
       if (isWater) {
         return `⛴️ ~15-25 min Battello / Traghetto di linea`;
       }
@@ -800,21 +807,20 @@
 
         dayStops.forEach((st, idx) => {
           if (st.isTransfer && st.id && st.id.includes('-arr')) {
-            st.travelTime = computeAccurateTransitTime("Aeroporto", baseHotel, transportPref);
+            st.travelTime = computeAccurateTransitTime("Aeroporto", baseHotel, transportPref, false);
             prevLocationName = baseHotel;
             return;
           }
           if (st.isTransfer && st.id && st.id.includes('-tr')) {
-            const shortPrev = prevLocationName.length > 25 ? prevLocationName.substring(0, 22) + '...' : prevLocationName;
-            st.travelTime = `${computeAccurateTransitTime(prevLocationName, "Aeroporto", transportPref)} da "${shortPrev}"`;
+            st.travelTime = computeAccurateTransitTime(baseHotel, "Aeroporto", transportPref, true);
             return;
           }
 
           if (idx === 0 || (idx === 1 && dayStops[0].isTransfer && dayStops[0].id && dayStops[0].id.includes('-arr'))) {
-            st.travelTime = `${computeAccurateTransitTime(baseHotel, st.title, transportPref)} da ${baseHotel}`;
+            st.travelTime = `${computeAccurateTransitTime(baseHotel, st.title, transportPref, false)} da ${baseHotel}`;
           } else {
             const shortPrev = prevLocationName.length > 25 ? prevLocationName.substring(0, 22) + '...' : prevLocationName;
-            st.travelTime = `${computeAccurateTransitTime(prevLocationName, st.title, transportPref)} da "${shortPrev}"`;
+            st.travelTime = `${computeAccurateTransitTime(prevLocationName, st.title, transportPref, false)} da "${shortPrev}"`;
           }
 
           prevLocationName = st.title;
@@ -884,16 +890,13 @@
       return recomputeSequentialTravelTimes(sortedStops, trip.hotel, trip.transportPref || 'transit');
     }
 
-    // BANCA DATI UNIVERSALE (Londra + Monte Isola + Generatore Dinamico Mondiale per qualsiasi altra città)
     function buildAccurateItinerary(dest, expType, transportPref, airport, hotel, sDate, sTime, eDate, eTime, fixedEvents, interests) {
       const days = generateDaysArray(sDate, eDate);
       let list = [];
       const dLow = (dest || '').toLowerCase();
       const iLow = (interests || '').toLowerCase();
       const isReturning = expType === 'returning';
-      const cleanDest = dest.trim();
 
-      // 1. LONDRA (Punti di interesse autentici)
       if (dLow.includes('londra') || dLow.includes('london')) {
         days.forEach((dayObj, index) => {
           const isFirst = index === 0;
@@ -1053,7 +1056,7 @@
               day: dayObj.label,
               time: `Prima delle ${eTime || '17:25'}`,
               title: `Ritiro Bagagli ➔ Transfer verso ${airport || 'Londra Gatwick'}`,
-              desc: `Rientro in alloggio per le valigie e transfer in tempo per il volo di ritorno delle ${eTime || '17:25'}.`,
+              desc: `Rientro in alloggio per le valigie e treno espresso in tempo per il volo delle ${eTime || '17:25'}.`,
               tag: "Rientro",
               color: "pastelBlue",
               isTransfer: true,
@@ -1061,88 +1064,7 @@
             });
           }
         });
-      }
-      // 2. MONTE ISOLA / LAGO D'ISEO
-      else if (dLow.includes('monte isola') || dLow.includes('iseo') || dLow.includes('sulzano')) {
-        days.forEach((dayObj, index) => {
-          const isFirst = index === 0;
-          const isLast = index === days.length - 1;
-
-          if (isFirst) {
-            list.push({
-              id: `stop-${dayObj.num}-arr`,
-              day: dayObj.label,
-              time: `${sTime || '12:30'} - Arrivo & Traversata`,
-              title: `Arrivo al Molo di Sulzano ➔ Battello di linea verso ${dest}`,
-              desc: "Imbarco sul battello pubblico TPL a Sulzano verso Peschiera Maraglio e check-in.",
-              tag: "Battello & Base",
-              color: "pastelBlue",
-              isTransfer: true,
-              isLocked: true
-            });
-            list.push({
-              id: `stop-${dayObj.num}-pm`,
-              day: dayObj.label,
-              time: "Pomeriggio • 15:00 - 17:30",
-              title: "Peschiera Maraglio & Lungolago degli Ulivi",
-              desc: "Borgo storico dei pescatori, vicoli in pietra e noleggio biciclette.",
-              tag: "Borgo & Lago",
-              color: "pastelSage"
-            });
-            list.push({
-              id: `stop-${dayObj.num}-eve`,
-              day: dayObj.label,
-              time: "Sera • 19:30 - 22:00",
-              title: "Cena a base di pesce di lago (sardina tradizionale & polenta)",
-              desc: "Cena sulle sponde del lago con specialità enogastronomiche.",
-              tag: "Food Tipico",
-              color: "pastelPink"
-            });
-          } else if (isLast) {
-            list.push({
-              id: `stop-${dayObj.num}-am`,
-              day: dayObj.label,
-              time: "Mattina • 09:30 - 12:00",
-              title: "Carzano & Vista panoramica sull'Isola di Loreto",
-              desc: "Passeggiata verso il borgo fiorito di Carzano e acquisto prodotti tipici.",
-              tag: "Scorci & Relax",
-              color: "pastelPeach"
-            });
-            list.push({
-              id: `stop-${dayObj.num}-tr`,
-              day: dayObj.label,
-              time: `Prima delle ${eTime || '17:25'}`,
-              title: `Battello per Sulzano ➔ Rientro dalla terraferma`,
-              desc: "Traversata di linea in battello verso il molo di Sulzano/Iseo per la ripartenza.",
-              tag: "Rientro",
-              color: "pastelBlue",
-              isTransfer: true,
-              isLocked: true
-            });
-          } else {
-            list.push({
-              id: `stop-${dayObj.num}-1`,
-              day: dayObj.label,
-              time: "Mattina • 09:30 - 12:30",
-              title: "Salita al Santuario della Madonna della Ceriola",
-              desc: "Punto culminante dell'isola a 600m con spettacolare vista a 360 gradi.",
-              tag: "Trekking & Vista",
-              color: "pastelLavender"
-            });
-            list.push({
-              id: `stop-${dayObj.num}-2`,
-              day: dayObj.label,
-              time: "Pomeriggio • 14:00 - 17:30",
-              title: "Giro perimetrale dell'isola in Bicicletta",
-              desc: "Circuito costiero interamente pedonale/ciclabile senza auto.",
-              tag: "Bici & Relax",
-              color: "pastelPeach"
-            });
-          }
-        });
-      }
-      // 3. GENERATORE UNIVERSALE DINAMICO (Funziona per qualsiasi altra città/luogo nel mondo: Parigi, Tokyo, Roma, Sri Lanka, ecc.)
-      else {
+      } else {
         days.forEach((dayObj, index) => {
           const isFirst = index === 0;
           const isLast = index === days.length - 1;
@@ -1152,7 +1074,7 @@
               id: `stop-${dayObj.num}-arr`,
               day: dayObj.label,
               time: `${sTime || '12:30'} - Arrivo & Sistemazione`,
-              title: `Arrivo a ${airport || 'Stazione / Aeroporto'} ➔ Check-in a ${hotel || cleanDest}`,
+              title: `Arrivo a ${airport || 'Stazione / Aeroporto'} ➔ Check-in a ${hotel || dest}`,
               desc: "Ritiro valigie, transfer verso l'alloggio e deposito bagagli.",
               tag: "Transfer & Hotel",
               color: "pastelBlue",
@@ -1163,8 +1085,8 @@
               id: `stop-${dayObj.num}-pm`,
               day: dayObj.label,
               time: "Pomeriggio • 15:00 - 17:30",
-              title: `Esplorazione del Centro Storico & Piazze Principali di ${cleanDest}`,
-              desc: `Passeggiata iniziale per scoprire l'atmosfera e i monumenti simbolo della città.`,
+              title: `Centro Storico & Piazze Principali di ${dest}`,
+              desc: "Passeggiata rilassante per iniziare a scoprire l'atmosfera della città.",
               tag: "Must See",
               color: "pastelSage"
             });
@@ -1172,8 +1094,8 @@
               id: `stop-${dayObj.num}-eve`,
               day: dayObj.label,
               time: "Sera • 19:30 - 22:00",
-              title: `Cena in un ristorante tradizionale nel cuore di ${cleanDest}`,
-              desc: "Cena tipica alla scoperta dei sapori e delle ricette locali.",
+              title: `Cena tipica in un locale caratteristico di ${dest}`,
+              desc: "Serata rilassata gustando le specialità gastronomiche locali.",
               tag: "Food & Relax",
               color: "pastelPink"
             });
@@ -1182,8 +1104,8 @@
               id: `stop-${dayObj.num}-am`,
               day: dayObj.label,
               time: "Mattina • 09:30 - 12:00",
-              title: `Mercato Centrale, Botteghe Artigiane & Ultimi Scorci`,
-              desc: "Ultime foto, acquisti di souvenir e prodotti tipici locali.",
+              title: `Mercato Centrale & Ultimi Scorci a ${dest}`,
+              desc: "Ultime foto, acquisti di souvenir tipici e pranzo prima del rientro.",
               tag: "Gourmet & Vista",
               color: "pastelPeach"
             });
@@ -1191,21 +1113,20 @@
               id: `stop-${dayObj.num}-tr`,
               day: dayObj.label,
               time: `Prima delle ${eTime || '17:25'}`,
-              title: `Ritiro Bagagli ➔ Transfer verso ${airport || 'Stazione / Aeroporto'}`,
-              desc: `Spostamento in tempo utile per il viaggio di rientro delle ${eTime || '17:25'}.`,
+              title: `Ritiro Bagagli ➔ Rientro verso ${airport || 'Aeroporto'}`,
+              desc: `Spostamento in tempo utile per il volo di rientro delle ${eTime || '17:25'}.`,
               tag: "Rientro",
               color: "pastelBlue",
               isTransfer: true,
               isLocked: true
             });
           } else {
-            const focus = interests ? interests : "arte, storia, natura e cultura locale";
             list.push({
               id: `stop-${dayObj.num}-1`,
               day: dayObj.label,
               time: "Mattina • 09:30 - 12:30",
-              title: `Visita al Museo Principale o Monumento Iconico di ${cleanDest}`,
-              desc: `Percorso culturale e visita ai punti di maggiore interesse legati a: ${focus}.`,
+              title: `Museo Cardine & Monumenti Celebri di ${dest}`,
+              desc: `Visita ai luoghi di interesse legati a: ${interests || 'storia, arte e architettura'}.`,
               tag: "Cultura",
               color: "pastelLavender"
             });
@@ -1213,8 +1134,8 @@
               id: `stop-${dayObj.num}-2`,
               day: dayObj.label,
               time: "Pomeriggio • 14:00 - 17:00",
-              title: `Quartiere Caratteristico & Punto Panoramico`,
-              desc: `Passeggiata esplorativa nei quartieri più suggestivi e sosta caffè panoramica.`,
+              title: `Quartiere Tradizionale & Botteghe Artigiane`,
+              desc: "Esplorazione dei vicoli più caratteristici e pausa caffè panoramica.",
               tag: "Icone",
               color: "pastelPeach"
             });
