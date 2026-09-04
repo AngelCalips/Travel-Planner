@@ -53,7 +53,7 @@
       <span class="text-xl">✈️</span>
       <div>
         <h1 class="font-title text-base sm:text-lg font-bold text-stone-800 leading-tight">Travel Co-Planner</h1>
-        <p class="text-[10px] text-stone-400 font-medium">Dashboard intelligente & logistica sequenziale A ➔ B</p>
+        <p class="text-[10px] text-stone-400 font-medium">Dashboard collaborativa & logistica sequenziale A ➔ B</p>
       </div>
     </div>
     
@@ -212,12 +212,12 @@
           <span class="text-[10px] font-bold uppercase tracking-wider text-stone-400">Itinerario Attivo</span>
           <h2 class="text-lg font-bold text-stone-800" id="tripTitle">Nuovo Viaggio</h2>
         </div>
-        <button id="btnAddStopMain" onclick="tryOpenAddStopModal()" class="no-print text-xs bg-pastelPeach hover:bg-pastelPink text-stone-800 font-semibold px-3.5 py-2 rounded-xl transition shadow-2xs flex items-center gap-1">
-          <span id="addStopIcon">+</span> <span id="addStopLabel">Aggiungi Tappa</span>
+        <button onclick="openAddStopModal()" class="no-print text-xs bg-pastelPeach hover:bg-pastelPink text-stone-800 font-semibold px-3.5 py-2 rounded-xl transition shadow-2xs flex items-center gap-1">
+          <span>+</span> <span>Aggiungi Tappa</span>
         </button>
       </div>
 
-      <!-- MODAL DI REVISIONE & SCAMBIO GIORNI -->
+      <!-- MODAL DI REVISIONE & SCAMBIO GIORNI (ANTEPRIMA) -->
       <div id="reviewModal" class="hidden no-print bg-white border-2 border-pastelLavender p-4 rounded-3xl shadow-sm space-y-3">
         <div class="flex justify-between items-center">
           <div class="flex items-center gap-1.5">
@@ -230,7 +230,7 @@
         </div>
         <div class="bg-pastelPeach/40 border border-pastelPeach p-2.5 rounded-xl text-[11px] text-stone-700 flex items-start gap-1.5">
           <span class="text-sm">🧭</span>
-          <span>I trasferimenti aeroportuali partono correttamente dall'hotel/alloggio, senza confondersi con i battelli urbani.</span>
+          <span>Verifica la proposta e clicca Conferma per attivarla nell'itinerario.</span>
         </div>
         <div id="proposalList" class="space-y-3 max-h-80 overflow-y-auto pr-1"></div>
         <div class="flex gap-2 pt-1">
@@ -243,6 +243,7 @@
         </div>
       </div>
 
+      <!-- CONTENITORE ITINERARIO UFFICIALE (Sempre modificabile e spostabile) -->
       <div id="itineraryContainer" class="space-y-3"></div>
     </section>
 
@@ -330,7 +331,6 @@
     let allTrips = {};
     let currentTripId = null;
     let pendingProposal = [];
-    let isProposalOpen = false;
 
     function createEmptyTrip(title = "Nuovo Viaggio") {
       return {
@@ -386,7 +386,6 @@
         syncFormWithCurrentTrip();
         renderTripsSidebar();
         renderItinerary();
-        updateAddStopButtonState();
       } catch (err) {
         console.error("Init error:", err);
       }
@@ -1217,8 +1216,6 @@
 
         pendingProposal = buildAccurateItinerary(dest, expType, transportPref, airport, hotel, sDate, sTime, eDate, eTime, fixedEvents, interests);
         
-        isProposalOpen = true;
-        updateAddStopButtonState();
         renderProposalList();
         showProposalModal();
       } catch (err) {
@@ -1382,46 +1379,12 @@
       if (!trip) return;
       trip.stops = [...pendingProposal];
       saveAllTripsToStorage();
-      isProposalOpen = false;
-      updateAddStopButtonState();
       document.getElementById('reviewModal').classList.add('hidden');
       renderItinerary();
     }
 
     function cancelProposal() {
-      isProposalOpen = false;
-      updateAddStopButtonState();
-      const el = document.getElementById('reviewModal');
-      if (el) el.classList.add('hidden');
-    }
-
-    function updateAddStopButtonState() {
-      const btn = document.getElementById('btnAddStopMain');
-      const icon = document.getElementById('addStopIcon');
-      const label = document.getElementById('addStopLabel');
-      if (!btn) return;
-
-      if (isProposalOpen) {
-        btn.classList.add('opacity-60', 'cursor-not-allowed', 'bg-stone-200', 'text-stone-500');
-        btn.classList.remove('bg-pastelPeach', 'hover:bg-pastelPink', 'text-stone-800');
-        if (icon) icon.innerText = '🔒';
-        if (label) label.innerText = 'Prima conferma la proposta';
-      } else {
-        btn.classList.remove('opacity-60', 'cursor-not-allowed', 'bg-stone-200', 'text-stone-500');
-        btn.classList.add('bg-pastelPeach', 'hover:bg-pastelPink', 'text-stone-800');
-        if (icon) icon.innerText = '+';
-        if (label) label.innerText = 'Aggiungi Tappa';
-      }
-    }
-
-    function tryOpenAddStopModal() {
-      if (isProposalOpen) {
-        alert("💬 Prima conferma o annulla la proposta dell'itinerario in alto per poter aggiungere nuove mete personalizzate!");
-        const reviewBox = document.getElementById('reviewModal');
-        if (reviewBox) reviewBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        return;
-      }
-      openAddStopModal();
+      document.getElementById('reviewModal').classList.add('hidden');
     }
 
     function renderItinerary() {
@@ -1435,8 +1398,8 @@
       if (!trip.stops || trip.stops.length === 0) {
         container.innerHTML = `
           <div class="bg-white p-8 rounded-3xl text-center space-y-2 border border-dashed border-pastelSage">
-            <p class="text-stone-600 font-semibold text-sm">Nessuna tappa confermata per questo viaggio 🌸</p>
-            <p class="text-xs text-stone-400">Compila la destinazione a sinistra e clicca su "Ricalcola Itinerario & Tappe".</p>
+            <p class="text-stone-600 font-semibold text-sm">Nessuna tappa inserita in questo viaggio 🌸</p>
+            <p class="text-xs text-stone-400">Compila i dati a sinistra e clicca su "Ricalcola Itinerario & Tappe".</p>
           </div>
         `;
         return;
@@ -1470,11 +1433,16 @@
             </div>
           ` : '';
 
+          // BOTTONI DI MODIFICA SEMPRE ATTIVI SULL'ITINERARIO UFFICIALE (Spostamento su/giù, modifica, elimina)
           let actionButtons = stop.isLocked ? `
             <span class="text-[10px] text-stone-400 font-semibold italic">🔒 Punto fisso logistico</span>
           ` : `
-            <button onclick="editStop(${originalIndex})" class="text-stone-500 hover:text-stone-800 font-semibold">✏️ Modifica</button>
-            <button onclick="deleteStop(${originalIndex})" class="text-rose-400 hover:text-rose-600 font-semibold">🗑️ Elimina</button>
+            <div class="flex items-center gap-1">
+              <button onclick="moveItineraryItem(${originalIndex}, -1)" class="bg-stone-50 hover:bg-stone-100 border border-stone-200 px-2 py-1 rounded-md text-[11px]" title="Sposta Su">⬆️</button>
+              <button onclick="moveItineraryItem(${originalIndex}, 1)" class="bg-stone-50 hover:bg-stone-100 border border-stone-200 px-2 py-1 rounded-md text-[11px]" title="Sposta Giù">⬇️</button>
+              <button onclick="editStop(${originalIndex})" class="text-stone-500 hover:text-stone-800 font-semibold px-2 py-1">✏️ Modifica</button>
+              <button onclick="deleteStop(${originalIndex})" class="text-rose-400 hover:text-rose-600 font-semibold px-2 py-1">🗑️ Elimina</button>
+            </div>
           `;
 
           card.innerHTML = `
@@ -1485,13 +1453,40 @@
             <h4 class="font-bold text-stone-800 text-sm leading-snug">${stop.title}</h4>
             ${travelRow}
             <div class="text-xs text-stone-600 leading-relaxed">${stop.desc}</div>
-            <div class="no-print flex justify-end gap-2.5 pt-1.5 border-t border-stone-50 text-[11px]">
+            <div class="no-print flex justify-between items-center pt-2 border-t border-stone-50 text-[11px]">
+              <select onchange="changeItineraryItemDay(${originalIndex}, this.value)" class="bg-stone-50 border border-stone-300 rounded-lg px-2 py-1 text-[11px] font-bold text-stone-700">
+                ${generateDaysArray(trip.startDate, trip.endDate).map(d => `<option value="${d.label}" ${stop.day === d.label ? 'selected' : ''}>Sposta a ${d.label.split(' ')[0]}</option>`).join('')}
+              </select>
               ${actionButtons}
             </div>
           `;
           container.appendChild(card);
         });
       }
+    }
+
+    function moveItineraryItem(index, direction) {
+      const trip = getCurrentTrip();
+      if (!trip) return;
+      const targetIndex = index + direction;
+      if (targetIndex >= 0 && targetIndex < trip.stops.length) {
+        const temp = trip.stops[index];
+        trip.stops[index] = trip.stops[targetIndex];
+        trip.stops[targetIndex] = temp;
+        
+        trip.stops = rebalanceDayTimeSlots(trip.stops);
+        saveAllTripsToStorage();
+        renderItinerary();
+      }
+    }
+
+    function changeItineraryItemDay(index, newDay) {
+      const trip = getCurrentTrip();
+      if (!trip) return;
+      trip.stops[index].day = newDay;
+      trip.stops = rebalanceDayTimeSlots(trip.stops);
+      saveAllTripsToStorage();
+      renderItinerary();
     }
 
     function shareTrip() {
